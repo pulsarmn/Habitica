@@ -10,23 +10,25 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static com.pulsar.habitica.dao.UserTable.*;
 import static java.sql.Statement.*;
 
 public class UserDaoImpl implements UserDao {
 
-    private static final String FIND_ALL_SQL = "SELECT * FROM users.users";
-    private static final String FIND_BY_ID_SQL = "SELECT * FROM users.users WHERE id = ?";
-    private static final String SAVE_SQL = "INSERT INTO users.users (email, password, nickname) VALUES (?, ?, ?)";
-    private static final String UPDATE_SQL = """
-            UPDATE users.users
-            SET email = ?,
-            password = ?,
-            nickname = ?
-            WHERE id = ?
-            """;
-    private static final String DELETE_BY_ID_SQL = "DELETE FROM users.users WHERE id = ?";
-    private static final String FIND_BY_EMAIL_SQL = "SELECT * FROM users.users WHERE email = ?";
-    private static final String FIND_BY_NICKNAME_SQL = "SELECT * FROM users.users WHERE nickname = ?";
+    private static final String FIND_ALL_SQL = "SELECT * FROM %s"
+            .formatted(FULL_TABLE_NAME);
+    private static final String FIND_BY_ID_SQL = "SELECT * FROM %s WHERE %s = ?"
+            .formatted(FULL_TABLE_NAME, ID_COLUMN);
+    private static final String SAVE_SQL = "INSERT INTO %s (%s, %s, %s) VALUES (?, ?, ?)"
+            .formatted(FULL_TABLE_NAME, EMAIL_COLUMN, PASSWORD_COLUMN, NICKNAME_COLUMN);
+    private static final String UPDATE_SQL = "UPDATE %s SET %s = ?, %s = ?, %s = ? WHERE %s = ?"
+            .formatted(FULL_TABLE_NAME, EMAIL_COLUMN, PASSWORD_COLUMN, NICKNAME_COLUMN, ID_COLUMN);
+    private static final String DELETE_BY_ID_SQL = "DELETE FROM %s WHERE %s = ?"
+            .formatted(FULL_TABLE_NAME, ID_COLUMN);
+    private static final String FIND_BY_EMAIL_SQL = "SELECT * FROM %s WHERE %s = ?"
+            .formatted(FULL_TABLE_NAME, EMAIL_COLUMN);
+    private static final String FIND_BY_NICKNAME_SQL = "SELECT * FROM %s WHERE %s = ?"
+            .formatted(FULL_TABLE_NAME, NICKNAME_COLUMN);
     private static final UserDaoImpl INSTANCE = new UserDaoImpl();
 
     private UserDaoImpl() {}
@@ -72,8 +74,8 @@ public class UserDaoImpl implements UserDao {
 
             var keys = statement.getGeneratedKeys();
             keys.next();
-            entity.setId(keys.getInt("id"));
-            entity.setCreatedAt(keys.getDate("created_at").toLocalDate());
+            entity.setId(keys.getInt(ID_COLUMN));
+            entity.setCreatedAt(keys.getDate(CREATED_AT_COLUMN).toLocalDate());
             return entity;
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -139,11 +141,11 @@ public class UserDaoImpl implements UserDao {
 
     private User buildUser(ResultSet resultSet) throws SQLException {
         return User.builder()
-                .id(resultSet.getInt("id"))
-                .email(resultSet.getString("email"))
-                .password(resultSet.getString("password"))
-                .nickname(resultSet.getString("nickname"))
-                .createdAt(resultSet.getDate("created_at").toLocalDate())
+                .id(resultSet.getInt(ID_COLUMN))
+                .email(resultSet.getString(EMAIL_COLUMN))
+                .password(resultSet.getString(PASSWORD_COLUMN))
+                .nickname(resultSet.getString(NICKNAME_COLUMN))
+                .createdAt(resultSet.getDate(CREATED_AT_COLUMN).toLocalDate())
                 .build();
     }
 
