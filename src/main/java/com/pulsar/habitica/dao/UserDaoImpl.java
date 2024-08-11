@@ -106,7 +106,7 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public boolean delete(User entity) {
-        return false;
+        return deleteById(entity.getId());
     }
 
     @Override
