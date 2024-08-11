@@ -3,16 +3,20 @@ package com.pulsar.habitica.dao;
 import com.pulsar.habitica.entity.User;
 import com.pulsar.habitica.util.ConnectionManager;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static java.sql.Statement.*;
+
 public class UserDaoImpl implements UserDao {
 
     private static final String FIND_ALL_SQL = "SELECT * FROM users.users";
     private static final String FIND_BY_ID_SQL = "SELECT * FROM users.users WHERE id = ?";
+    private static final String SAVE_SQL = "INSERT INTO users.users (email, password, nickname) VALUES (?, ?, ?)";
     private static final UserDaoImpl INSTANCE = new UserDaoImpl();
 
     private UserDaoImpl() {}
@@ -51,7 +55,25 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public User save(User entity) {
-        return null;
+        try (var connection = ConnectionManager.get();
+        var statement = connection.prepareStatement(SAVE_SQL, RETURN_GENERATED_KEYS)) {
+            setUserStatement(statement, entity);
+            statement.executeUpdate();
+
+            var keys = statement.getGeneratedKeys();
+            keys.next();
+            entity.setId(keys.getInt("id"));
+            entity.setCreatedAt(keys.getDate("created_at").toLocalDate());
+            return entity;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void setUserStatement(PreparedStatement statement, User entity) throws SQLException {
+        statement.setString(1, entity.getEmail());
+        statement.setString(2, entity.getPassword());
+        statement.setString(3, entity.getNickname());
     }
 
     @Override
