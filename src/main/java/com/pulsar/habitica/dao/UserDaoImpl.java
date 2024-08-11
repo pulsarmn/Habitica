@@ -25,6 +25,7 @@ public class UserDaoImpl implements UserDao {
             WHERE id = ?
             """;
     private static final String DELETE_BY_ID_SQL = "DELETE FROM users.users WHERE id = ?";
+    private static final String FIND_BY_EMAIL_SQL = "SELECT * FROM users.users WHERE email = ?";
     private static final UserDaoImpl INSTANCE = new UserDaoImpl();
 
     private UserDaoImpl() {}
@@ -111,7 +112,19 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public Optional<User> findByEmail(String email) {
-        return Optional.empty();
+        try (var connection = ConnectionManager.get();
+        var statement = connection.prepareStatement(FIND_BY_EMAIL_SQL)) {
+            statement.setString(1, email);
+
+            var resultSet = statement.executeQuery();
+            User foundUser = null;
+            if (resultSet.next()) {
+                foundUser = buildUser(resultSet);
+            }
+            return Optional.ofNullable(foundUser);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
