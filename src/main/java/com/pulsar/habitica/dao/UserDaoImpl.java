@@ -24,6 +24,7 @@ public class UserDaoImpl implements UserDao {
             nickname = ?
             WHERE id = ?
             """;
+    private static final String DELETE_BY_ID_SQL = "DELETE FROM users.users WHERE id = ?";
     private static final UserDaoImpl INSTANCE = new UserDaoImpl();
 
     private UserDaoImpl() {}
@@ -93,7 +94,14 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public boolean deleteById(Integer id) {
-        return false;
+        try (var connection = ConnectionManager.get();
+        var statement = connection.prepareStatement(DELETE_BY_ID_SQL)) {
+            statement.setInt(1, id);
+            int status = statement.executeUpdate();
+            return status == 1;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
