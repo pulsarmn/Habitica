@@ -1,12 +1,16 @@
 package com.pulsar.habitica.dao;
 
-import com.pulsar.habitica.dao.TaskDao;
+
 import com.pulsar.habitica.entity.Task;
 
 import java.util.List;
 import java.util.Optional;
 
 public class TaskDaoImpl implements TaskDao {
+
+    private static final TaskDaoImpl INSTANCE = new TaskDaoImpl();
+
+    private TaskDaoImpl() {}
 
     @Override
     public List<Task> findAll() {
@@ -41,5 +45,9 @@ public class TaskDaoImpl implements TaskDao {
     @Override
     public List<Task> findByHeading(String heading) {
         return null;
+    }
+
+    public static TaskDaoImpl getInstance() {
+        return INSTANCE;
     }
 }
