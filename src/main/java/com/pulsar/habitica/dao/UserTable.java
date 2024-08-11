@@ -11,4 +11,6 @@ public final class UserTable {
     public static final String PASSWORD_COLUMN = "password";
     public static final String NICKNAME_COLUMN = "nickname";
     public static final String CREATED_AT_COLUMN = "created_at";
+
+    private UserTable() {}
 }
