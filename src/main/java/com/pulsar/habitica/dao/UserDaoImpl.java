@@ -26,6 +26,7 @@ public class UserDaoImpl implements UserDao {
             """;
     private static final String DELETE_BY_ID_SQL = "DELETE FROM users.users WHERE id = ?";
     private static final String FIND_BY_EMAIL_SQL = "SELECT * FROM users.users WHERE email = ?";
+    private static final String FIND_BY_NICKNAME_SQL = "SELECT * FROM users.users WHERE nickname = ?";
     private static final UserDaoImpl INSTANCE = new UserDaoImpl();
 
     private UserDaoImpl() {}
@@ -112,9 +113,18 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public Optional<User> findByEmail(String email) {
+        return findByParameter(email, FIND_BY_EMAIL_SQL);
+    }
+
+    @Override
+    public Optional<User> findByNickname(String nickname) {
+        return findByParameter(nickname, FIND_BY_NICKNAME_SQL);
+    }
+
+    private Optional<User> findByParameter(String emailOrNickname, String query) {
         try (var connection = ConnectionManager.get();
-        var statement = connection.prepareStatement(FIND_BY_EMAIL_SQL)) {
-            statement.setString(1, email);
+             var statement = connection.prepareStatement(query)) {
+            statement.setString(1, emailOrNickname);
 
             var resultSet = statement.executeQuery();
             User foundUser = null;
@@ -125,11 +135,6 @@ public class UserDaoImpl implements UserDao {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    @Override
-    public Optional<User> findByNickname(String nickname) {
-        return Optional.empty();
     }
 
     private User buildUser(ResultSet resultSet) throws SQLException {
