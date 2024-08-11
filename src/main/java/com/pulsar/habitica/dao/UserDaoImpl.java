@@ -17,6 +17,13 @@ public class UserDaoImpl implements UserDao {
     private static final String FIND_ALL_SQL = "SELECT * FROM users.users";
     private static final String FIND_BY_ID_SQL = "SELECT * FROM users.users WHERE id = ?";
     private static final String SAVE_SQL = "INSERT INTO users.users (email, password, nickname) VALUES (?, ?, ?)";
+    private static final String UPDATE_SQL = """
+            UPDATE users.users
+            SET email = ?,
+            password = ?,
+            nickname = ?
+            WHERE id = ?
+            """;
     private static final UserDaoImpl INSTANCE = new UserDaoImpl();
 
     private UserDaoImpl() {}
@@ -57,7 +64,7 @@ public class UserDaoImpl implements UserDao {
     public User save(User entity) {
         try (var connection = ConnectionManager.get();
         var statement = connection.prepareStatement(SAVE_SQL, RETURN_GENERATED_KEYS)) {
-            setUserStatement(statement, entity);
+            setUserParameters(statement, entity);
             statement.executeUpdate();
 
             var keys = statement.getGeneratedKeys();
@@ -70,15 +77,18 @@ public class UserDaoImpl implements UserDao {
         }
     }
 
-    private void setUserStatement(PreparedStatement statement, User entity) throws SQLException {
-        statement.setString(1, entity.getEmail());
-        statement.setString(2, entity.getPassword());
-        statement.setString(3, entity.getNickname());
-    }
-
     @Override
     public User update(User entity) {
-        return null;
+        try (var connection = ConnectionManager.get();
+        var statement = connection.prepareStatement(UPDATE_SQL)) {
+            setUserParameters(statement, entity);
+            statement.setInt(4, entity.getId());
+            statement.executeUpdate();
+
+            return entity;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -109,6 +119,12 @@ public class UserDaoImpl implements UserDao {
                 .nickname(resultSet.getString("nickname"))
                 .createdAt(resultSet.getDate("created_at").toLocalDate())
                 .build();
+    }
+
+    private void setUserParameters(PreparedStatement statement, User entity) throws SQLException {
+        statement.setString(1, entity.getEmail());
+        statement.setString(2, entity.getPassword());
+        statement.setString(3, entity.getNickname());
     }
 
     public static UserDaoImpl getInstance() {
