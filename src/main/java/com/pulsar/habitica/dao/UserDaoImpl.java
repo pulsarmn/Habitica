@@ -12,6 +12,7 @@ import java.util.Optional;
 public class UserDaoImpl implements UserDao {
 
     private static final String FIND_ALL_SQL = "SELECT * FROM users.users";
+    private static final String FIND_BY_ID_SQL = "SELECT * FROM users.users WHERE id = ?";
     private static final UserDaoImpl INSTANCE = new UserDaoImpl();
 
     private UserDaoImpl() {}
@@ -34,7 +35,18 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public Optional<User> findById(Integer id) {
-        return Optional.empty();
+        try (var connection = ConnectionManager.get();
+        var statement = connection.prepareStatement(FIND_BY_ID_SQL)) {
+            statement.setInt(1, id);
+            var resultSet = statement.executeQuery();
+            User user = null;
+            if (resultSet.next()) {
+                user = buildUser(resultSet);
+            }
+            return Optional.ofNullable(user);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
