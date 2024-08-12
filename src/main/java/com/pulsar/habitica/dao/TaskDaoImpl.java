@@ -64,6 +64,11 @@ public class TaskDaoImpl implements TaskDao {
         return null;
     }
 
+    @Override
+    public List<Task> findAllByUserId(Integer userId) {
+        return null;
+    }
+
     private Task buildTask(ResultSet resultSet) throws SQLException {
         return Task.builder()
                 .id(resultSet.getInt("id"))

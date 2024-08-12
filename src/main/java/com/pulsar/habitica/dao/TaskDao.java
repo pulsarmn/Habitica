@@ -8,4 +8,6 @@ import java.util.Optional;
 public interface TaskDao extends Dao<Integer, Task> {
 
     List<Task> findByHeading(String heading);
+
+    List<Task> findAllByUserId(Integer userId);
 }
