@@ -5,16 +5,22 @@ import com.pulsar.habitica.entity.Complexity;
 import com.pulsar.habitica.entity.Task;
 import com.pulsar.habitica.util.ConnectionManager;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import static java.sql.Statement.RETURN_GENERATED_KEYS;
 
 public class TaskDaoImpl implements TaskDao {
 
     private static final String FIND_ALL_SQL = "SELECT * FROM task.task";
     private static final String FIND_BY_ID_SQL = "SELECT * FROM task.task WHERE id = ?";
+    private static final String SAVE_SQL = """
+            INSERT INTO task.task
+            (heading, description, complexity, deadline, status, user_id)
+            VALUES (?, ?, ?, ?, ?, ?)
+            """;
     private static final TaskDaoImpl INSTANCE = new TaskDaoImpl();
 
     private TaskDaoImpl() {}
@@ -53,7 +59,19 @@ public class TaskDaoImpl implements TaskDao {
 
     @Override
     public Task save(Task entity) {
-        return null;
+        try (var connection = ConnectionManager.get();
+        var statement = connection.prepareStatement(SAVE_SQL, RETURN_GENERATED_KEYS)) {
+            setTaskParameters(statement, entity);
+            statement.setInt(6, entity.getUserId());
+            statement.executeUpdate();
+
+            var keys = statement.getGeneratedKeys();
+            keys.next();
+            entity.setId(keys.getInt("id"));
+            return entity;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -91,6 +109,14 @@ public class TaskDaoImpl implements TaskDao {
                 .status(resultSet.getBoolean("status"))
                 .userId(resultSet.getInt("user_id"))
                 .build();
+    }
+
+    private void setTaskParameters(PreparedStatement statement, Task entity) throws SQLException {
+        statement.setString(1, entity.getHeading());
+        statement.setString(2, entity.getDescription());
+        statement.setString(3, entity.getComplexity().name());
+        statement.setDate(4, Date.valueOf(entity.getDeadline()));
+        statement.setBoolean(5, entity.getStatus());
     }
 
     public static TaskDaoImpl getInstance() {
