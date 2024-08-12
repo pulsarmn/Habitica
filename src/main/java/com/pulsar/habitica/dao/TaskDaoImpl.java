@@ -13,7 +13,7 @@ import java.util.Optional;
 import static com.pulsar.habitica.dao.TaskTable.*;
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
 
-public class TaskDaoImpl implements TaskDao {
+public class TaskDaoImpl implements TaskDao<Task> {
 
     private static final String FIND_ALL_SQL = "SELECT * FROM %s"
             .formatted(FULL_TABLE_NAME);
