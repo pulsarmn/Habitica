@@ -21,6 +21,14 @@ public class TaskDaoImpl implements TaskDao {
             (heading, description, complexity, deadline, status, user_id)
             VALUES (?, ?, ?, ?, ?, ?)
             """;
+    private static final String UPDATE_SQL = """
+            UPDATE task.task
+            SET heading = ?,
+            description = ?,
+            complexity = ?,
+            deadline = ?,
+            status = ?
+            """;
     private static final TaskDaoImpl INSTANCE = new TaskDaoImpl();
 
     private TaskDaoImpl() {}
@@ -76,7 +84,15 @@ public class TaskDaoImpl implements TaskDao {
 
     @Override
     public Task update(Task entity) {
-        return null;
+        try (var connection = ConnectionManager.get();
+        var statement = connection.prepareStatement(UPDATE_SQL)) {
+            setTaskParameters(statement, entity);
+            statement.executeUpdate();
+
+            return entity;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
