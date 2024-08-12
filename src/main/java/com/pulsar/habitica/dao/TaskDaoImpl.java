@@ -14,6 +14,7 @@ import java.util.Optional;
 public class TaskDaoImpl implements TaskDao {
 
     private static final String FIND_ALL_SQL = "SELECT * FROM task.task";
+    private static final String FIND_BY_ID_SQL = "SELECT * FROM task.task WHERE id = ?";
     private static final TaskDaoImpl INSTANCE = new TaskDaoImpl();
 
     private TaskDaoImpl() {}
@@ -36,7 +37,18 @@ public class TaskDaoImpl implements TaskDao {
 
     @Override
     public Optional<Task> findById(Integer id) {
-        return Optional.empty();
+        try (var connection = ConnectionManager.get();
+        var statement = connection.prepareStatement(FIND_BY_ID_SQL)) {
+            statement.setInt(1, id);
+            var resultSet = statement.executeQuery();
+            Task task = null;
+            if (resultSet.next()) {
+                task = buildTask(resultSet);
+            }
+            return Optional.ofNullable(task);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -77,6 +89,7 @@ public class TaskDaoImpl implements TaskDao {
                 .complexity(Complexity.valueOf(resultSet.getString("complexity")))
                 .deadline(resultSet.getDate("deadline").toLocalDate())
                 .status(resultSet.getBoolean("status"))
+                .userId(resultSet.getInt("user_id"))
                 .build();
     }
 
