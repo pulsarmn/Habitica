@@ -41,4 +41,9 @@ public class HabitDaoImpl implements TaskDao {
     public List<Task> findByHeading(String heading) {
         return null;
     }
+
+    @Override
+    public List<Task> findAllByUserId(Integer userId) {
+        return null;
+    }
 }
