@@ -110,7 +110,7 @@ public class TaskDaoImpl implements TaskDao {
 
     @Override
     public boolean delete(Task entity) {
-        return false;
+        return deleteById(entity.getId());
     }
 
     @Override
