@@ -1,29 +1,40 @@
 package com.pulsar.habitica.dao;
 
+import com.pulsar.habitica.entity.DailyTask;
 import com.pulsar.habitica.entity.Task;
+import com.pulsar.habitica.util.ConnectionManager;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
-public class DailyTaskDaoImpl implements TaskDao {
+public class DailyTaskDaoImpl implements TaskDao<DailyTask> {
+
+    private static final String FIND_ALL_SQL = "SELECT * FROM task.daily_task";
 
     @Override
-    public List<Task> findAll() {
-        return null;
+    public List<DailyTask> findAll() {
+        try (var connection = ConnectionManager.get();
+             var statement = connection.prepareStatement(FIND_ALL_SQL)) {
+            var resultSet = statement.executeQuery();
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
-    public Optional<Task> findById(Integer id) {
+    public Optional<DailyTask> findById(Integer id) {
         return Optional.empty();
     }
 
     @Override
-    public Task save(Task entity) {
+    public DailyTask save(DailyTask entity) {
         return null;
     }
 
     @Override
-    public Task update(Task entity) {
+    public DailyTask update(DailyTask entity) {
         return null;
     }
 
@@ -33,17 +44,17 @@ public class DailyTaskDaoImpl implements TaskDao {
     }
 
     @Override
-    public boolean delete(Task entity) {
+    public boolean delete(DailyTask entity) {
         return false;
     }
 
     @Override
-    public List<Task> findByHeading(String heading) {
+    public List<DailyTask> findByHeading(String heading) {
         return null;
     }
 
     @Override
-    public List<Task> findAllByUserId(Integer userId) {
+    public List<DailyTask> findAllByUserId(Integer userId) {
         return null;
     }
 }
