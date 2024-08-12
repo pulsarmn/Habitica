@@ -10,28 +10,36 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static com.pulsar.habitica.dao.TaskTable.*;
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
 
 public class TaskDaoImpl implements TaskDao {
 
-    private static final String FIND_ALL_SQL = "SELECT * FROM task.task";
-    private static final String FIND_BY_ID_SQL = "SELECT * FROM task.task WHERE id = ?";
-    private static final String SAVE_SQL = """
-            INSERT INTO task.task
-            (heading, description, complexity, deadline, status, user_id)
-            VALUES (?, ?, ?, ?, ?, ?)
-            """;
-    private static final String UPDATE_SQL = """
-            UPDATE task.task
-            SET heading = ?,
-            description = ?,
-            complexity = ?,
-            deadline = ?,
-            status = ?
-            """;
-    private static final String DELETE_BY_ID_SQL = "DELETE FROM task.task WHERE id = ?";
-    private static final String FIND_BY_HEADING_SQL = "SELECT * FROM task.task WHERE LOWER(heading) LIKE CONCAT('%', ?, '%')";
-    private static final String FIND_ALL_BY_USER_ID_SQL = "SELECT * FROM task.task WHERE user_id = ?";
+    private static final String FIND_ALL_SQL = "SELECT * FROM %s"
+            .formatted(FULL_TABLE_NAME);
+    private static final String FIND_BY_ID_SQL = "SELECT * FROM %s WHERE %s = ?"
+            .formatted(FULL_TABLE_NAME, ID_COLUMN);
+    private static final String SAVE_SQL = "INSERT INTO %s (%s, %s, %s, %s, %s, %s) VALUES (?, ?, ?, ?, ?, ?)"
+            .formatted(FULL_TABLE_NAME,
+                    HEADING_COLUMN,
+                    DEADLINE_COLUMN,
+                    COMPLEXITY_COLUMN,
+                    DEADLINE_COLUMN,
+                    STATUS_COLUMN,
+                    USER_ID_COLUMN);
+    private static final String UPDATE_SQL = "UPDATE %s SET %s = ?, %s = ?, %s = ?, %s = ?, %s = ?"
+            .formatted(FULL_TABLE_NAME,
+                    HEADING_COLUMN,
+                    DESCRIPTION_COLUMN,
+                    COMPLEXITY_COLUMN,
+                    DEADLINE_COLUMN,
+                    STATUS_COLUMN);
+    private static final String DELETE_BY_ID_SQL = "DELETE FROM %s WHERE %s = ?"
+            .formatted(FULL_TABLE_NAME, ID_COLUMN);
+    private static final String FIND_BY_HEADING_SQL = "SELECT * FROM %s WHERE LOWER(%s) LIKE CONCAT('%', ?, '%')"
+            .replaceFirst("%s", FULL_TABLE_NAME).replaceFirst("%s", HEADING_COLUMN);
+    private static final String FIND_ALL_BY_USER_ID_SQL = "SELECT * FROM %s WHERE %s = ?"
+            .formatted(FULL_TABLE_NAME, USER_ID_COLUMN);
     private static final TaskDaoImpl INSTANCE = new TaskDaoImpl();
 
     private TaskDaoImpl() {}
