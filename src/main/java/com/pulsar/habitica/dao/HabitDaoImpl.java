@@ -1,29 +1,30 @@
 package com.pulsar.habitica.dao;
 
+import com.pulsar.habitica.entity.Habit;
 import com.pulsar.habitica.entity.Task;
 
 import java.util.List;
 import java.util.Optional;
 
-public class HabitDaoImpl implements TaskDao {
+public class HabitDaoImpl implements TaskDao<Habit> {
 
     @Override
-    public List<Task> findAll() {
+    public List<Habit> findAll() {
         return null;
     }
 
     @Override
-    public Optional<Task> findById(Integer id) {
+    public Optional<Habit> findById(Integer id) {
         return Optional.empty();
     }
 
     @Override
-    public Task save(Task entity) {
+    public Habit save(Habit entity) {
         return null;
     }
 
     @Override
-    public Task update(Task entity) {
+    public Habit update(Habit entity) {
         return null;
     }
 
@@ -33,17 +34,17 @@ public class HabitDaoImpl implements TaskDao {
     }
 
     @Override
-    public boolean delete(Task entity) {
+    public boolean delete(Habit entity) {
         return false;
     }
 
     @Override
-    public List<Task> findByHeading(String heading) {
+    public List<Habit> findByHeading(String heading) {
         return null;
     }
 
     @Override
-    public List<Task> findAllByUserId(Integer userId) {
+    public List<Habit> findAllByUserId(Integer userId) {
         return null;
     }
 }
