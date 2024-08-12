@@ -30,6 +30,7 @@ public class TaskDaoImpl implements TaskDao {
             status = ?
             """;
     private static final String DELETE_BY_ID_SQL = "DELETE FROM task.task WHERE id = ?";
+    private static final String FIND_BY_HEADING_SQL = "SELECT * FROM task.task WHERE LOWER(heading) LIKE CONCAT('%', ?, '%')";
     private static final TaskDaoImpl INSTANCE = new TaskDaoImpl();
 
     private TaskDaoImpl() {}
@@ -115,7 +116,20 @@ public class TaskDaoImpl implements TaskDao {
 
     @Override
     public List<Task> findByHeading(String heading) {
-        return null;
+        try (var connection = ConnectionManager.get();
+        var statement = connection.prepareStatement(FIND_BY_HEADING_SQL)) {
+            statement.setString(1, "%s".formatted(heading.toLowerCase()));
+
+            var resultSet = statement.executeQuery();
+            List<Task> tasks = new ArrayList<>();
+            while (resultSet.next()) {
+                Task task = buildTask(resultSet);
+                tasks.add(task);
+            }
+            return tasks;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
