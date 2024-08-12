@@ -31,6 +31,7 @@ public class TaskDaoImpl implements TaskDao {
             """;
     private static final String DELETE_BY_ID_SQL = "DELETE FROM task.task WHERE id = ?";
     private static final String FIND_BY_HEADING_SQL = "SELECT * FROM task.task WHERE LOWER(heading) LIKE CONCAT('%', ?, '%')";
+    private static final String FIND_ALL_BY_USER_ID_SQL = "SELECT * FROM task.task WHERE user_id = ?";
     private static final TaskDaoImpl INSTANCE = new TaskDaoImpl();
 
     private TaskDaoImpl() {}
@@ -39,13 +40,7 @@ public class TaskDaoImpl implements TaskDao {
     public List<Task> findAll() {
         try (var connection = ConnectionManager.get();
         var statement = connection.prepareStatement(FIND_ALL_SQL)) {
-            var resultSet = statement.executeQuery();
-            List<Task> tasks = new ArrayList<>();
-            while (resultSet.next()) {
-                Task task = buildTask(resultSet);
-                tasks.add(task);
-            }
-            return tasks;
+            return getTaskList(statement);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -120,13 +115,7 @@ public class TaskDaoImpl implements TaskDao {
         var statement = connection.prepareStatement(FIND_BY_HEADING_SQL)) {
             statement.setString(1, "%s".formatted(heading.toLowerCase()));
 
-            var resultSet = statement.executeQuery();
-            List<Task> tasks = new ArrayList<>();
-            while (resultSet.next()) {
-                Task task = buildTask(resultSet);
-                tasks.add(task);
-            }
-            return tasks;
+            return getTaskList(statement);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -134,7 +123,24 @@ public class TaskDaoImpl implements TaskDao {
 
     @Override
     public List<Task> findAllByUserId(Integer userId) {
-        return null;
+        try (var connection = ConnectionManager.get();
+        var statement = connection.prepareStatement(FIND_ALL_BY_USER_ID_SQL)) {
+            statement.setInt(1, userId);
+
+            return getTaskList(statement);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private List<Task> getTaskList(PreparedStatement statement) throws SQLException {
+        var resultSet = statement.executeQuery();
+        List<Task> tasks = new ArrayList<>();
+        while (resultSet.next()) {
+            Task task = buildTask(resultSet);
+            tasks.add(task);
+        }
+        return tasks;
     }
 
     private Task buildTask(ResultSet resultSet) throws SQLException {
