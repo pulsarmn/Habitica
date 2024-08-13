@@ -9,38 +9,45 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static com.pulsar.habitica.dao.HabitTable.*;
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
 
 public class HabitDaoImpl implements TaskDao<Habit> {
 
-    private static final String FIND_ALL_SQL = "SELECT * FROM task.habit";
-    private static final String FIND_BY_ID_SQL = "SELECT * FROM task.habit WHERE id = ?";
-    private static final String SAVE_SQL = """
-            INSERT INTO task.habit (heading, description, complexity, bad_series, good_series, user_id)
-            VALUES (?, ?, ?, ?, ?, ?)
-            """;
-    private static final String UPDATE_SQL = """
-            UPDATE task.habit
-            SET heading = ?,
-            description = ?,
-            complexity = ?,
-            bad_series = ?,
-            good_series = ?
-            """;
-    private static final String DELETE_BY_ID_SQL = "DELETE FROM task.habit WHERE id = ?";
-    private static final String FIND_BY_HEADING = """
-            SELECT * FROM task.habit
-            WHERE LOWER(heading) LIKE CONCAT('%', ?, '%')
-            """;
-    private static final String FIND_BY_USER_ID = "SELECT * FROM task.habit WHERE user_id = ?";
+    private static final String FIND_ALL_SQL = "SELECT * FROM %s"
+            .formatted(FULL_TABLE_NAME);
+    private static final String FIND_BY_ID_SQL = "SELECT * FROM %s WHERE %s = ?"
+            .formatted(FULL_TABLE_NAME, ID_COLUMN);
+    private static final String SAVE_SQL = "INSERT INTO %s (%s, %s, %s, %s, %s, %s) VALUES (?, ?, ?, ?, ?, ?)"
+            .formatted(FULL_TABLE_NAME,
+                    HEADING_COLUMN,
+                    DESCRIPTION_COLUMN,
+                    COMPLEXITY_COLUMN,
+                    BAD_SERIES_COLUMN,
+                    GOOD_SERIES_COLUMN,
+                    USER_ID_COLUMN);
+    private static final String UPDATE_SQL = "UPDATE %s SET %s = ?, %s = ?, %s = ?, %s = ?, %s = ?"
+            .formatted(FULL_TABLE_NAME,
+                    HEADING_COLUMN,
+                    DESCRIPTION_COLUMN,
+                    COMPLEXITY_COLUMN,
+                    BAD_SERIES_COLUMN,
+                    GOOD_SERIES_COLUMN);
+    private static final String DELETE_BY_ID_SQL = "DELETE FROM %s WHERE %s = ?"
+            .formatted(FULL_TABLE_NAME, ID_COLUMN);
+    private static final String FIND_BY_HEADING = "SELECT * FROM %s WHERE LOWER(%s) LIKE CONCAT('%', ?, '%')"
+            .replaceFirst("%s", FULL_TABLE_NAME).replaceFirst("%s", HEADING_COLUMN);
+    private static final String FIND_BY_USER_ID = "SELECT * FROM %s WHERE %s = ?"
+            .formatted(FULL_TABLE_NAME, USER_ID_COLUMN);
     private static final HabitDaoImpl INSTANCE = new HabitDaoImpl();
 
-    private HabitDaoImpl() {}
+    private HabitDaoImpl() {
+    }
 
     @Override
     public List<Habit> findAll() {
         try (var connection = ConnectionManager.get();
-        var statement = connection.prepareStatement(FIND_ALL_SQL)) {
+             var statement = connection.prepareStatement(FIND_ALL_SQL)) {
             var resultSet = statement.executeQuery();
             List<Habit> habits = new ArrayList<>();
             while (resultSet.next()) {
@@ -56,7 +63,7 @@ public class HabitDaoImpl implements TaskDao<Habit> {
     @Override
     public Optional<Habit> findById(Integer id) {
         try (var connection = ConnectionManager.get();
-        var statement = connection.prepareStatement(FIND_BY_ID_SQL)) {
+             var statement = connection.prepareStatement(FIND_BY_ID_SQL)) {
             statement.setInt(1, id);
             var resultSet = statement.executeQuery();
             Habit habit = null;
@@ -72,7 +79,7 @@ public class HabitDaoImpl implements TaskDao<Habit> {
     @Override
     public Habit save(Habit entity) {
         try (var connection = ConnectionManager.get();
-        var statement = connection.prepareStatement(SAVE_SQL, RETURN_GENERATED_KEYS)) {
+             var statement = connection.prepareStatement(SAVE_SQL, RETURN_GENERATED_KEYS)) {
             setHabitParameters(statement, entity);
             statement.executeUpdate();
 
@@ -136,7 +143,7 @@ public class HabitDaoImpl implements TaskDao<Habit> {
     @Override
     public List<Habit> findAllByUserId(Integer userId) {
         try (var connection = ConnectionManager.get();
-             var statement =  connection.prepareStatement(FIND_BY_USER_ID)) {
+             var statement = connection.prepareStatement(FIND_BY_USER_ID)) {
             statement.setInt(1, userId);
 
             var resultSet = statement.executeQuery();
