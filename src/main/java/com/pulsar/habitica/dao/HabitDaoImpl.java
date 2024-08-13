@@ -107,7 +107,7 @@ public class HabitDaoImpl implements TaskDao<Habit> {
 
     @Override
     public boolean delete(Habit entity) {
-        return false;
+        return deleteById(entity.getId());
     }
 
     @Override
