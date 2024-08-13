@@ -82,7 +82,7 @@ public class DailyTask extends TaskBase {
         }
 
         @Override
-        public TaskBase build() {
+        public DailyTask build() {
             return new DailyTask(this);
         }
     }
