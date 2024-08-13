@@ -3,16 +3,24 @@ package com.pulsar.habitica.dao;
 import com.pulsar.habitica.entity.Reward;
 import com.pulsar.habitica.util.ConnectionManager;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import static java.sql.Statement.RETURN_GENERATED_KEYS;
 
 public class RewardDaoImpl implements RewardDao {
 
     private static final String FIND_ALL_SQL = "SELECT * FROM task.reward";
     private static final String FIND_BY_ID_SQL = "SELECT * FROM task.reward WHERE id = ?";
+    private static final String SAVE_SQL = """
+            INSERT INTO task.reward (heading, description, cost, user_id)
+            VALUES (?, ?, ?, ?)
+            """;
     private static final RewardDaoImpl INSTANCE = new RewardDaoImpl();
 
     private RewardDaoImpl() {}
@@ -52,7 +60,18 @@ public class RewardDaoImpl implements RewardDao {
 
     @Override
     public Reward save(Reward entity) {
-        return null;
+        try (var connection = ConnectionManager.get();
+        var statement = connection.prepareStatement(SAVE_SQL, RETURN_GENERATED_KEYS)) {
+            setRewardParameters(statement, entity);
+            statement.executeUpdate();
+
+            var keys = statement.getGeneratedKeys();
+            keys.next();
+            entity.setId(keys.getInt("id"));
+            return entity;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -88,6 +107,13 @@ public class RewardDaoImpl implements RewardDao {
                 .cost(resultSet.getBigDecimal("cost"))
                 .userId(resultSet.getInt("user_id"))
                 .build();
+    }
+
+    public void setRewardParameters(PreparedStatement statement, Reward entity) throws SQLException {
+        statement.setString(1, entity.getHeading());
+        statement.setString(2, entity.getDescription());
+        statement.setBigDecimal(3, entity.getCost());
+        statement.setInt(4, entity.getUserId());
     }
 
     public static RewardDaoImpl getInstance() {
