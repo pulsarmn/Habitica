@@ -33,6 +33,7 @@ public class RewardDaoImpl implements RewardDao {
             SELECT * FROM task.reward
             WHERE LOWER(heading) LIKE CONCAT('%', ?, '%')
             """;
+    private static final String FIND_ALL_BY_USER_ID_SQL = "SELECT * FROM task.reward WHERE user_id = ?";
     private static final RewardDaoImpl INSTANCE = new RewardDaoImpl();
 
     private RewardDaoImpl() {}
@@ -137,7 +138,19 @@ public class RewardDaoImpl implements RewardDao {
 
     @Override
     public List<Reward> findAllByUserId(Integer userId) {
-        return null;
+        try (var connection = ConnectionManager.get();
+        var statement = connection.prepareStatement(FIND_ALL_BY_USER_ID_SQL)) {
+            statement.setInt(1, userId);
+            var resultSet = statement.executeQuery();
+            List<Reward> rewards = new ArrayList<>();
+            while (resultSet.next()) {
+                Reward reward = buildReward(resultSet);
+                rewards.add(reward);
+            }
+            return rewards;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public Reward buildReward(ResultSet resultSet) throws SQLException {
