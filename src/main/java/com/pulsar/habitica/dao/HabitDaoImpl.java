@@ -28,6 +28,10 @@ public class HabitDaoImpl implements TaskDao<Habit> {
             good_series = ?
             """;
     private static final String DELETE_BY_ID_SQL = "DELETE FROM task.habit WHERE id = ?";
+    private static final String FIND_BY_HEADING = """
+            SELECT * FROM task.habit
+            WHERE LOWER(heading) LIKE CONCAT('%', ?, '%')
+            """;
     private static final HabitDaoImpl INSTANCE = new HabitDaoImpl();
 
     private HabitDaoImpl() {}
@@ -112,7 +116,20 @@ public class HabitDaoImpl implements TaskDao<Habit> {
 
     @Override
     public List<Habit> findByHeading(String heading) {
-        return null;
+        try (var connection = ConnectionManager.get();
+             var statement = connection.prepareStatement(FIND_BY_HEADING)) {
+            statement.setString(1, heading.toLowerCase());
+            
+            var resultSet = statement.executeQuery();
+            List<Habit> habits = new ArrayList<>();
+            while (resultSet.next()) {
+                Habit habit = buildHabit(resultSet);
+                habits.add(habit);
+            }
+            return habits;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
