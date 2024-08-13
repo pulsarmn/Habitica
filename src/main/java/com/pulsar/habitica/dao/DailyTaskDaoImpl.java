@@ -2,7 +2,6 @@ package com.pulsar.habitica.dao;
 
 import com.pulsar.habitica.entity.Complexity;
 import com.pulsar.habitica.entity.DailyTask;
-import com.pulsar.habitica.entity.Task;
 import com.pulsar.habitica.util.ConnectionManager;
 
 import java.sql.Date;
@@ -13,31 +12,38 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static com.pulsar.habitica.dao.DailyTaskTable.*;
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
 
 public class DailyTaskDaoImpl implements TaskDao<DailyTask> {
 
-    private static final String FIND_ALL_SQL = "SELECT * FROM task.daily_task";
-    private static final String FIND_BY_ID_SQL = "SELECT * FROM task.daily_task WHERE id = ?";
-    private static final String SAVE_SQL = """
-            INSERT INTO task.daily_task (heading, description, complexity, deadline, status, series, user_id)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
-            """;
-    private static final String UPDATE_SQL = """
-            UPDATE task.daily_task
-            SET heading = ?,
-            description = ?,
-            complexity = ?,
-            deadline = ?,
-            status = ?,
-            series = ?
-            """;
-    private static final String DELETE_BY_ID_SQL = "DELETE FROM task.daily_task WHERE id = ?";
-    private static final String FIND_BY_HEADING = """
-            SELECT * FROM task.daily_task
-            WHERE LOWER(heading) LIKE CONCAT('%', ?, '%')
-            """;
-    private static final String FIND_BY_USER_ID = "SELECT * FROM task.daily_task WHERE user_id = ?";
+    private static final String FIND_ALL_SQL = "SELECT * FROM %s"
+            .formatted(FULL_TABLE_NAME);
+    private static final String FIND_BY_ID_SQL = "SELECT * FROM %s WHERE %s = ?"
+            .formatted(FULL_TABLE_NAME, ID_COLUMN);
+    private static final String SAVE_SQL = "INSERT INTO %s (%s, %s, %s, %s, %s, %s, %s) VALUES (?, ?, ?, ?, ?, ?, ?)".
+            formatted(FULL_TABLE_NAME,
+                    HEADING_COLUMN,
+                    DESCRIPTION_COLUMN,
+                    COMPLEXITY_COLUMN,
+                    DEADLINE_COLUMN,
+                    STATUS_COLUMN,
+                    SERIES_COLUMN,
+                    USER_ID_COLUMN);
+    private static final String UPDATE_SQL = "UPDATE %s SET %s = ?, %s = ?, %s = ?, %s = ?, %s = ?, %s = ?"
+            .formatted(FULL_TABLE_NAME,
+                    HEADING_COLUMN,
+                    DESCRIPTION_COLUMN,
+                    COMPLEXITY_COLUMN,
+                    DEADLINE_COLUMN,
+                    STATUS_COLUMN,
+                    SERIES_COLUMN);
+    private static final String DELETE_BY_ID_SQL = "DELETE FROM %s WHERE %s = ?".
+            formatted(FULL_TABLE_NAME, ID_COLUMN);
+    private static final String FIND_BY_HEADING = "SELECT * FROM %s WHERE LOWER(%s) LIKE CONCAT('%', ?, '%')"
+            .replaceFirst("%s", FULL_TABLE_NAME).replaceFirst("%s", HEADING_COLUMN);
+    private static final String FIND_BY_USER_ID = "SELECT * FROM %s WHERE %s = ?"
+            .formatted(FULL_TABLE_NAME, USER_ID_COLUMN);
     private static final DailyTaskDaoImpl INSTANCE = new DailyTaskDaoImpl();
 
     private DailyTaskDaoImpl() {}
@@ -78,7 +84,7 @@ public class DailyTaskDaoImpl implements TaskDao<DailyTask> {
 
             var resultSet = statement.getGeneratedKeys();
             resultSet.next();
-            entity.setId(resultSet.getInt("id"));
+            entity.setId(resultSet.getInt(ID_COLUMN));
             return entity;
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -119,7 +125,7 @@ public class DailyTaskDaoImpl implements TaskDao<DailyTask> {
     public List<DailyTask> findByHeading(String heading) {
         try (var connection = ConnectionManager.get();
         var statement = connection.prepareStatement(FIND_BY_HEADING)) {
-            statement.setString(1, heading);
+            statement.setString(1, heading.toLowerCase());
 
             return getDailyTaskList(statement);
         } catch (SQLException e) {
@@ -151,14 +157,14 @@ public class DailyTaskDaoImpl implements TaskDao<DailyTask> {
 
     public DailyTask buildDailyTask(ResultSet resultSet) throws SQLException {
         return DailyTask.builder()
-                .id(resultSet.getInt("id"))
-                .heading(resultSet.getString("heading"))
-                .description(resultSet.getString("description"))
-                .complexity(Complexity.valueOf(resultSet.getString("complexity")))
-                .deadline(resultSet.getDate("deadline").toLocalDate())
-                .status(resultSet.getBoolean("status"))
-                .series(resultSet.getInt("series"))
-                .userId(resultSet.getInt("user_id"))
+                .id(resultSet.getInt(ID_COLUMN))
+                .heading(resultSet.getString(HEADING_COLUMN))
+                .description(resultSet.getString(DESCRIPTION_COLUMN))
+                .complexity(Complexity.valueOf(resultSet.getString(COMPLEXITY_COLUMN)))
+                .deadline(resultSet.getDate(DEADLINE_COLUMN).toLocalDate())
+                .status(resultSet.getBoolean(STATUS_COLUMN))
+                .series(resultSet.getInt(SERIES_COLUMN))
+                .userId(resultSet.getInt(USER_ID_COLUMN))
                 .build();
     }
 
