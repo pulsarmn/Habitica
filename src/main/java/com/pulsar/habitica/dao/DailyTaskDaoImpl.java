@@ -11,6 +11,9 @@ import java.util.Optional;
 public class DailyTaskDaoImpl implements TaskDao<DailyTask> {
 
     private static final String FIND_ALL_SQL = "SELECT * FROM task.daily_task";
+    private static final DailyTaskDaoImpl INSTANCE = new DailyTaskDaoImpl();
+
+    private DailyTaskDaoImpl() {}
 
     @Override
     public List<DailyTask> findAll() {
@@ -56,5 +59,9 @@ public class DailyTaskDaoImpl implements TaskDao<DailyTask> {
     @Override
     public List<DailyTask> findAllByUserId(Integer userId) {
         return null;
+    }
+
+    public static DailyTaskDaoImpl getInstance() {
+        return INSTANCE;
     }
 }
