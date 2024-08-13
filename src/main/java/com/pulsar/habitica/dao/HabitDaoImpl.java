@@ -27,6 +27,7 @@ public class HabitDaoImpl implements TaskDao<Habit> {
             bad_series = ?,
             good_series = ?
             """;
+    private static final String DELETE_BY_ID_SQL = "DELETE FROM task.habit WHERE id = ?";
     private static final HabitDaoImpl INSTANCE = new HabitDaoImpl();
 
     private HabitDaoImpl() {}
@@ -94,7 +95,14 @@ public class HabitDaoImpl implements TaskDao<Habit> {
 
     @Override
     public boolean deleteById(Integer id) {
-        return false;
+        try (var connection = ConnectionManager.get();
+             var statement = connection.prepareStatement(DELETE_BY_ID_SQL)) {
+            statement.setInt(1, id);
+            int status = statement.executeUpdate();
+            return status == 1;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
