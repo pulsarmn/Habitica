@@ -111,7 +111,7 @@ public class RewardDaoImpl implements RewardDao {
 
     @Override
     public boolean delete(Reward entity) {
-        return false;
+        return deleteById(entity.getId());
     }
 
     @Override
