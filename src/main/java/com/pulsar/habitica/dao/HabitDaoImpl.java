@@ -8,6 +8,10 @@ import java.util.Optional;
 
 public class HabitDaoImpl implements TaskDao<Habit> {
 
+    private static final HabitDaoImpl INSTANCE = new HabitDaoImpl();
+
+    private HabitDaoImpl() {}
+
     @Override
     public List<Habit> findAll() {
         return null;
@@ -46,5 +50,9 @@ public class HabitDaoImpl implements TaskDao<Habit> {
     @Override
     public List<Habit> findAllByUserId(Integer userId) {
         return null;
+    }
+
+    public static HabitDaoImpl getInstance() {
+        return INSTANCE;
     }
 }
