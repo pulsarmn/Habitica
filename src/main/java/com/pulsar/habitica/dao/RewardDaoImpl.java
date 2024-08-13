@@ -28,6 +28,7 @@ public class RewardDaoImpl implements RewardDao {
             cost = ?
             WHERE id = ?
             """;
+    private static final String DELETE_BY_ID_SQL = "DELETE FROM task.reward WHERE id = ?";
     private static final RewardDaoImpl INSTANCE = new RewardDaoImpl();
 
     private RewardDaoImpl() {}
@@ -98,7 +99,14 @@ public class RewardDaoImpl implements RewardDao {
 
     @Override
     public boolean deleteById(Integer id) {
-        return false;
+        try (var connection = ConnectionManager.get();
+        var statement = connection.prepareStatement(DELETE_BY_ID_SQL)) {
+            statement.setInt(1, id);
+            int status = statement.executeUpdate();
+            return status == 1;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
