@@ -13,6 +13,7 @@ import java.util.Optional;
 public class HabitDaoImpl implements TaskDao<Habit> {
 
     private static final String FIND_ALL_SQL = "SELECT * FROM task.habit";
+    private static final String FIND_BY_ID_SQL = "SELECT * FROM task.habit WHERE id = ?";
     private static final HabitDaoImpl INSTANCE = new HabitDaoImpl();
 
     private HabitDaoImpl() {}
@@ -35,7 +36,18 @@ public class HabitDaoImpl implements TaskDao<Habit> {
 
     @Override
     public Optional<Habit> findById(Integer id) {
-        return Optional.empty();
+        try (var connection = ConnectionManager.get();
+        var statement = connection.prepareStatement(FIND_BY_ID_SQL)) {
+            statement.setInt(1, id);
+            var resultSet = statement.executeQuery();
+            Habit habit = null;
+            if (resultSet.next()) {
+                habit = buildHabit(resultSet);
+            }
+            return Optional.ofNullable(habit);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
