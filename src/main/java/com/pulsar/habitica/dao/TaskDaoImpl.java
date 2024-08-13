@@ -80,7 +80,7 @@ public class TaskDaoImpl implements TaskDao<Task> {
 
             var keys = statement.getGeneratedKeys();
             keys.next();
-            entity.setId(keys.getInt("id"));
+            entity.setId(keys.getInt(ID_COLUMN));
             return entity;
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -121,7 +121,7 @@ public class TaskDaoImpl implements TaskDao<Task> {
     public List<Task> findByHeading(String heading) {
         try (var connection = ConnectionManager.get();
         var statement = connection.prepareStatement(FIND_BY_HEADING_SQL)) {
-            statement.setString(1, "%s".formatted(heading.toLowerCase()));
+            statement.setString(1, heading.toLowerCase());
 
             return getTaskList(statement);
         } catch (SQLException e) {
@@ -153,13 +153,13 @@ public class TaskDaoImpl implements TaskDao<Task> {
 
     private Task buildTask(ResultSet resultSet) throws SQLException {
         return Task.builder()
-                .id(resultSet.getInt("id"))
-                .heading(resultSet.getString("heading"))
-                .description(resultSet.getString("description"))
-                .complexity(Complexity.valueOf(resultSet.getString("complexity")))
-                .deadline(resultSet.getDate("deadline").toLocalDate())
-                .status(resultSet.getBoolean("status"))
-                .userId(resultSet.getInt("user_id"))
+                .id(resultSet.getInt(ID_COLUMN))
+                .heading(resultSet.getString(HEADING_COLUMN))
+                .description(resultSet.getString(DESCRIPTION_COLUMN))
+                .complexity(Complexity.valueOf(resultSet.getString(COMPLEXITY_COLUMN)))
+                .deadline(resultSet.getDate(DEADLINE_COLUMN).toLocalDate())
+                .status(resultSet.getBoolean(STATUS_COLUMN))
+                .userId(resultSet.getInt(USER_ID_COLUMN))
                 .build();
     }
 

@@ -125,7 +125,7 @@ public class DailyTaskDaoImpl implements TaskDao<DailyTask> {
     public List<DailyTask> findByHeading(String heading) {
         try (var connection = ConnectionManager.get();
         var statement = connection.prepareStatement(FIND_BY_HEADING)) {
-            statement.setString(1, heading);
+            statement.setString(1, heading.toLowerCase());
 
             return getDailyTaskList(statement);
         } catch (SQLException e) {
