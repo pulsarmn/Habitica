@@ -23,6 +23,15 @@ public class DailyTaskDaoImpl implements TaskDao<DailyTask> {
             INSERT INTO task.daily_task (heading, description, complexity, deadline, status, series, user_id)
             VALUES (?, ?, ?, ?, ?, ?, ?)
             """;
+    private static final String UPDATE_SQL = """
+            UPDATE task.daily_task
+            SET heading = ?,
+            description = ?,
+            complexity = ?,
+            deadline = ?,
+            status = ?,
+            series = ?
+            """;
     private static final DailyTaskDaoImpl INSTANCE = new DailyTaskDaoImpl();
 
     private DailyTaskDaoImpl() {}
@@ -78,7 +87,15 @@ public class DailyTaskDaoImpl implements TaskDao<DailyTask> {
 
     @Override
     public DailyTask update(DailyTask entity) {
-        return null;
+        try (var connection = ConnectionManager.get();
+        var statement = connection.prepareStatement(UPDATE_SQL)) {
+            setDailyTaskParameters(statement, entity);
+            statement.executeUpdate();
+
+            return entity;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
