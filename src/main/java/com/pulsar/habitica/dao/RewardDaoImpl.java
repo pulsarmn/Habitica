@@ -21,6 +21,13 @@ public class RewardDaoImpl implements RewardDao {
             INSERT INTO task.reward (heading, description, cost, user_id)
             VALUES (?, ?, ?, ?)
             """;
+    private static final String UPDATE_SQL = """
+            UPDATE task.reward
+            SET heading = ?,
+            description = ?,
+            cost = ?
+            WHERE id = ?
+            """;
     private static final RewardDaoImpl INSTANCE = new RewardDaoImpl();
 
     private RewardDaoImpl() {}
@@ -63,6 +70,7 @@ public class RewardDaoImpl implements RewardDao {
         try (var connection = ConnectionManager.get();
         var statement = connection.prepareStatement(SAVE_SQL, RETURN_GENERATED_KEYS)) {
             setRewardParameters(statement, entity);
+            statement.setInt(4, entity.getUserId());
             statement.executeUpdate();
 
             var keys = statement.getGeneratedKeys();
@@ -76,7 +84,16 @@ public class RewardDaoImpl implements RewardDao {
 
     @Override
     public Reward update(Reward entity) {
-        return null;
+        try (var connection = ConnectionManager.get();
+        var statement = connection.prepareStatement(UPDATE_SQL)) {
+            setRewardParameters(statement, entity);
+            statement.setInt(4, entity.getId());
+            statement.executeUpdate();
+
+            return entity;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -113,7 +130,6 @@ public class RewardDaoImpl implements RewardDao {
         statement.setString(1, entity.getHeading());
         statement.setString(2, entity.getDescription());
         statement.setBigDecimal(3, entity.getCost());
-        statement.setInt(4, entity.getUserId());
     }
 
     public static RewardDaoImpl getInstance() {
