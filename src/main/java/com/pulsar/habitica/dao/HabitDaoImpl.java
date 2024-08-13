@@ -32,6 +32,7 @@ public class HabitDaoImpl implements TaskDao<Habit> {
             SELECT * FROM task.habit
             WHERE LOWER(heading) LIKE CONCAT('%', ?, '%')
             """;
+    private static final String FIND_BY_USER_ID = "SELECT * FROM task.habit WHERE user_id = ?";
     private static final HabitDaoImpl INSTANCE = new HabitDaoImpl();
 
     private HabitDaoImpl() {}
@@ -119,7 +120,7 @@ public class HabitDaoImpl implements TaskDao<Habit> {
         try (var connection = ConnectionManager.get();
              var statement = connection.prepareStatement(FIND_BY_HEADING)) {
             statement.setString(1, heading.toLowerCase());
-            
+
             var resultSet = statement.executeQuery();
             List<Habit> habits = new ArrayList<>();
             while (resultSet.next()) {
@@ -134,7 +135,20 @@ public class HabitDaoImpl implements TaskDao<Habit> {
 
     @Override
     public List<Habit> findAllByUserId(Integer userId) {
-        return null;
+        try (var connection = ConnectionManager.get();
+             var statement =  connection.prepareStatement(FIND_BY_USER_ID)) {
+            statement.setInt(1, userId);
+
+            var resultSet = statement.executeQuery();
+            List<Habit> habits = new ArrayList<>();
+            while (resultSet.next()) {
+                Habit habit = buildHabit(resultSet);
+                habits.add(habit);
+            }
+            return habits;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public Habit buildHabit(ResultSet resultSet) throws SQLException {
