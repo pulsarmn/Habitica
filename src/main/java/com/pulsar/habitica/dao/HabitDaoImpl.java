@@ -4,16 +4,21 @@ import com.pulsar.habitica.entity.Complexity;
 import com.pulsar.habitica.entity.Habit;
 import com.pulsar.habitica.util.ConnectionManager;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import static java.sql.Statement.RETURN_GENERATED_KEYS;
 
 public class HabitDaoImpl implements TaskDao<Habit> {
 
     private static final String FIND_ALL_SQL = "SELECT * FROM task.habit";
     private static final String FIND_BY_ID_SQL = "SELECT * FROM task.habit WHERE id = ?";
+    private static final String SAVE_SQL = """
+            INSERT INTO task.habit (heading, description, complexity, bad_series, good_series, user_id)
+            VALUES (?, ?, ?, ?, ?, ?)
+            """;
     private static final HabitDaoImpl INSTANCE = new HabitDaoImpl();
 
     private HabitDaoImpl() {}
@@ -52,7 +57,18 @@ public class HabitDaoImpl implements TaskDao<Habit> {
 
     @Override
     public Habit save(Habit entity) {
-        return null;
+        try (var connection = ConnectionManager.get();
+        var statement = connection.prepareStatement(SAVE_SQL, RETURN_GENERATED_KEYS)) {
+            setHabitParameters(statement, entity);
+            statement.executeUpdate();
+
+            var keys = statement.getGeneratedKeys();
+            keys.next();
+            entity.setId(keys.getInt("id"));
+            return entity;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -90,6 +106,15 @@ public class HabitDaoImpl implements TaskDao<Habit> {
                 .goodSeries(resultSet.getInt("good_series"))
                 .userId(resultSet.getInt("user_id"))
                 .build();
+    }
+
+    public void setHabitParameters(PreparedStatement statement, Habit entity) throws SQLException {
+        statement.setString(1, entity.getHeading());
+        statement.setString(2, entity.getDescription());
+        statement.setString(3, entity.getComplexity().name());
+        statement.setInt(4, entity.getBadSeries());
+        statement.setInt(5, entity.getGoodSeries());
+        statement.setInt(6, entity.getUserId());
     }
 
     public static HabitDaoImpl getInstance() {
