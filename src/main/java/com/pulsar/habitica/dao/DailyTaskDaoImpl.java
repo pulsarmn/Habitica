@@ -33,6 +33,10 @@ public class DailyTaskDaoImpl implements TaskDao<DailyTask> {
             series = ?
             """;
     private static final String DELETE_BY_ID_SQL = "DELETE FROM task.daily_task WHERE id = ?";
+    private static final String FIND_BY_HEADING = """
+            SELECT * FROM task.daily_task
+            WHERE LOWER(heading) LIKE CONCAT('%', ?, '%')
+            """;
     private static final DailyTaskDaoImpl INSTANCE = new DailyTaskDaoImpl();
 
     private DailyTaskDaoImpl() {}
@@ -118,7 +122,19 @@ public class DailyTaskDaoImpl implements TaskDao<DailyTask> {
 
     @Override
     public List<DailyTask> findByHeading(String heading) {
-        return null;
+        try (var connection = ConnectionManager.get();
+        var statement = connection.prepareStatement(FIND_BY_HEADING)) {
+            statement.setString(1, heading);
+            var resultSet = statement.executeQuery();
+            List<DailyTask> tasks = new ArrayList<>();
+            while (resultSet.next()) {
+                DailyTask task = buildDailyTask(resultSet);
+                tasks.add(task);
+            }
+            return tasks;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
