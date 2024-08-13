@@ -19,6 +19,14 @@ public class HabitDaoImpl implements TaskDao<Habit> {
             INSERT INTO task.habit (heading, description, complexity, bad_series, good_series, user_id)
             VALUES (?, ?, ?, ?, ?, ?)
             """;
+    private static final String UPDATE_SQL = """
+            UPDATE task.habit
+            SET heading = ?,
+            description = ?,
+            complexity = ?,
+            bad_series = ?,
+            good_series = ?
+            """;
     private static final HabitDaoImpl INSTANCE = new HabitDaoImpl();
 
     private HabitDaoImpl() {}
@@ -73,7 +81,15 @@ public class HabitDaoImpl implements TaskDao<Habit> {
 
     @Override
     public Habit update(Habit entity) {
-        return null;
+        try (var connection = ConnectionManager.get();
+             var statement = connection.prepareStatement(UPDATE_SQL)) {
+            setHabitParameters(statement, entity);
+            statement.executeUpdate();
+
+            return entity;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
