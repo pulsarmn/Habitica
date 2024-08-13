@@ -14,6 +14,7 @@ import java.util.Optional;
 public class DailyTaskDaoImpl implements TaskDao<DailyTask> {
 
     private static final String FIND_ALL_SQL = "SELECT * FROM task.daily_task";
+    private static final String FIND_BY_ID_SQL = "SELECT * FROM task.daily_task WHERE id = ?";
     private static final DailyTaskDaoImpl INSTANCE = new DailyTaskDaoImpl();
 
     private DailyTaskDaoImpl() {}
@@ -36,7 +37,18 @@ public class DailyTaskDaoImpl implements TaskDao<DailyTask> {
 
     @Override
     public Optional<DailyTask> findById(Integer id) {
-        return Optional.empty();
+        try (var connection = ConnectionManager.get();
+        var statement = connection.prepareStatement(FIND_BY_ID_SQL)) {
+            statement.setInt(1, id);
+            var resultSet = statement.executeQuery();
+            DailyTask task = null;
+            if (resultSet.next()) {
+                task = buildDailyTask(resultSet);
+            }
+            return Optional.ofNullable(task);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
