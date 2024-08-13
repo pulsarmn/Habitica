@@ -113,7 +113,7 @@ public class DailyTaskDaoImpl implements TaskDao<DailyTask> {
 
     @Override
     public boolean delete(DailyTask entity) {
-        return false;
+        return deleteById(entity.getId());
     }
 
     @Override
