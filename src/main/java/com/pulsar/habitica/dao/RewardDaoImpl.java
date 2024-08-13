@@ -6,34 +6,37 @@ import com.pulsar.habitica.util.ConnectionManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static com.pulsar.habitica.dao.RewardTable.*;
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
 
 public class RewardDaoImpl implements RewardDao {
 
-    private static final String FIND_ALL_SQL = "SELECT * FROM task.reward";
-    private static final String FIND_BY_ID_SQL = "SELECT * FROM task.reward WHERE id = ?";
-    private static final String SAVE_SQL = """
-            INSERT INTO task.reward (heading, description, cost, user_id)
-            VALUES (?, ?, ?, ?)
-            """;
-    private static final String UPDATE_SQL = """
-            UPDATE task.reward
-            SET heading = ?,
-            description = ?,
-            cost = ?
-            WHERE id = ?
-            """;
-    private static final String DELETE_BY_ID_SQL = "DELETE FROM task.reward WHERE id = ?";
-    private static final String FIND_BY_HEADING_SQL = """
-            SELECT * FROM task.reward
-            WHERE LOWER(heading) LIKE CONCAT('%', ?, '%')
-            """;
-    private static final String FIND_ALL_BY_USER_ID_SQL = "SELECT * FROM task.reward WHERE user_id = ?";
+    private static final String FIND_ALL_SQL = "SELECT * FROM %s"
+            .formatted(FULL_TABLE_NAME);
+    private static final String FIND_BY_ID_SQL = "SELECT * FROM %s WHERE %s = ?"
+            .formatted(FULL_TABLE_NAME, ID_COLUMN);
+    private static final String SAVE_SQL = "INSERT INTO %s (%s, %s, %s, %s) VALUES (?, ?, ?, ?)"
+            .formatted(FULL_TABLE_NAME,
+                    HEADING_COLUMN,
+                    DESCRIPTION_COLUMN,
+                    COST_COLUMN,
+                    USER_ID_COLUMN);
+    private static final String UPDATE_SQL = "UPDATE %s SET %s = ?, %s = ?, %s = ? WHERE %s = ?"
+            .formatted(FULL_TABLE_NAME,
+                    HEADING_COLUMN,
+                    DESCRIPTION_COLUMN,
+                    COST_COLUMN,
+                    ID_COLUMN);
+    private static final String DELETE_BY_ID_SQL = "DELETE FROM %s WHERE %s = ?"
+            .formatted(FULL_TABLE_NAME, ID_COLUMN);
+    private static final String FIND_BY_HEADING_SQL = "SELECT * FROM %s WHERE LOWER(%s) LIKE CONCAT('%', ?, '%')"
+            .replaceFirst("%s", FULL_TABLE_NAME).replaceFirst("%s", HEADING_COLUMN);
+    private static final String FIND_ALL_BY_USER_ID_SQL = "SELECT * FROM %s WHERE %s = ?"
+            .formatted(FULL_TABLE_NAME, USER_ID_COLUMN);
     private static final RewardDaoImpl INSTANCE = new RewardDaoImpl();
 
     private RewardDaoImpl() {}
@@ -42,13 +45,7 @@ public class RewardDaoImpl implements RewardDao {
     public List<Reward> findAll() {
         try (var connection = ConnectionManager.get();
              var statement = connection.prepareStatement(FIND_ALL_SQL)) {
-            var resultSet = statement.executeQuery();
-            List<Reward> rewards = new ArrayList<>();
-            while (resultSet.next()) {
-                Reward reward = buildReward(resultSet);
-                rewards.add(reward);
-            }
-            return rewards;
+            return getRewardsList(statement);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -81,7 +78,7 @@ public class RewardDaoImpl implements RewardDao {
 
             var keys = statement.getGeneratedKeys();
             keys.next();
-            entity.setId(keys.getInt("id"));
+            entity.setId(keys.getInt(ID_COLUMN));
             return entity;
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -124,13 +121,7 @@ public class RewardDaoImpl implements RewardDao {
         try (var connection = ConnectionManager.get();
         var statement = connection.prepareStatement(FIND_BY_HEADING_SQL)) {
             statement.setString(1, heading.toLowerCase());
-            var resultSet = statement.executeQuery();
-            List<Reward> rewards = new ArrayList<>();
-            while (resultSet.next()) {
-                Reward reward = buildReward(resultSet);
-                rewards.add(reward);
-            }
-            return rewards;
+            return getRewardsList(statement);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -141,25 +132,29 @@ public class RewardDaoImpl implements RewardDao {
         try (var connection = ConnectionManager.get();
         var statement = connection.prepareStatement(FIND_ALL_BY_USER_ID_SQL)) {
             statement.setInt(1, userId);
-            var resultSet = statement.executeQuery();
-            List<Reward> rewards = new ArrayList<>();
-            while (resultSet.next()) {
-                Reward reward = buildReward(resultSet);
-                rewards.add(reward);
-            }
-            return rewards;
+            return getRewardsList(statement);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
+    private List<Reward> getRewardsList(PreparedStatement statement) throws SQLException {
+        var resultSet = statement.executeQuery();
+        List<Reward> rewards = new ArrayList<>();
+        while (resultSet.next()) {
+            Reward reward = buildReward(resultSet);
+            rewards.add(reward);
+        }
+        return rewards;
+    }
+
     public Reward buildReward(ResultSet resultSet) throws SQLException {
         return Reward.builder()
-                .id(resultSet.getInt("id"))
-                .heading(resultSet.getString("heading"))
-                .description(resultSet.getString("description"))
-                .cost(resultSet.getBigDecimal("cost"))
-                .userId(resultSet.getInt("user_id"))
+                .id(resultSet.getInt(ID_COLUMN))
+                .heading(resultSet.getString(HEADING_COLUMN))
+                .description(resultSet.getString(DESCRIPTION_COLUMN))
+                .cost(resultSet.getBigDecimal(COST_COLUMN))
+                .userId(resultSet.getInt(USER_ID_COLUMN))
                 .build();
     }
 
