@@ -29,6 +29,10 @@ public class RewardDaoImpl implements RewardDao {
             WHERE id = ?
             """;
     private static final String DELETE_BY_ID_SQL = "DELETE FROM task.reward WHERE id = ?";
+    private static final String FIND_BY_HEADING_SQL = """
+            SELECT * FROM task.reward
+            WHERE LOWER(heading) LIKE CONCAT('%', ?, '%')
+            """;
     private static final RewardDaoImpl INSTANCE = new RewardDaoImpl();
 
     private RewardDaoImpl() {}
@@ -116,7 +120,19 @@ public class RewardDaoImpl implements RewardDao {
 
     @Override
     public List<Reward> findByHeading(String heading) {
-        return null;
+        try (var connection = ConnectionManager.get();
+        var statement = connection.prepareStatement(FIND_BY_HEADING_SQL)) {
+            statement.setString(1, heading.toLowerCase());
+            var resultSet = statement.executeQuery();
+            List<Reward> rewards = new ArrayList<>();
+            while (resultSet.next()) {
+                Reward reward = buildReward(resultSet);
+                rewards.add(reward);
+            }
+            return rewards;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
