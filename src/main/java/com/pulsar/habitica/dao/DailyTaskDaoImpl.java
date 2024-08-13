@@ -37,6 +37,7 @@ public class DailyTaskDaoImpl implements TaskDao<DailyTask> {
             SELECT * FROM task.daily_task
             WHERE LOWER(heading) LIKE CONCAT('%', ?, '%')
             """;
+    private static final String FIND_BY_USER_ID = "SELECT * FROM task.daily_task WHERE user_id = ?";
     private static final DailyTaskDaoImpl INSTANCE = new DailyTaskDaoImpl();
 
     private DailyTaskDaoImpl() {}
@@ -45,13 +46,7 @@ public class DailyTaskDaoImpl implements TaskDao<DailyTask> {
     public List<DailyTask> findAll() {
         try (var connection = ConnectionManager.get();
              var statement = connection.prepareStatement(FIND_ALL_SQL)) {
-            var resultSet = statement.executeQuery();
-            List<DailyTask> tasks = new ArrayList<>();
-            while (resultSet.next()) {
-                DailyTask task = buildDailyTask(resultSet);
-                tasks.add(task);
-            }
-            return tasks;
+            return getDailyTaskList(statement);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -125,13 +120,8 @@ public class DailyTaskDaoImpl implements TaskDao<DailyTask> {
         try (var connection = ConnectionManager.get();
         var statement = connection.prepareStatement(FIND_BY_HEADING)) {
             statement.setString(1, heading);
-            var resultSet = statement.executeQuery();
-            List<DailyTask> tasks = new ArrayList<>();
-            while (resultSet.next()) {
-                DailyTask task = buildDailyTask(resultSet);
-                tasks.add(task);
-            }
-            return tasks;
+
+            return getDailyTaskList(statement);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -139,7 +129,24 @@ public class DailyTaskDaoImpl implements TaskDao<DailyTask> {
 
     @Override
     public List<DailyTask> findAllByUserId(Integer userId) {
-        return null;
+        try (var connection = ConnectionManager.get();
+        var statement =  connection.prepareStatement(FIND_BY_USER_ID)) {
+            statement.setInt(1, userId);
+
+            return getDailyTaskList(statement);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private List<DailyTask> getDailyTaskList(PreparedStatement statement) throws SQLException {
+        var resultSet = statement.executeQuery();
+        List<DailyTask> tasks = new ArrayList<>();
+        while (resultSet.next()) {
+            DailyTask task = buildDailyTask(resultSet);
+            tasks.add(task);
+        }
+        return tasks;
     }
 
     public DailyTask buildDailyTask(ResultSet resultSet) throws SQLException {
