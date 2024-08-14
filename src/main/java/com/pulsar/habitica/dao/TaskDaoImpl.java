@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static com.pulsar.habitica.dao.TaskTable.*;
+import static com.pulsar.habitica.dao.table.TaskTable.*;
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
 
 public class TaskDaoImpl implements TaskDao<Task> {
@@ -27,13 +27,14 @@ public class TaskDaoImpl implements TaskDao<Task> {
                     DEADLINE_COLUMN,
                     STATUS_COLUMN,
                     USER_ID_COLUMN);
-    private static final String UPDATE_SQL = "UPDATE %s SET %s = ?, %s = ?, %s = ?, %s = ?, %s = ?"
+    private static final String UPDATE_SQL = "UPDATE %s SET %s = ?, %s = ?, %s = ?, %s = ?, %s = ? WHERE %s = ?"
             .formatted(FULL_TABLE_NAME,
                     HEADING_COLUMN,
                     DESCRIPTION_COLUMN,
                     COMPLEXITY_COLUMN,
                     DEADLINE_COLUMN,
-                    STATUS_COLUMN);
+                    STATUS_COLUMN,
+                    ID_COLUMN);
     private static final String DELETE_BY_ID_SQL = "DELETE FROM %s WHERE %s = ?"
             .formatted(FULL_TABLE_NAME, ID_COLUMN);
     private static final String FIND_BY_HEADING_SQL = "SELECT * FROM %s WHERE LOWER(%s) LIKE CONCAT('%', ?, '%')"
@@ -92,6 +93,7 @@ public class TaskDaoImpl implements TaskDao<Task> {
         try (var connection = ConnectionManager.get();
         var statement = connection.prepareStatement(UPDATE_SQL)) {
             setTaskParameters(statement, entity);
+            statement.setInt(6, entity.getId());
             statement.executeUpdate();
 
             return entity;

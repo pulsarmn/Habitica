@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static com.pulsar.habitica.dao.DailyTaskTable.*;
+import static com.pulsar.habitica.dao.table.DailyTaskTable.*;
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
 
 public class DailyTaskDaoImpl implements TaskDao<DailyTask> {
@@ -30,19 +30,20 @@ public class DailyTaskDaoImpl implements TaskDao<DailyTask> {
                     STATUS_COLUMN,
                     SERIES_COLUMN,
                     USER_ID_COLUMN);
-    private static final String UPDATE_SQL = "UPDATE %s SET %s = ?, %s = ?, %s = ?, %s = ?, %s = ?, %s = ?"
+    private static final String UPDATE_SQL = "UPDATE %s SET %s = ?, %s = ?, %s = ?, %s = ?, %s = ?, %s = ? WHERE %s = ?"
             .formatted(FULL_TABLE_NAME,
                     HEADING_COLUMN,
                     DESCRIPTION_COLUMN,
                     COMPLEXITY_COLUMN,
                     DEADLINE_COLUMN,
                     STATUS_COLUMN,
-                    SERIES_COLUMN);
+                    SERIES_COLUMN,
+                    ID_COLUMN);
     private static final String DELETE_BY_ID_SQL = "DELETE FROM %s WHERE %s = ?".
             formatted(FULL_TABLE_NAME, ID_COLUMN);
-    private static final String FIND_BY_HEADING = "SELECT * FROM %s WHERE LOWER(%s) LIKE CONCAT('%', ?, '%')"
+    private static final String FIND_BY_HEADING_SQL = "SELECT * FROM %s WHERE LOWER(%s) LIKE CONCAT('%', ?, '%')"
             .replaceFirst("%s", FULL_TABLE_NAME).replaceFirst("%s", HEADING_COLUMN);
-    private static final String FIND_BY_USER_ID = "SELECT * FROM %s WHERE %s = ?"
+    private static final String FIND_BY_USER_ID_SQL = "SELECT * FROM %s WHERE %s = ?"
             .formatted(FULL_TABLE_NAME, USER_ID_COLUMN);
     private static final DailyTaskDaoImpl INSTANCE = new DailyTaskDaoImpl();
 
@@ -96,6 +97,7 @@ public class DailyTaskDaoImpl implements TaskDao<DailyTask> {
         try (var connection = ConnectionManager.get();
         var statement = connection.prepareStatement(UPDATE_SQL)) {
             setDailyTaskParameters(statement, entity);
+            statement.setInt(7, entity.getId());
             statement.executeUpdate();
 
             return entity;
@@ -124,7 +126,7 @@ public class DailyTaskDaoImpl implements TaskDao<DailyTask> {
     @Override
     public List<DailyTask> findByHeading(String heading) {
         try (var connection = ConnectionManager.get();
-        var statement = connection.prepareStatement(FIND_BY_HEADING)) {
+        var statement = connection.prepareStatement(FIND_BY_HEADING_SQL)) {
             statement.setString(1, heading.toLowerCase());
 
             return getDailyTaskList(statement);
@@ -136,7 +138,7 @@ public class DailyTaskDaoImpl implements TaskDao<DailyTask> {
     @Override
     public List<DailyTask> findAllByUserId(Integer userId) {
         try (var connection = ConnectionManager.get();
-        var statement =  connection.prepareStatement(FIND_BY_USER_ID)) {
+        var statement =  connection.prepareStatement(FIND_BY_USER_ID_SQL)) {
             statement.setInt(1, userId);
 
             return getDailyTaskList(statement);

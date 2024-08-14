@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static com.pulsar.habitica.dao.UserTable.*;
+import static com.pulsar.habitica.dao.table.UserTable.*;
 import static java.sql.Statement.*;
 
 public class UserDaoImpl implements UserDao {

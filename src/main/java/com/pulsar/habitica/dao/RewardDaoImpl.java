@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static com.pulsar.habitica.dao.RewardTable.*;
+import static com.pulsar.habitica.dao.table.RewardTable.*;
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
 
 public class RewardDaoImpl implements RewardDao {
@@ -148,7 +148,7 @@ public class RewardDaoImpl implements RewardDao {
         return rewards;
     }
 
-    public Reward buildReward(ResultSet resultSet) throws SQLException {
+    private Reward buildReward(ResultSet resultSet) throws SQLException {
         return Reward.builder()
                 .id(resultSet.getInt(ID_COLUMN))
                 .heading(resultSet.getString(HEADING_COLUMN))
@@ -158,7 +158,7 @@ public class RewardDaoImpl implements RewardDao {
                 .build();
     }
 
-    public void setRewardParameters(PreparedStatement statement, Reward entity) throws SQLException {
+    private void setRewardParameters(PreparedStatement statement, Reward entity) throws SQLException {
         statement.setString(1, entity.getHeading());
         statement.setString(2, entity.getDescription());
         statement.setBigDecimal(3, entity.getCost());
