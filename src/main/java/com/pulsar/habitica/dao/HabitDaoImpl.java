@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static com.pulsar.habitica.dao.HabitTable.*;
+import static com.pulsar.habitica.dao.table.HabitTable.*;
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
 
 public class HabitDaoImpl implements TaskDao<Habit> {

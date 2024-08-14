@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static com.pulsar.habitica.dao.DailyTaskTable.*;
+import static com.pulsar.habitica.dao.table.DailyTaskTable.*;
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
 
 public class DailyTaskDaoImpl implements TaskDao<DailyTask> {

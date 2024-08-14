@@ -1,4 +1,4 @@
-package com.pulsar.habitica.dao;
+package com.pulsar.habitica.dao.table;
 
 public final class UserTable {
 

@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static com.pulsar.habitica.dao.TaskTable.*;
+import static com.pulsar.habitica.dao.table.TaskTable.*;
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
 
 public class TaskDaoImpl implements TaskDao<Task> {

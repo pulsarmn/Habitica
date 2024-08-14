@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static com.pulsar.habitica.dao.RewardTable.*;
+import static com.pulsar.habitica.dao.table.RewardTable.*;
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
 
 public class RewardDaoImpl implements RewardDao {
