@@ -1,4 +1,4 @@
-package com.pulsar.habitica.entity;
+package com.pulsar.habitica.entity.user;
 
 
 import lombok.Builder;

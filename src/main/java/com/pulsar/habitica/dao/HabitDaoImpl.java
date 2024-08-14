@@ -1,7 +1,7 @@
 package com.pulsar.habitica.dao;
 
-import com.pulsar.habitica.entity.Complexity;
-import com.pulsar.habitica.entity.Habit;
+import com.pulsar.habitica.entity.task.Complexity;
+import com.pulsar.habitica.entity.task.Habit;
 import com.pulsar.habitica.util.ConnectionManager;
 
 import java.sql.*;
