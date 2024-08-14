@@ -49,13 +49,7 @@ public class HabitDaoImpl implements TaskDao<Habit> {
     public List<Habit> findAll() {
         try (var connection = ConnectionManager.get();
              var statement = connection.prepareStatement(FIND_ALL_SQL)) {
-            var resultSet = statement.executeQuery();
-            List<Habit> habits = new ArrayList<>();
-            while (resultSet.next()) {
-                Habit habit = buildHabit(resultSet);
-                habits.add(habit);
-            }
-            return habits;
+            return getHabitsList(statement);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -131,13 +125,7 @@ public class HabitDaoImpl implements TaskDao<Habit> {
              var statement = connection.prepareStatement(FIND_BY_HEADING_SQL)) {
             statement.setString(1, heading.toLowerCase());
 
-            var resultSet = statement.executeQuery();
-            List<Habit> habits = new ArrayList<>();
-            while (resultSet.next()) {
-                Habit habit = buildHabit(resultSet);
-                habits.add(habit);
-            }
-            return habits;
+            return getHabitsList(statement);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -149,31 +137,35 @@ public class HabitDaoImpl implements TaskDao<Habit> {
              var statement = connection.prepareStatement(FIND_BY_USER_ID_SQL)) {
             statement.setInt(1, userId);
 
-            var resultSet = statement.executeQuery();
-            List<Habit> habits = new ArrayList<>();
-            while (resultSet.next()) {
-                Habit habit = buildHabit(resultSet);
-                habits.add(habit);
-            }
-            return habits;
+            return getHabitsList(statement);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public Habit buildHabit(ResultSet resultSet) throws SQLException {
+    private List<Habit> getHabitsList(PreparedStatement statement) throws SQLException {
+        var resultSet = statement.executeQuery();
+        List<Habit> habits = new ArrayList<>();
+        while (resultSet.next()) {
+            Habit habit = buildHabit(resultSet);
+            habits.add(habit);
+        }
+        return habits;
+    }
+
+    private Habit buildHabit(ResultSet resultSet) throws SQLException {
         return Habit.builder()
-                .id(resultSet.getInt("id"))
-                .heading(resultSet.getString("heading"))
-                .description(resultSet.getString("description"))
-                .complexity(Complexity.valueOf(resultSet.getString("complexity")))
-                .badSeries(resultSet.getInt("bad_series"))
-                .goodSeries(resultSet.getInt("good_series"))
-                .userId(resultSet.getInt("user_id"))
+                .id(resultSet.getInt(ID_COLUMN))
+                .heading(resultSet.getString(HEADING_COLUMN))
+                .description(resultSet.getString(DESCRIPTION_COLUMN))
+                .complexity(Complexity.valueOf(resultSet.getString(COMPLEXITY_COLUMN)))
+                .badSeries(resultSet.getInt(BAD_SERIES_COLUMN))
+                .goodSeries(resultSet.getInt(GOOD_SERIES_COLUMN))
+                .userId(resultSet.getInt(USER_ID_COLUMN))
                 .build();
     }
 
-    public void setHabitParameters(PreparedStatement statement, Habit entity) throws SQLException {
+    private void setHabitParameters(PreparedStatement statement, Habit entity) throws SQLException {
         statement.setString(1, entity.getHeading());
         statement.setString(2, entity.getDescription());
         statement.setString(3, entity.getComplexity().name());
