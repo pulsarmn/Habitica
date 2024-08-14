@@ -1,4 +1,4 @@
-package com.pulsar.habitica.dao;
+package com.pulsar.habitica.dao.user;
 
 import com.pulsar.habitica.entity.user.UserImage;
 

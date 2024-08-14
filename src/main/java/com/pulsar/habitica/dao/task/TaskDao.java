@@ -1,5 +1,6 @@
-package com.pulsar.habitica.dao;
+package com.pulsar.habitica.dao.task;
 
+import com.pulsar.habitica.dao.Dao;
 import com.pulsar.habitica.entity.task.TaskBase;
 
 import java.util.List;
