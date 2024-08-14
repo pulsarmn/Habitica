@@ -1,6 +1,6 @@
 package com.pulsar.habitica.dao;
 
-import com.pulsar.habitica.entity.User;
+import com.pulsar.habitica.entity.user.User;
 import com.pulsar.habitica.util.ConnectionManager;
 
 import java.sql.PreparedStatement;

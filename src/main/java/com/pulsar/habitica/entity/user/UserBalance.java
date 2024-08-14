@@ -1,4 +1,4 @@
-package com.pulsar.habitica.entity;
+package com.pulsar.habitica.entity.user;
 
 import java.math.BigDecimal;
 import java.util.Objects;
