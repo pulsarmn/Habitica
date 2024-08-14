@@ -1,39 +1,35 @@
-package com.pulsar.habitica.dao;
+package com.pulsar.habitica.dao.reward;
 
-
-import com.pulsar.habitica.entity.task.Complexity;
-import com.pulsar.habitica.entity.task.Task;
+import com.pulsar.habitica.entity.Reward;
 import com.pulsar.habitica.util.ConnectionManager;
 
-import java.sql.*;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static com.pulsar.habitica.dao.table.TaskTable.*;
+import static com.pulsar.habitica.dao.table.RewardTable.*;
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
 
-public class TaskDaoImpl implements TaskDao<Task> {
+public class RewardDaoImpl implements RewardDao {
 
     private static final String FIND_ALL_SQL = "SELECT * FROM %s"
             .formatted(FULL_TABLE_NAME);
     private static final String FIND_BY_ID_SQL = "SELECT * FROM %s WHERE %s = ?"
             .formatted(FULL_TABLE_NAME, ID_COLUMN);
-    private static final String SAVE_SQL = "INSERT INTO %s (%s, %s, %s, %s, %s, %s) VALUES (?, ?, ?, ?, ?, ?)"
-            .formatted(FULL_TABLE_NAME,
-                    HEADING_COLUMN,
-                    DEADLINE_COLUMN,
-                    COMPLEXITY_COLUMN,
-                    DEADLINE_COLUMN,
-                    STATUS_COLUMN,
-                    USER_ID_COLUMN);
-    private static final String UPDATE_SQL = "UPDATE %s SET %s = ?, %s = ?, %s = ?, %s = ?, %s = ? WHERE %s = ?"
+    private static final String SAVE_SQL = "INSERT INTO %s (%s, %s, %s, %s) VALUES (?, ?, ?, ?)"
             .formatted(FULL_TABLE_NAME,
                     HEADING_COLUMN,
                     DESCRIPTION_COLUMN,
-                    COMPLEXITY_COLUMN,
-                    DEADLINE_COLUMN,
-                    STATUS_COLUMN,
+                    COST_COLUMN,
+                    USER_ID_COLUMN);
+    private static final String UPDATE_SQL = "UPDATE %s SET %s = ?, %s = ?, %s = ? WHERE %s = ?"
+            .formatted(FULL_TABLE_NAME,
+                    HEADING_COLUMN,
+                    DESCRIPTION_COLUMN,
+                    COST_COLUMN,
                     ID_COLUMN);
     private static final String DELETE_BY_ID_SQL = "DELETE FROM %s WHERE %s = ?"
             .formatted(FULL_TABLE_NAME, ID_COLUMN);
@@ -41,42 +37,43 @@ public class TaskDaoImpl implements TaskDao<Task> {
             .replaceFirst("%s", FULL_TABLE_NAME).replaceFirst("%s", HEADING_COLUMN);
     private static final String FIND_ALL_BY_USER_ID_SQL = "SELECT * FROM %s WHERE %s = ?"
             .formatted(FULL_TABLE_NAME, USER_ID_COLUMN);
-    private static final TaskDaoImpl INSTANCE = new TaskDaoImpl();
+    private static final RewardDaoImpl INSTANCE = new RewardDaoImpl();
 
-    private TaskDaoImpl() {}
+    private RewardDaoImpl() {}
 
     @Override
-    public List<Task> findAll() {
+    public List<Reward> findAll() {
         try (var connection = ConnectionManager.get();
-        var statement = connection.prepareStatement(FIND_ALL_SQL)) {
-            return getTaskList(statement);
+             var statement = connection.prepareStatement(FIND_ALL_SQL)) {
+            return getRewardsList(statement);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
     @Override
-    public Optional<Task> findById(Integer id) {
+    public Optional<Reward> findById(Integer id) {
         try (var connection = ConnectionManager.get();
         var statement = connection.prepareStatement(FIND_BY_ID_SQL)) {
             statement.setInt(1, id);
+
             var resultSet = statement.executeQuery();
-            Task task = null;
+            Reward reward = null;
             if (resultSet.next()) {
-                task = buildTask(resultSet);
+                reward = buildReward(resultSet);
             }
-            return Optional.ofNullable(task);
+            return Optional.ofNullable(reward);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
     @Override
-    public Task save(Task entity) {
+    public Reward save(Reward entity) {
         try (var connection = ConnectionManager.get();
         var statement = connection.prepareStatement(SAVE_SQL, RETURN_GENERATED_KEYS)) {
-            setTaskParameters(statement, entity);
-            statement.setInt(6, entity.getUserId());
+            setRewardParameters(statement, entity);
+            statement.setInt(4, entity.getUserId());
             statement.executeUpdate();
 
             var keys = statement.getGeneratedKeys();
@@ -89,11 +86,11 @@ public class TaskDaoImpl implements TaskDao<Task> {
     }
 
     @Override
-    public Task update(Task entity) {
+    public Reward update(Reward entity) {
         try (var connection = ConnectionManager.get();
         var statement = connection.prepareStatement(UPDATE_SQL)) {
-            setTaskParameters(statement, entity);
-            statement.setInt(6, entity.getId());
+            setRewardParameters(statement, entity);
+            statement.setInt(4, entity.getId());
             statement.executeUpdate();
 
             return entity;
@@ -115,65 +112,59 @@ public class TaskDaoImpl implements TaskDao<Task> {
     }
 
     @Override
-    public boolean delete(Task entity) {
+    public boolean delete(Reward entity) {
         return deleteById(entity.getId());
     }
 
     @Override
-    public List<Task> findByHeading(String heading) {
+    public List<Reward> findByHeading(String heading) {
         try (var connection = ConnectionManager.get();
         var statement = connection.prepareStatement(FIND_BY_HEADING_SQL)) {
             statement.setString(1, heading.toLowerCase());
-
-            return getTaskList(statement);
+            return getRewardsList(statement);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
     @Override
-    public List<Task> findAllByUserId(Integer userId) {
+    public List<Reward> findAllByUserId(Integer userId) {
         try (var connection = ConnectionManager.get();
         var statement = connection.prepareStatement(FIND_ALL_BY_USER_ID_SQL)) {
             statement.setInt(1, userId);
-
-            return getTaskList(statement);
+            return getRewardsList(statement);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private List<Task> getTaskList(PreparedStatement statement) throws SQLException {
+    private List<Reward> getRewardsList(PreparedStatement statement) throws SQLException {
         var resultSet = statement.executeQuery();
-        List<Task> tasks = new ArrayList<>();
+        List<Reward> rewards = new ArrayList<>();
         while (resultSet.next()) {
-            Task task = buildTask(resultSet);
-            tasks.add(task);
+            Reward reward = buildReward(resultSet);
+            rewards.add(reward);
         }
-        return tasks;
+        return rewards;
     }
 
-    private Task buildTask(ResultSet resultSet) throws SQLException {
-        return Task.builder()
+    private Reward buildReward(ResultSet resultSet) throws SQLException {
+        return Reward.builder()
                 .id(resultSet.getInt(ID_COLUMN))
                 .heading(resultSet.getString(HEADING_COLUMN))
                 .description(resultSet.getString(DESCRIPTION_COLUMN))
-                .complexity(Complexity.valueOf(resultSet.getString(COMPLEXITY_COLUMN)))
-                .deadline(resultSet.getDate(DEADLINE_COLUMN).toLocalDate())
-                .status(resultSet.getBoolean(STATUS_COLUMN))
+                .cost(resultSet.getBigDecimal(COST_COLUMN))
                 .userId(resultSet.getInt(USER_ID_COLUMN))
                 .build();
     }
 
-    private void setTaskParameters(PreparedStatement statement, Task entity) throws SQLException {
+    private void setRewardParameters(PreparedStatement statement, Reward entity) throws SQLException {
         statement.setString(1, entity.getHeading());
         statement.setString(2, entity.getDescription());
-        statement.setString(3, entity.getComplexity().name());
-        statement.setDate(4, Date.valueOf(entity.getDeadline()));
-        statement.setBoolean(5, entity.getStatus());
+        statement.setBigDecimal(3, entity.getCost());
     }
 
-    public static TaskDaoImpl getInstance() {
+    public static RewardDaoImpl getInstance() {
         return INSTANCE;
     }
 }
