@@ -1,5 +1,6 @@
 package com.pulsar.habitica.dao.user;
 
+import com.pulsar.habitica.dao.table.UserStatisticsTable;
 import com.pulsar.habitica.entity.user.UserStatistics;
 import com.pulsar.habitica.util.ConnectionManager;
 
@@ -7,10 +8,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Optional;
 
+import static com.pulsar.habitica.dao.table.UserStatisticsTable.*;
+
 public class UserStatisticsDaoImpl implements UserStatisticsDao {
 
-    private static final String FIND_BY_USER_ID_SQL = "SELECT * FROM users.user_statistics WHERE user_id = ?";
-    private static final String UPDATE_SQL = "UPDATE users.user_statistics SET total_visits = ? WHERE user_id = ?";
+    private static final String FIND_BY_USER_ID_SQL = "SELECT * FROM %s WHERE %s = ?"
+            .formatted(FULL_TABLE_NAME, USER_ID);
+    private static final String UPDATE_SQL = "UPDATE %s SET %s = ? WHERE %s = ?"
+            .formatted(FULL_TABLE_NAME, TOTAL_VISITS, USER_ID);
     private volatile static UserStatisticsDaoImpl INSTANCE;
 
     private UserStatisticsDaoImpl() {}
@@ -45,8 +50,8 @@ public class UserStatisticsDaoImpl implements UserStatisticsDao {
 
     private UserStatistics buildUserStatistics(ResultSet resultSet) throws SQLException {
         return UserStatistics.builder()
-                .userId(resultSet.getInt("user_id"))
-                .totalVisits(resultSet.getInt("total_visits"))
+                .userId(resultSet.getInt(USER_ID))
+                .totalVisits(resultSet.getInt(TOTAL_VISITS))
                 .build();
     }
 
