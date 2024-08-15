@@ -8,7 +8,7 @@ public interface UserImageDao {
 
     List<UserImage> findAllByUserId(Integer id);
 
-    boolean save(UserImage userImage);
+    boolean save(UserImage entity);
 
-    boolean delete(UserImage userImage);
+    boolean delete(UserImage entity);
 }
