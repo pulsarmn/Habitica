@@ -1,18 +1,35 @@
 package com.pulsar.habitica.dao.user;
 
 import com.pulsar.habitica.entity.user.UserImage;
+import com.pulsar.habitica.util.ConnectionManager;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class UserImageDaoImpl implements UserImageDao {
 
+    private static final String FIND_ALL_BY_USER_ID_SQL = "SELECT * FROM users.user_images WHERE user_id = ?";
     private volatile static UserImageDaoImpl INSTANCE;
 
     private UserImageDaoImpl() {}
 
     @Override
     public List<UserImage> findAllByUserId(Integer id) {
-        return null;
+        try (var connection = ConnectionManager.get();
+        var statement = connection.prepareStatement(FIND_ALL_BY_USER_ID_SQL)) {
+            statement.setInt(1, id);
+            var resultSet = statement.executeQuery();
+            List<UserImage> images = new ArrayList<>();
+            while (resultSet.next()) {
+                UserImage userImage = buildUserImage(resultSet);
+                images.add(userImage);
+            }
+            return images;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -23,6 +40,13 @@ public class UserImageDaoImpl implements UserImageDao {
     @Override
     public boolean delete(UserImage userImage) {
         return false;
+    }
+
+    private UserImage buildUserImage(ResultSet resultSet) throws SQLException {
+        return UserImage.builder()
+                .userId(resultSet.getInt("user_id"))
+                .imageAddr(resultSet.getString("image_addr"))
+                .build();
     }
 
     public static UserImageDaoImpl getInstance() {
