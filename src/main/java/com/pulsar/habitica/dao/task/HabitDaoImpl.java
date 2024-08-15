@@ -40,7 +40,7 @@ public class HabitDaoImpl implements TaskDao<Habit> {
             .replaceFirst("%s", FULL_TABLE_NAME).replaceFirst("%s", HEADING_COLUMN);
     private static final String FIND_BY_USER_ID_SQL = "SELECT * FROM %s WHERE %s = ?"
             .formatted(FULL_TABLE_NAME, USER_ID_COLUMN);
-    private static final HabitDaoImpl INSTANCE = new HabitDaoImpl();
+    private static HabitDaoImpl INSTANCE;
 
     private HabitDaoImpl() {
     }
@@ -174,6 +174,13 @@ public class HabitDaoImpl implements TaskDao<Habit> {
     }
 
     public static HabitDaoImpl getInstance() {
+        if (INSTANCE == null) {
+            synchronized (HabitDaoImpl.class) {
+                if (INSTANCE == null) {
+                    INSTANCE = new HabitDaoImpl();
+                }
+            }
+        }
         return INSTANCE;
     }
 }

@@ -1,5 +1,6 @@
 package com.pulsar.habitica.dao.reward;
 
+import com.pulsar.habitica.dao.task.HabitDaoImpl;
 import com.pulsar.habitica.entity.Reward;
 import com.pulsar.habitica.util.ConnectionManager;
 
@@ -37,7 +38,7 @@ public class RewardDaoImpl implements RewardDao {
             .replaceFirst("%s", FULL_TABLE_NAME).replaceFirst("%s", HEADING_COLUMN);
     private static final String FIND_ALL_BY_USER_ID_SQL = "SELECT * FROM %s WHERE %s = ?"
             .formatted(FULL_TABLE_NAME, USER_ID_COLUMN);
-    private static final RewardDaoImpl INSTANCE = new RewardDaoImpl();
+    private static RewardDaoImpl INSTANCE;
 
     private RewardDaoImpl() {}
 
@@ -165,6 +166,13 @@ public class RewardDaoImpl implements RewardDao {
     }
 
     public static RewardDaoImpl getInstance() {
+        if (INSTANCE == null) {
+            synchronized (RewardDaoImpl.class) {
+                if (INSTANCE == null) {
+                    INSTANCE = new RewardDaoImpl();
+                }
+            }
+        }
         return INSTANCE;
     }
 }

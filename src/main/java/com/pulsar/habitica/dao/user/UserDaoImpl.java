@@ -29,7 +29,7 @@ public class UserDaoImpl implements UserDao {
             .formatted(FULL_TABLE_NAME, EMAIL_COLUMN);
     private static final String FIND_BY_NICKNAME_SQL = "SELECT * FROM %s WHERE %s = ?"
             .formatted(FULL_TABLE_NAME, NICKNAME_COLUMN);
-    private static final UserDaoImpl INSTANCE = new UserDaoImpl();
+    private static UserDaoImpl INSTANCE;
 
     private UserDaoImpl() {}
 
@@ -156,6 +156,13 @@ public class UserDaoImpl implements UserDao {
     }
 
     public static UserDaoImpl getInstance() {
+        if (INSTANCE == null) {
+            synchronized (UserDaoImpl.class) {
+                if (INSTANCE == null) {
+                    INSTANCE = new UserDaoImpl();
+                }
+            }
+        }
         return INSTANCE;
     }
 }
