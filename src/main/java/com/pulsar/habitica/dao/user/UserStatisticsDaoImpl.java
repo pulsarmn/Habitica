@@ -10,6 +10,7 @@ import java.util.Optional;
 public class UserStatisticsDaoImpl implements UserStatisticsDao {
 
     private static final String FIND_BY_USER_ID_SQL = "SELECT * FROM users.user_statistics WHERE user_id = ?";
+    private static final String UPDATE_SQL = "UPDATE users.user_statistics SET total_visits = ? WHERE user_id = ?";
     private volatile static UserStatisticsDaoImpl INSTANCE;
 
     private UserStatisticsDaoImpl() {}
@@ -32,7 +33,14 @@ public class UserStatisticsDaoImpl implements UserStatisticsDao {
 
     @Override
     public void update(UserStatistics userStatistics) {
-
+        try (var connection = ConnectionManager.get();
+        var statement = connection.prepareStatement(UPDATE_SQL)) {
+            statement.setInt(1, userStatistics.getTotalVisits());
+            statement.setInt(2, userStatistics.getUserId());
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private UserStatistics buildUserStatistics(ResultSet resultSet) throws SQLException {
