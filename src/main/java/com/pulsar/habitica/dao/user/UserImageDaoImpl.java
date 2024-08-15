@@ -1,5 +1,6 @@
 package com.pulsar.habitica.dao.user;
 
+import com.pulsar.habitica.dao.table.UserImageTable;
 import com.pulsar.habitica.entity.user.UserImage;
 import com.pulsar.habitica.util.ConnectionManager;
 
@@ -8,11 +9,16 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.pulsar.habitica.dao.table.UserImageTable.*;
+
 public class UserImageDaoImpl implements UserImageDao {
 
-    private static final String FIND_ALL_BY_USER_ID_SQL = "SELECT * FROM users.user_images WHERE user_id = ?";
-    private static final String SAVE_SQL = "INSERT INTO users.user_images VALUES (?, ?)";
-    private static final String DELETE_SQL = "DELETE FROM users.user_images WHERE user_id = ? AND image_addr = ?";
+    private static final String FIND_ALL_BY_USER_ID_SQL = "SELECT * FROM %s WHERE %s = ?"
+            .formatted(FULL_TABLE_NAME, USER_ID);
+    private static final String SAVE_SQL = "INSERT INTO %s VALUES (?, ?)"
+            .formatted(FULL_TABLE_NAME);
+    private static final String DELETE_SQL = "DELETE FROM %s WHERE %s = ? AND %s = ?"
+            .formatted(FULL_TABLE_NAME, USER_ID, IMAGE_ADDRESS);
     private volatile static UserImageDaoImpl INSTANCE;
 
     private UserImageDaoImpl() {}
@@ -61,8 +67,8 @@ public class UserImageDaoImpl implements UserImageDao {
 
     private UserImage buildUserImage(ResultSet resultSet) throws SQLException {
         return UserImage.builder()
-                .userId(resultSet.getInt("user_id"))
-                .imageAddr(resultSet.getString("image_addr"))
+                .userId(resultSet.getInt(USER_ID))
+                .imageAddr(resultSet.getString(IMAGE_ADDRESS))
                 .build();
     }
 
