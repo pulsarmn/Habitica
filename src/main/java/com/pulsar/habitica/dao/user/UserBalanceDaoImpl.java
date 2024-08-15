@@ -1,11 +1,15 @@
 package com.pulsar.habitica.dao.user;
 
 import com.pulsar.habitica.entity.user.UserBalance;
+import com.pulsar.habitica.util.ConnectionManager;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Optional;
 
 public class UserBalanceDaoImpl implements UserBalanceDao {
 
+    private static final String FIND_BY_USER_ID_SQL = "SELECT * FROM users.user_balances";
     private volatile static UserBalanceDaoImpl INSTANCE;
 
     private UserBalanceDaoImpl() {
@@ -13,12 +17,29 @@ public class UserBalanceDaoImpl implements UserBalanceDao {
 
     @Override
     public Optional<UserBalance> findByUserId(Integer id) {
-        return null;
+        try (var connection = ConnectionManager.get();
+             var statement = connection.prepareStatement(FIND_BY_USER_ID_SQL)) {
+            var resultSet = statement.executeQuery();
+            UserBalance userBalance = null;
+            if (resultSet.next()) {
+                userBalance = buildUserBalance(resultSet);
+            }
+            return Optional.ofNullable(userBalance);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public void update(UserBalance userBalance) {
 
+    }
+
+    private UserBalance buildUserBalance(ResultSet resultSet) throws SQLException {
+        return UserBalance.builder()
+                .userId(resultSet.getInt("user_id"))
+                .balance(resultSet.getBigDecimal("balance"))
+                .build();
     }
 
     public static UserBalanceDaoImpl getInstance() {
