@@ -45,7 +45,7 @@ public class DailyTaskDaoImpl implements TaskDao<DailyTask> {
             .replaceFirst("%s", FULL_TABLE_NAME).replaceFirst("%s", HEADING_COLUMN);
     private static final String FIND_BY_USER_ID_SQL = "SELECT * FROM %s WHERE %s = ?"
             .formatted(FULL_TABLE_NAME, USER_ID_COLUMN);
-    private static final DailyTaskDaoImpl INSTANCE = new DailyTaskDaoImpl();
+    private static DailyTaskDaoImpl INSTANCE;
 
     private DailyTaskDaoImpl() {}
 
@@ -180,6 +180,13 @@ public class DailyTaskDaoImpl implements TaskDao<DailyTask> {
     }
 
     public static DailyTaskDaoImpl getInstance() {
+        if (INSTANCE == null) {
+            synchronized (DailyTaskDaoImpl.class) {
+                if (INSTANCE == null) {
+                    INSTANCE = new DailyTaskDaoImpl();
+                }
+            }
+        }
         return INSTANCE;
     }
 }
