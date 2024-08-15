@@ -12,8 +12,8 @@ import static com.pulsar.habitica.dao.table.UserBalanceTable.*;
 
 public class UserBalanceDaoImpl implements UserBalanceDao {
 
-    private static final String FIND_BY_USER_ID_SQL = "SELECT * FROM %s"
-            .formatted(FULL_TABLE_NAME);
+    private static final String FIND_BY_USER_ID_SQL = "SELECT * FROM %s WHERE %s = ?"
+            .formatted(FULL_TABLE_NAME, USER_ID);
     private static final String UPDATE_SQL = "UPDATE %s SET %s = ? WHERE %s = ?"
             .formatted(FULL_TABLE_NAME, USER_BALANCE, USER_ID);
     private volatile static UserBalanceDaoImpl INSTANCE;
@@ -25,6 +25,7 @@ public class UserBalanceDaoImpl implements UserBalanceDao {
     public Optional<UserBalance> findByUserId(Integer id) {
         try (var connection = ConnectionManager.get();
              var statement = connection.prepareStatement(FIND_BY_USER_ID_SQL)) {
+            statement.setInt(1, id);
             var resultSet = statement.executeQuery();
             UserBalance userBalance = null;
             if (resultSet.next()) {
