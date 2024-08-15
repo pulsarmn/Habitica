@@ -11,6 +11,7 @@ import java.util.List;
 public class UserImageDaoImpl implements UserImageDao {
 
     private static final String FIND_ALL_BY_USER_ID_SQL = "SELECT * FROM users.user_images WHERE user_id = ?";
+    private static final String SAVE_SQL = "INSERT INTO users.user_images VALUES (?, ?)";
     private volatile static UserImageDaoImpl INSTANCE;
 
     private UserImageDaoImpl() {}
@@ -33,12 +34,20 @@ public class UserImageDaoImpl implements UserImageDao {
     }
 
     @Override
-    public boolean save(UserImage userImage) {
-        return false;
+    public boolean save(UserImage entity) {
+        try (var connection = ConnectionManager.get();
+        var statement = connection.prepareStatement(SAVE_SQL)) {
+            statement.setInt(1, entity.getUserId());
+            statement.setString(2, entity.getImageAddr());
+            int status = statement.executeUpdate();
+            return status > 0;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
-    public boolean delete(UserImage userImage) {
+    public boolean delete(UserImage entity) {
         return false;
     }
 
