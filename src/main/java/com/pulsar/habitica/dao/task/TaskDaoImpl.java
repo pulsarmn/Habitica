@@ -41,7 +41,7 @@ public class TaskDaoImpl implements TaskDao<Task> {
             .replaceFirst("%s", FULL_TABLE_NAME).replaceFirst("%s", HEADING_COLUMN);
     private static final String FIND_ALL_BY_USER_ID_SQL = "SELECT * FROM %s WHERE %s = ?"
             .formatted(FULL_TABLE_NAME, USER_ID_COLUMN);
-    private static final TaskDaoImpl INSTANCE = new TaskDaoImpl();
+    private static TaskDaoImpl INSTANCE;
 
     private TaskDaoImpl() {}
 
@@ -174,6 +174,13 @@ public class TaskDaoImpl implements TaskDao<Task> {
     }
 
     public static TaskDaoImpl getInstance() {
+        if (INSTANCE == null) {
+            synchronized (TaskDaoImpl.class) {
+                if (INSTANCE == null) {
+                    INSTANCE = new TaskDaoImpl();
+                }
+            }
+        }
         return INSTANCE;
     }
 }
