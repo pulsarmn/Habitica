@@ -10,6 +10,7 @@ import java.util.Optional;
 public class UserBalanceDaoImpl implements UserBalanceDao {
 
     private static final String FIND_BY_USER_ID_SQL = "SELECT * FROM users.user_balances";
+    private static final String UPDATE_SQL = "UPDATE users.user_balances SET balance = ? WHERE user_id = ?";
     private volatile static UserBalanceDaoImpl INSTANCE;
 
     private UserBalanceDaoImpl() {
@@ -32,7 +33,14 @@ public class UserBalanceDaoImpl implements UserBalanceDao {
 
     @Override
     public void update(UserBalance userBalance) {
-
+        try (var connection = ConnectionManager.get();
+             var statement = connection.prepareStatement(UPDATE_SQL)) {
+            statement.setBigDecimal(1, userBalance.getBalance());
+            statement.setInt(2, userBalance.getUserId());
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private UserBalance buildUserBalance(ResultSet resultSet) throws SQLException {
