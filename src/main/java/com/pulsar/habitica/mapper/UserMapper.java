@@ -11,7 +11,11 @@ public class UserMapper implements Mapper<User, UserDto> {
 
     @Override
     public UserDto mapFrom(User user) {
-        return null;
+        return UserDto.builder()
+                .id(user.getId())
+                .nickname(user.getNickname())
+                .email(user.getEmail())
+                .build();
     }
 
     public static UserMapper getInstance() {
