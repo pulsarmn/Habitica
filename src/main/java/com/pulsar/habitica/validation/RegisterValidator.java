@@ -14,9 +14,24 @@ public class RegisterValidator implements Validator<RegisterUserDto> {
     }
 
     @Override
-    public ValidationResult isValid(RegisterUserDto object) {
-        if (userDao.findByNickname(object.getNickname()).isEmpty()) {
-            
+    public ValidationResult isValid(RegisterUserDto userDto) {
+        checkDtoParameters(userDto);
+        return validationResult;
+    }
+
+    private void checkDtoParameters(RegisterUserDto userDto) {
+        checkNickname(userDto.getNickname());
+    }
+
+    private void checkNickname(String nickname) {
+        if (nickname == null || nickname.isEmpty()) {
+            validationResult.getErrors().add(Error.of("empty", "Input nickname!"));
+        }else if (userDao.findByNickname(nickname).isPresent()) {
+            validationResult.getErrors().add(Error.of("exists", "This nickname already exists!"));
+        }else if (nickname.length() > 50) {
+            validationResult.getErrors().add(Error.of("too-long", "Nickname is too long!"));
+        }else if (nickname.matches("\\d+")) {
+            validationResult.getErrors().add(Error.of("invalid", "Nickname must contains characters!"));
         }
     }
 }
