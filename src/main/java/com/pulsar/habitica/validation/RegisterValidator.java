@@ -7,6 +7,7 @@ public class RegisterValidator implements Validator<RegisterUserDto> {
 
     private final ValidationResult validationResult;
     private final UserDao userDao;
+    private static final String EMAIL_PATTERN = "\\w+@\\w+.\\w+";
 
     public RegisterValidator(UserDao userDao) {
         validationResult = new ValidationResult();
@@ -20,7 +21,8 @@ public class RegisterValidator implements Validator<RegisterUserDto> {
     }
 
     private void checkDtoParameters(RegisterUserDto userDto) {
-        checkNickname(userDto.getNickname());
+        checkNickname(userDto.getNickname().trim());
+        checkEmail(userDto.getEmail().trim());
     }
 
     private void checkNickname(String nickname) {
@@ -32,6 +34,16 @@ public class RegisterValidator implements Validator<RegisterUserDto> {
             validationResult.getErrors().add(Error.of("too-long", "Nickname is too long!"));
         }else if (nickname.matches("\\d+")) {
             validationResult.getErrors().add(Error.of("invalid", "Nickname must contains characters!"));
+        }
+    }
+
+    private void checkEmail(String email) {
+        if (email == null || email.isEmpty()) {
+            validationResult.getErrors().add(Error.of("empty", "Input email!"));
+        }else if (!email.matches(EMAIL_PATTERN)) {
+            validationResult.getErrors().add(Error.of("invalid", "Invalid email!"));
+        }else if (userDao.findByEmail(email).isPresent()) {
+            validationResult.getErrors().add(Error.of("exists", "Account with this email already exists!"));
         }
     }
 }
