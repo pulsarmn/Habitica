@@ -8,6 +8,8 @@ public class RegisterValidator implements Validator<RegisterUserDto> {
     private final ValidationResult validationResult;
     private final UserDao userDao;
     private static final String EMAIL_PATTERN = "\\w+@\\w+.\\w+";
+    private static final byte MIN_PASSWORD_LENGTH = 8;
+    private static final byte MAX_PASSWORD_LENGTH = 60;
 
     public RegisterValidator(UserDao userDao) {
         validationResult = new ValidationResult();
@@ -23,6 +25,7 @@ public class RegisterValidator implements Validator<RegisterUserDto> {
     private void checkDtoParameters(RegisterUserDto userDto) {
         checkNickname(userDto.getNickname().trim());
         checkEmail(userDto.getEmail().trim());
+        checkPassword(userDto.getPassword());
     }
 
     private void checkNickname(String nickname) {
@@ -44,6 +47,16 @@ public class RegisterValidator implements Validator<RegisterUserDto> {
             validationResult.getErrors().add(Error.of("invalid", "Invalid email!"));
         }else if (userDao.findByEmail(email).isPresent()) {
             validationResult.getErrors().add(Error.of("exists", "Account with this email already exists!"));
+        }
+    }
+
+    private void checkPassword(String password) {
+        if (password == null || password.isEmpty()) {
+            validationResult.getErrors().add(Error.of("empty", "Input password!"));
+        }else if (password.length() < MIN_PASSWORD_LENGTH) {
+            validationResult.getErrors().add(Error.of("too-short", "Password is too short!"));
+        }else if (password.length() > MAX_PASSWORD_LENGTH) {
+            validationResult.getErrors().add(Error.of("too-long", "Password is too long!"));
         }
     }
 }
