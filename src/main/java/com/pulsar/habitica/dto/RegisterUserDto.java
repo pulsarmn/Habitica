@@ -62,7 +62,7 @@ public class RegisterUserDto {
         private String password;
         private String doublePassword;
 
-        RegisterUserDtoBuilder() {
+        private RegisterUserDtoBuilder() {
         }
 
         public RegisterUserDtoBuilder nickname(String nickname) {
