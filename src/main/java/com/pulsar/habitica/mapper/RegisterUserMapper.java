@@ -10,8 +10,12 @@ public class RegisterUserMapper implements Mapper<RegisterUserDto, User> {
     private RegisterUserMapper() {}
 
     @Override
-    public User mapFrom(RegisterUserDto object) {
-        return null;
+    public User mapFrom(RegisterUserDto userDto) {
+        return User.builder()
+                .nickname(userDto.getNickname())
+                .email(userDto.getEmail())
+                .password(userDto.getPassword())
+                .build();
     }
 
     public static RegisterUserMapper getInstance() {
