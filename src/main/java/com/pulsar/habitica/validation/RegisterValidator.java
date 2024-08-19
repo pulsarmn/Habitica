@@ -7,6 +7,7 @@ public class RegisterValidator implements Validator<RegisterUserDto> {
 
     private final ValidationResult validationResult;
     private final UserDao userDao;
+    private static final byte MAX_NICKNAME_LENGTH = 30;
     private static final String EMAIL_PATTERN = "\\w+@\\w+.\\w+";
     private static final byte MIN_PASSWORD_LENGTH = 8;
     private static final byte MAX_PASSWORD_LENGTH = 60;
@@ -34,7 +35,7 @@ public class RegisterValidator implements Validator<RegisterUserDto> {
             validationResult.getErrors().add(Error.of("empty", "Input nickname!"));
         }else if (userDao.findByNickname(nickname).isPresent()) {
             validationResult.getErrors().add(Error.of("exists", "This nickname already exists!"));
-        }else if (nickname.length() > 50) {
+        }else if (nickname.length() > MAX_NICKNAME_LENGTH) {
             validationResult.getErrors().add(Error.of("too-long", "Nickname is too long!"));
         }else if (nickname.matches("\\d+")) {
             validationResult.getErrors().add(Error.of("invalid", "Nickname must contains characters!"));
