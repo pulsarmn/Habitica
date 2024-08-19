@@ -26,6 +26,7 @@ public class RegisterValidator implements Validator<RegisterUserDto> {
         checkNickname(userDto.getNickname().trim());
         checkEmail(userDto.getEmail().trim());
         checkPassword(userDto.getPassword());
+        checkDoublePassword(userDto);
     }
 
     private void checkNickname(String nickname) {
@@ -57,6 +58,12 @@ public class RegisterValidator implements Validator<RegisterUserDto> {
             validationResult.getErrors().add(Error.of("too-short", "Password is too short!"));
         }else if (password.length() > MAX_PASSWORD_LENGTH) {
             validationResult.getErrors().add(Error.of("too-long", "Password is too long!"));
+        }
+    }
+
+    private void checkDoublePassword(RegisterUserDto userDto) {
+        if (!userDto.getPassword().equals(userDto.getDoublePassword())) {
+            validationResult.getErrors().add(Error.of("invalid", "Password aren`t equals!"));
         }
     }
 }
