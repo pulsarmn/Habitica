@@ -1,0 +1,136 @@
+body {
+    font-family: Varela Round,sans-serif;
+}
+
+:root {
+    --blue: #007bff;
+    --indigo: #6610f2;
+    --purple: #6f42c1;
+    --pink: #e83e8c;
+    --red: #dc3545;
+    --orange: #fd7e14;
+    --yellow: #ffc107;
+    --green: #28a745;
+    --teal: #20c997;
+    --cyan: #17a2b8;
+    --white: #fff;
+    --gray: #6c757d;
+    --gray-dark: #343a40;
+    --primary: #007bff;
+    --secondary: #6c757d;
+    --success: #28a745;
+    --info: #17a2b8;
+    --warning: #ffc107;
+    --danger: #dc3545;
+    --light: #f8f9fa;
+    --dark: #343a40;
+}
+
+.form-wrapper {
+    min-height: 100vh;
+    background: linear-gradient(180deg,#4f2a93,#6133b4);
+}
+
+.background-image {
+    background-image: url(/static/images/stars.png);
+    background-repeat: repeat-x;
+    position: absolute;
+    height: 500px;
+    width: 100%;
+}
+
+#login-form {
+    margin: 0 auto;
+    width: 37em;
+    padding-top: 5em;
+    padding-bottom: 4em;
+    position: relative;
+    z-index: 1;
+}
+
+.habitica-logo {
+    width: 175px;
+    height: 64px;
+    margin: 2em auto 20px;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+#login-form label {
+    color: #fff;
+    font-weight: 600;
+    font-size: 15px;
+}
+
+#login-form input {
+    width: 100%;
+    height: 50px;
+    padding-left: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    background-color: var(--dark);
+    opacity: 80%;
+    color: var(--light);
+    outline: none;
+    border: none;
+    border-radius: 3px;
+    background-clip: padding-box;
+}
+
+#login-form input:focus {
+    border: 1px solid aqua;
+    transition-duration: 0.1s;
+}
+
+#login-form button {
+    margin-top: 0.8rem;
+}
+
+#login-form button:hover {
+    background-color: #19b6ce;
+    transform: translateY(-1px);
+    transition-duration: 0.4s;
+}
+
+.toggle-links {
+    margin-top: 2rem;
+}
+
+.toggle-link {
+    color: #fff;
+}
+
+.toggle-link:hover {
+    text-decoration: underline;
+}
+
+#bottom-wrap {
+    margin-top: 6em;
+    position: static;
+    width: 100%;
+}
+
+#bottom-background {
+    position: relative;
+}
+
+.seamless_mountains_demo_repeat {
+    background-image: url(/static/images/mountains.png);
+    background-repeat: repeat-x;
+    width: 100%;
+    height: 300px;
+    position: absolute;
+    z-index: 0;
+    bottom: 0;
+}
+
+.midground_foreground_extended2 {
+    background-image: url(/static/images/midground_foreground_extended2.962cfd32.png);
+    position: relative;
+    width: 1500px;
+    max-width: 100%;
+    height: 150px;
+    margin: 0 auto;
+}
