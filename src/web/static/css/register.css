@@ -1,0 +1,206 @@
+:root {
+    --blue: #007bff;
+    --indigo: #6610f2;
+    --accent: #6133b4;
+    --purple: #6f42c1;
+    --pink: #e83e8c;
+    --red: #dc3545;
+    --orange: #fd7e14;
+    --yellow: #ffc107;
+    --green: #28a745;
+    --teal: #20c997;
+    --cyan: #17a2b8;
+    --white: #fff;
+    --gray: #6c757d;
+    --gray-dark: #343a40;
+    --primary: #007bff;
+    --secondary: #6c757d;
+    --success: #28a745;
+    --info: #17a2b8;
+    --warning: #ffc107;
+    --danger: #dc3545;
+    --light: #f8f9fa;
+    --dark: #343a40;
+}
+
+body {
+    font-family: Roboto,sans-serif;
+    font-size: 14px;
+    line-height: 1.43;
+}
+
+.navbar {
+    padding: 0px 50px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.home-header {
+    background: var(--accent);
+    height: 100px;
+}
+
+.navbar-header {
+
+}
+
+.habitica-logo {
+    width: 200px;
+}
+
+.collapse {
+
+}
+
+.navpanel-links-list {
+    display: flex;
+    gap: 45px;
+    list-style: none;
+}
+
+.navpanel-item-a {
+    color: var(--light);
+}
+
+.navpanel-item {
+    font-size: 17px;
+}
+
+.login-btn {
+    padding: 12px 25px;
+    background-color: #9a62ff;
+    border-radius: 5px;
+    color: var(--light);
+    transition-duration: 0.3s;
+}
+
+.login-btn:hover {
+    transform: translateY(-2px);
+    background-color: var(--purple);
+    transition-duration: 0.4s;
+}
+
+.container {
+    max-width: 1140px;
+    margin: 0 auto;
+}
+
+.row {
+    display: flex;
+    gap: 60px;
+}
+
+.purple-1 {
+    background-color: var(--accent);
+    padding-top: 5em;
+    padding-bottom: 5em;
+}
+
+#intro-signup {
+    background-blend-mode: multiply;
+    background-image: url("../images/confetti.538215f9.svg");
+    background-position: top;
+    background-repeat: no-repeat;
+    background-size: cover;
+    color: var(--light);
+}
+
+#intro-signup h1 {
+    font-size: 56px;
+    line-height: 1.14;
+    font-family: Varela Round,sans-serif;
+    font-weight: 400;
+}
+
+#intro-signup p {
+    font-size: 18px;
+    line-height: 1.33;
+}
+
+.header-left {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    max-width: 510px;
+}
+
+.text-center {
+    font-size: 32px;
+    font-family: Varela Round,sans-serif;
+    font-weight: 400;
+    text-align: center;
+    width: 100%;
+}
+
+.header-right {
+    max-width: 570px;
+}
+
+.header-right h3 {
+    margin-bottom: 30px;
+}
+
+.header-right p {
+    margin-bottom: 10px;
+}
+
+.form-text {
+    width: 100%;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-width: 570px;
+}
+
+.form input {
+    width: 100%;
+    height: 35px;
+    padding-left: 8px;
+    font-family: Varela Round,sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    background-color: var(--dark);
+    opacity: 80%;
+    color: var(--light);
+    outline: none;
+    border: none;
+    border-radius: 3px;
+}
+
+.form input:focus {
+    border: 1px solid aqua;
+    transition-duration: 0.2s;
+}
+
+.form-btn {
+    width: 100%;
+    height: 45px;
+    background-color: var(--info);
+    color: var(--light);
+    cursor: pointer;
+    border: none;
+    border-radius: 2px;
+    transition-duration: 0.4s;
+}
+
+.form-btn:hover {
+    background-color: #16bdd6;
+    transition-duration: 0.4s;
+}
+
+.errors {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.error {
+    color: var(--danger);
+    font-style: italic;
+    font-weight: 600;
+    font-size: 15px;
+}
