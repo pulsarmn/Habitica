@@ -38,7 +38,7 @@
                     <div class="container">
                         <div class="row">
                             <div class="header-left">
-                                <img src="images/home-main@3x.ffc32b12.png" width="357px">
+                                <img src="<c:url value="/static/images/home-main@3x.ffc32b12.png"/>" width="357px">
                                 <h1>Мотивируйте себя на достижение ваших целей.</h1>
                                 <p class="section-main"> Пора повеселиться, достигая своих целей! Присоединяйся к более чем 4 миллионам жителей Хабитики и улучшай свою жизнь, выполняя задания одно за другим. </p>
                             </div>
@@ -48,11 +48,18 @@
                                     <p class="form-text">
                                         Имя пользователя должно быть длиной от 1 до 20 символов, содержащее буквы от a до z, цифры от 0 до 9, дефисы или подчеркивания и не может содержать запрещенные слова.
                                     </p>
-                                    <input type="text" id="usernameInput" name="usernameInput" placeholder="Имя пользователя">
-                                    <input type="email" id="usernameEmail" name="usernameEmail" placeholder="Электронная почта">
-                                    <input type="password" id="usernamePassword" name="usernamePassword" placeholder="Пароль">
-                                    <input type="password" placeholder="Подтвердите пароль">
+                                    <input type="text" id="nicknameId" name="nickname" placeholder="Имя пользователя">
+                                    <input type="email" id="emailId" name="email" placeholder="Электронная почта">
+                                    <input type="password" id="passwordId" name="password" placeholder="Пароль">
+                                    <input type="password" id="doublePasswordId" name="doublePassword" placeholder="Подтвердите пароль">
                                     <button type="submit" class="form-btn">Регистрация</button>
+                                    <c:if test="${not empty requestScope.errors}">
+                                        <div class="errors">
+                                            <c:forEach var="error" items="${requestScope.errors}">
+                                                <span class="error">${error.getMessage()}</span>
+                                            </c:forEach>
+                                        </div>
+                                    </c:if>
                                 </form>
                             </div>
                         </div>
