@@ -5,7 +5,7 @@ import com.pulsar.habitica.dto.RegisterUserDto;
 
 public class RegisterValidator implements Validator<RegisterUserDto> {
 
-    private final ValidationResult validationResult;
+    private ValidationResult validationResult;
     private final UserDao userDao;
     private static final byte MAX_NICKNAME_LENGTH = 30;
     private static final String EMAIL_PATTERN = "\\w+@\\w+.\\w+";
@@ -13,12 +13,12 @@ public class RegisterValidator implements Validator<RegisterUserDto> {
     private static final byte MAX_PASSWORD_LENGTH = 60;
 
     public RegisterValidator(UserDao userDao) {
-        validationResult = new ValidationResult();
         this.userDao = userDao;
     }
 
     @Override
     public ValidationResult isValid(RegisterUserDto userDto) {
+        validationResult = new ValidationResult();
         checkDtoParameters(userDto);
         return validationResult;
     }
