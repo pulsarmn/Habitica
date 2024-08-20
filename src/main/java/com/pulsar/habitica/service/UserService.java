@@ -16,10 +16,20 @@ public class UserService {
     private final UserDao userDao;
     private final Validator<RegisterUserDto> validator;
     private final Mapper<RegisterUserDto, User> registerUserMapper = RegisterUserMapper.getInstance();
-    private final Mapper<User, UserDto> userDtoMapper = UserMapper.getInstance();
+    private final Mapper<User, UserDto> userMapper = UserMapper.getInstance();
 
     public UserService(UserDao userDao) {
         this.userDao = userDao;
         this.validator = new RegisterValidator(userDao);
+    }
+
+    public UserDto create(RegisterUserDto registerUserDto) {
+        var validationResult = validator.isValid(registerUserDto);
+        if (validationResult.isInvalid()) {
+            throw new ValidationException(validationResult.getErrors());
+        }
+        User user = registerUserMapper.mapFrom(registerUserDto);
+        user = userDao.save(user);
+        return userMapper.mapFrom(user);
     }
 }
