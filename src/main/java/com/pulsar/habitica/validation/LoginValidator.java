@@ -30,7 +30,7 @@ public class LoginValidator implements Validator<LoginUserDto> {
 
     private void checkIdentifier(LoginUserDto userDto) {
         if (userDto.getIdetifier() == null || userDto.getIdetifier().isEmpty()) {
-            validationResult.getErrors().add(Error.of("empty", "Input nickname or password!"));
+            validationResult.getErrors().add(Error.of("empty", "Input nickname or email!"));
         }else if (userDto.isEmail()) {
             checkEmail(userDto.getIdetifier());
         }else {
