@@ -191,16 +191,3 @@ body {
     background-color: #16bdd6;
     transition-duration: 0.4s;
 }
-
-.errors {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-}
-
-.error {
-    color: var(--danger);
-    font-style: italic;
-    font-weight: 600;
-    font-size: 15px;
-}
