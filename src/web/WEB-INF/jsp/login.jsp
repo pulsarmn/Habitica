@@ -4,8 +4,8 @@
 <html>
 <head>
     <title>Вход | Habitica</title>
-    <link rel="stylesheet" href="<c:url value="/static/css/index.css"/>">
-    <link rel="stylesheet" href="<c:url value="/static/css/login.css"/>">
+    <link rel="stylesheet" href="<c:url value="/static/css/index.css"/>?v=1.0">
+    <link rel="stylesheet" href="<c:url value="/static/css/login.css"/>?v=1.0">
 </head>
 <body>
     <div class="form-wrapper">
@@ -29,6 +29,16 @@
             </div>
             <div class="text-center">
                 <button type="submit" class="btn btn-info"> Вход </button>
+<<<<<<< Updated upstream
+=======
+                <c:if test="${not empty requestScope.errors}">
+                    <div class="errors">
+                        <c:forEach var="error" items="${requestScope.errors}">
+                            <span class="error">${error.getMessage()}</span>
+                        </c:forEach>
+                    </div>
+                </c:if>
+>>>>>>> Stashed changes
                 <div class="toggle-links">
                     <a href="${pageContext.request.contextPath}/register" class="toggle-link">
                         Нет учётной записи в Habitica?
