@@ -33,7 +33,19 @@ public class LoginServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        
+        var loginUserDto = LoginUserDto.builder()
+                .idetifier(request.getParameter("identifier"))
+                .password(request.getParameter("password"))
+                .isEmail(request.getParameter("identifier").contains("@"))
+                .build();
+        try {
+            var user = userService.login(loginUserDto);
+            request.getSession().setAttribute("user", user);
+            response.sendRedirect("/");
+        }catch (ValidationException exception) {
+            request.setAttribute("errors", exception.getErrors());
+            doGet(request, response);
+        }
     }
 
     @Override
