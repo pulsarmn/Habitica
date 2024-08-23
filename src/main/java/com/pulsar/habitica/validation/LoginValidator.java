@@ -2,9 +2,7 @@ package com.pulsar.habitica.validation;
 
 import com.pulsar.habitica.dao.user.UserDao;
 import com.pulsar.habitica.dto.LoginUserDto;
-import lombok.extern.java.Log;
-
-import java.util.stream.Stream;
+import com.pulsar.habitica.entity.user.User;
 
 public class LoginValidator implements Validator<LoginUserDto> {
 
@@ -25,6 +23,9 @@ public class LoginValidator implements Validator<LoginUserDto> {
 
     private void checkDtoParameters(LoginUserDto userDto) {
         checkIdentifier(userDto);
+        if (validationResult.isValid()) {
+            checkPassword(userDto);
+        }
     }
 
     private void checkIdentifier(LoginUserDto userDto) {
@@ -49,5 +50,23 @@ public class LoginValidator implements Validator<LoginUserDto> {
         if (userDao.findByNickname(nickname).isEmpty()) {
             validationResult.getErrors().add(Error.of("exists", "The user with this nickname does not exist"));
         }
+    }
+
+    private void checkPassword(LoginUserDto userDto) {
+        User user = getUserByIdentifier(userDto);
+
+        if (!user.getPassword().equals(userDto.getPassword())) {
+            validationResult.getErrors().add(Error.of("invalid", "Invalid password!"));
+        }
+    }
+
+    private User getUserByIdentifier(LoginUserDto userDto) {
+        User user;
+        if (userDto.isEmail()) {
+            user = userDao.findByEmail(userDto.getIdetifier()).get();
+        }else {
+            user = userDao.findByNickname(userDto.getIdetifier()).get();
+        }
+        return user;
     }
 }
