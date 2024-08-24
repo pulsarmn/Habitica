@@ -4,6 +4,8 @@ import com.pulsar.habitica.dao.user.UserDao;
 import com.pulsar.habitica.dto.LoginUserDto;
 import com.pulsar.habitica.entity.user.User;
 
+import static com.pulsar.habitica.validation.ErrorCodes.*;
+
 public class LoginValidator implements Validator<LoginUserDto> {
 
     private ValidationResult validationResult;
@@ -30,7 +32,7 @@ public class LoginValidator implements Validator<LoginUserDto> {
 
     private void checkIdentifier(LoginUserDto userDto) {
         if (userDto.getIdetifier() == null || userDto.getIdetifier().isEmpty()) {
-            validationResult.getErrors().add(Error.of("empty", "Input nickname or email!"));
+            validationResult.getErrors().add(Error.of(IDENTIFIER_REQUIRED, "Input nickname or email!"));
         }else if (userDto.isEmail()) {
             checkEmail(userDto.getIdetifier());
         }else {
@@ -40,15 +42,15 @@ public class LoginValidator implements Validator<LoginUserDto> {
 
     private void checkEmail(String email) {
         if (!email.matches(EMAIL_PATTERN)) {
-            validationResult.getErrors().add(Error.of("invalid", "Invalid email!"));
+            validationResult.getErrors().add(Error.of(INVALID_EMAIL, "Invalid email!"));
         }else if (userDao.findByEmail(email).isEmpty()) {
-            validationResult.getErrors().add(Error.of("exists", "The user with this email does not exist!"));
+            validationResult.getErrors().add(Error.of(EMAIL_TAKEN, "The user with this email does not exist!"));
         }
     }
 
     private void checkNickname(String nickname) {
         if (userDao.findByNickname(nickname).isEmpty()) {
-            validationResult.getErrors().add(Error.of("exists", "The user with this nickname does not exist"));
+            validationResult.getErrors().add(Error.of(INVALID_NICKNAME, "The user with this nickname does not exist"));
         }
     }
 
@@ -56,7 +58,7 @@ public class LoginValidator implements Validator<LoginUserDto> {
         User user = getUserByIdentifier(userDto);
 
         if (!user.getPassword().equals(userDto.getPassword())) {
-            validationResult.getErrors().add(Error.of("invalid", "Invalid password!"));
+            validationResult.getErrors().add(Error.of(INVALID_PASSWORD, "Invalid password!"));
         }
     }
 
