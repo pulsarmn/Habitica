@@ -29,8 +29,6 @@
             </div>
             <div class="text-center">
                 <button type="submit" class="btn btn-info"> Вход </button>
-<<<<<<< Updated upstream
-=======
                 <c:if test="${not empty requestScope.errors}">
                     <div class="errors">
                         <c:forEach var="error" items="${requestScope.errors}">
@@ -38,7 +36,6 @@
                         </c:forEach>
                     </div>
                 </c:if>
->>>>>>> Stashed changes
                 <div class="toggle-links">
                     <a href="${pageContext.request.contextPath}/register" class="toggle-link">
                         Нет учётной записи в Habitica?
