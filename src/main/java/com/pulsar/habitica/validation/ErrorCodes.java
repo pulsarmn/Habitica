@@ -16,5 +16,7 @@ public final class ErrorCodes {
     public static final String SHORT_PASSWORD = "password.too.short";
     public static final String INVALID_PASSWORD = "password.invalid";
 
+    public static final String IDENTIFIER_REQUIRED = "identifier.required";
+
     private ErrorCodes() {}
 }
