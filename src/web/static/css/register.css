@@ -49,24 +49,6 @@ body {
     width: 200px;
 }
 
-.collapse {
-
-}
-
-.navpanel-links-list {
-    display: flex;
-    gap: 45px;
-    list-style: none;
-}
-
-.navpanel-item-a {
-    color: var(--light);
-}
-
-.navpanel-item {
-    font-size: 17px;
-}
-
 .login-btn {
     padding: 12px 25px;
     background-color: #9a62ff;
@@ -95,6 +77,10 @@ body {
     background-color: var(--accent);
     padding-top: 5em;
     padding-bottom: 5em;
+}
+
+.static-wrapper {
+    background-color: var(--accent);
 }
 
 #intro-signup {
