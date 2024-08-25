@@ -6,6 +6,7 @@
     <title>Register</title>
     <link rel="stylesheet" href="<c:url value="/static/css/index.css"/>?v=1.1">
     <link rel="stylesheet" href="<c:url value="/static/css/register.css"/>?v=1.0">
+    <%@include file="bundles.jsp"%>
 </head>
 <body>
     <div class="">
@@ -18,7 +19,18 @@
                         </div>
                     </a>
                 </div>
-                <a href="/login" class="btn login-btn">Вход</a>
+<%--                <div class="right-part">--%>
+<%--                    <form action="/locale" class="select-wrapper" method="post">--%>
+<%--                        <select name="lang" id="langId">--%>
+<%--                            <option value="ru_RU">Русский</option>--%>
+<%--                            <option value="en_US">English</option>--%>
+<%--                            <option value="de_DE">Deutsch</option>--%>
+<%--                            <option value="fr_FR">Francais</option>--%>
+<%--                        </select>--%>
+<%--                        <button class="btn select-button" type="submit">Применить</button>--%>
+<%--                    </form>--%>
+                <a href="/login" class="btn login-btn"><fmt:message key="register.login.button" bundle="${labels}"/></a>
+<%--                </div>--%>
             </nav>
             <div class="static-wrapper">
                 <div id="intro-signup" class="purple-1">
@@ -26,24 +38,26 @@
                         <div class="row">
                             <div class="header-left">
                                 <img src="<c:url value="/static/images/home-main@3x.ffc32b12.png"/>" width="357px">
-                                <h1>Мотивируйте себя на достижение ваших целей.</h1>
-                                <p class="section-main"> Пора повеселиться, достигая своих целей! Присоединяйся к более чем 4 миллионам жителей Хабитики и улучшай свою жизнь, выполняя задания одно за другим. </p>
+                                <h1><fmt:message key="register.heading" bundle="${messages}"/></h1>
+                                <p class="section-main"> <fmt:message key="register.description" bundle="${messages}"/> </p>
                             </div>
                             <div class="header-right">
-                                <h3 class="text-center">Бесплатная регистрация</h3>
+                                <h3 class="text-center"><fmt:message key="register.formHeading" bundle="${messages}"/></h3>
                                 <form class="form" method="post">
-                                    <p class="form-text">
-                                        Имя пользователя должно быть длиной от 1 до 30 символов, содержащее буквы от a до z, цифры от 0 до 9, дефисы или подчеркивания и не может содержать запрещенные слова.
-                                    </p>
-                                    <input type="text" id="nicknameId" name="nickname" placeholder="Имя пользователя">
-                                    <input type="email" id="emailId" name="email" placeholder="Электронная почта">
-                                    <input type="password" id="passwordId" name="password" placeholder="Пароль">
-                                    <input type="password" id="doublePasswordId" name="doublePassword" placeholder="Подтвердите пароль">
-                                    <button type="submit" class="form-btn">Регистрация</button>
+                                    <p class="form-text"><fmt:message key="register.formDescription" bundle="${messages}"/></p>
+                                    <input type="text" id="nicknameId" name="nickname"
+                                           placeholder="<fmt:message key="register.username.input" bundle="${labels}"/>">
+                                    <input type="email" id="emailId" name="email"
+                                           placeholder="<fmt:message key="register.email.input" bundle="${labels}"/>">
+                                    <input type="password" id="passwordId" name="password"
+                                           placeholder="<fmt:message key="register.password.input" bundle="${labels}"/>">
+                                    <input type="password" id="doublePasswordId" name="doublePassword"
+                                           placeholder="<fmt:message key="register.confirm.password.input" bundle="${labels}"/>">
+                                    <button type="submit" class="form-btn"><fmt:message key="register.registration.button" bundle="${labels}"/></button>
                                     <c:if test="${not empty requestScope.errors}">
                                         <div class="errors">
                                             <c:forEach var="error" items="${requestScope.errors}">
-                                                <span class="error">${error.getMessage()}</span>
+                                                <span class="error"><fmt:message key="${error.getCode()}" bundle="${validation}"/></span>
                                             </c:forEach>
                                         </div>
                                     </c:if>
