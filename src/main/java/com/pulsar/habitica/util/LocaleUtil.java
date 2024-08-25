@@ -17,14 +17,14 @@ public final class LocaleUtil {
     }
 
     public static String getLanguage(String locale) {
-        if (locale.matches(LOCALE_PATTERN)) {
+        if (isLocale(locale)) {
             return locale.split("_")[0];
         }
         return Locale.getDefault().getLanguage();
     }
 
     public static String getCountry(String locale) {
-        if (locale.matches(LOCALE_PATTERN)) {
+        if (isLocale(locale)) {
             return locale.split("_")[1];
         }
         return Locale.getDefault().getCountry();
