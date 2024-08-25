@@ -6,6 +6,7 @@
     <title>Вход | Habitica</title>
     <link rel="stylesheet" href="<c:url value="/static/css/index.css"/>?v=1.0">
     <link rel="stylesheet" href="<c:url value="/static/css/login.css"/>?v=1.0">
+    <%@include file="bundles.jsp"%>
 </head>
 <body>
     <div class="form-wrapper">
@@ -19,27 +20,27 @@
                 </div>
             </div>
             <div class="form-group">
-                <label for="identifierId">Электронный адрес или имя пользователя (с учетом регистра)</label>
-                <input type="text" id="identifierId" name="identifier" placeholder="Электронный адрес или имя пользователя (с учетом регистра)">
+                <label for="identifierId"><fmt:message key="login.identifier.label" bundle="${messages}"/></label>
+                <input type="text" id="identifierId" name="identifier"
+                       placeholder="<fmt:message key="login.identifier.input" bundle="${labels}"/>">
             </div>
             <div class="form-group">
-                <label for="passwordId">Пароль</label>
-                <a href=""></a>
-                <input type="password" id="passwordId" name="password" placeholder="Пароль">
+                <label for="passwordId"><fmt:message key="login.password.label" bundle="${messages}"/></label>
+                <input type="password" id="passwordId" name="password"
+                       placeholder="<fmt:message key="login.password.input" bundle="${labels}"/>">
             </div>
             <div class="text-center">
-                <button type="submit" class="btn btn-info"> Вход </button>
+                <button type="submit" class="btn btn-info"> <fmt:message key="login.login.button" bundle="${labels}"/> </button>
                 <c:if test="${not empty requestScope.errors}">
                     <div class="errors">
                         <c:forEach var="error" items="${requestScope.errors}">
-                            <span class="error">${error.getMessage()}</span>
+                            <span class="error"><fmt:message key="${error.getCode()}" bundle="${validation}"/></span>
                         </c:forEach>
                     </div>
                 </c:if>
                 <div class="toggle-links">
                     <a href="${pageContext.request.contextPath}/register" class="toggle-link">
-                        Нет учётной записи в Habitica?
-                        <strong>Зарегистрируйтесь.</strong>
+                        <fmt:message key="login.register.link" bundle="${labels}"/>
                     </a>
                 </div>
             </div>

@@ -49,22 +49,45 @@ body {
     width: 200px;
 }
 
-.collapse {
-
-}
-
-.navpanel-links-list {
+.right-part {
     display: flex;
-    gap: 45px;
-    list-style: none;
+    gap: 50px;
+    align-items: center;
 }
 
-.navpanel-item-a {
-    color: var(--light);
+.select-wrapper {
+    display: flex;
+    gap: 20px
 }
 
-.navpanel-item {
-    font-size: 17px;
+.select-wrapper select {
+    width: 130px;
+    height: 35px;
+    border-radius: 3px;
+    outline: none;
+    background-color: var(--light);
+    opacity: 80%;
+}
+
+.select-wrapper select:focus {
+    border: 1px solid var(--primary);
+    transition-duration: 0.2s;
+}
+
+.select-wrapper select option {
+    background-color: var(--light);
+}
+
+.select-button {
+    padding: 4px 10px;
+    background-color: var(--primary);
+    transition-duration: 0.3s;
+}
+
+.select-button:hover {
+    transform: translateY(-2px);
+    background-color: #0050a7;
+    transition-duration: 0.4s;
 }
 
 .login-btn {
@@ -95,6 +118,10 @@ body {
     background-color: var(--accent);
     padding-top: 5em;
     padding-bottom: 5em;
+}
+
+.static-wrapper {
+    background-color: var(--accent);
 }
 
 #intro-signup {

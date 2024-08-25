@@ -3,6 +3,8 @@ package com.pulsar.habitica.validation;
 import com.pulsar.habitica.dao.user.UserDao;
 import com.pulsar.habitica.dto.RegisterUserDto;
 
+import static com.pulsar.habitica.validation.ErrorCodes.*;
+
 public class RegisterValidator implements Validator<RegisterUserDto> {
 
     private ValidationResult validationResult;
@@ -32,39 +34,39 @@ public class RegisterValidator implements Validator<RegisterUserDto> {
 
     private void checkNickname(String nickname) {
         if (nickname == null || nickname.isEmpty()) {
-            validationResult.getErrors().add(Error.of("empty", "Input nickname!"));
+            validationResult.getErrors().add(Error.of(NICKNAME_REQUIRED, "Input nickname!"));
         }else if (userDao.findByNickname(nickname).isPresent()) {
-            validationResult.getErrors().add(Error.of("exists", "This nickname already exists!"));
+            validationResult.getErrors().add(Error.of(NICKNAME_TAKEN, "This nickname already exists!"));
         }else if (nickname.length() > MAX_NICKNAME_LENGTH) {
-            validationResult.getErrors().add(Error.of("too-long", "Nickname is too long!"));
+            validationResult.getErrors().add(Error.of(LONG_NICKNAME, "Nickname is too long!"));
         }else if (nickname.matches("\\d+")) {
-            validationResult.getErrors().add(Error.of("invalid", "Nickname must contains characters!"));
+            validationResult.getErrors().add(Error.of(INVALID_NICKNAME, "Nickname must contains characters!"));
         }
     }
 
     private void checkEmail(String email) {
         if (email == null || email.isEmpty()) {
-            validationResult.getErrors().add(Error.of("empty", "Input email!"));
+            validationResult.getErrors().add(Error.of(EMAIL_REQUIRED, "Input email!"));
         }else if (!email.matches(EMAIL_PATTERN)) {
-            validationResult.getErrors().add(Error.of("invalid", "Invalid email!"));
+            validationResult.getErrors().add(Error.of(INVALID_EMAIL, "Invalid email!"));
         }else if (userDao.findByEmail(email).isPresent()) {
-            validationResult.getErrors().add(Error.of("exists", "Account with this email already exists!"));
+            validationResult.getErrors().add(Error.of(EMAIL_TAKEN, "Account with this email already exists!"));
         }
     }
 
     private void checkPassword(String password) {
         if (password == null || password.isEmpty()) {
-            validationResult.getErrors().add(Error.of("empty", "Input password!"));
+            validationResult.getErrors().add(Error.of(PASSWORD_REQUIRED, "Input password!"));
         }else if (password.length() < MIN_PASSWORD_LENGTH) {
-            validationResult.getErrors().add(Error.of("too-short", "Password is too short!"));
+            validationResult.getErrors().add(Error.of(SHORT_PASSWORD, "Password is too short!"));
         }else if (password.length() > MAX_PASSWORD_LENGTH) {
-            validationResult.getErrors().add(Error.of("too-long", "Password is too long!"));
+            validationResult.getErrors().add(Error.of(LONG_PASSWORD, "Password is too long!"));
         }
     }
 
     private void checkDoublePassword(RegisterUserDto userDto) {
         if (!userDto.getPassword().equals(userDto.getDoublePassword())) {
-            validationResult.getErrors().add(Error.of("invalid", "Password aren`t equals!"));
+            validationResult.getErrors().add(Error.of(INVALID_PASSWORD, "Password aren`t equals!"));
         }
     }
 }
