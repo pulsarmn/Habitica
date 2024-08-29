@@ -4,6 +4,7 @@ import com.pulsar.habitica.dao.user.UserDao;
 import com.pulsar.habitica.dao.user.UserDaoImpl;
 import com.pulsar.habitica.dto.LoginUserDto;
 import com.pulsar.habitica.exception.ValidationException;
+import com.pulsar.habitica.filter.PrivatePaths;
 import com.pulsar.habitica.service.UserService;
 import com.pulsar.habitica.util.JspHelper;
 import jakarta.servlet.ServletConfig;
@@ -41,7 +42,7 @@ public class LoginServlet extends HttpServlet {
         try {
             var user = userService.login(loginUserDto);
             request.getSession().setAttribute("user", user);
-            response.sendRedirect("/");
+            response.sendRedirect(PrivatePaths.HOME.getPath());
         }catch (ValidationException exception) {
             request.setAttribute("errors", exception.getErrors());
             doGet(request, response);
