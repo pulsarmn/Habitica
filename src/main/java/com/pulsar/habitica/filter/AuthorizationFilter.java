@@ -21,7 +21,7 @@ public class AuthorizationFilter implements Filter {
         String requestURI = httpRequest.getRequestURI();
         if (isLogged && PagePaths.getGuestPaths().contains(requestURI)) {
             httpResponse.sendRedirect(PrivatePaths.HOME.getPath());
-        }else if (!isLogged && PagePaths.getPrivatePaths().contains(requestURI)) {
+        }else if ((!isLogged && PagePaths.getPrivatePaths().contains(requestURI)) || requestURI.equals("/")) {
             httpResponse.sendRedirect(GuestPaths.LOGIN.getPath());
         }else {
             filterChain.doFilter(servletRequest, servletResponse);
