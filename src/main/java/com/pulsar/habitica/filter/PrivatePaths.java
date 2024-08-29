@@ -2,7 +2,7 @@ package com.pulsar.habitica.filter;
 
 public enum PrivatePaths {
 
-    HOME("/");
+    HOME("/home");
 
     private String path;
 
