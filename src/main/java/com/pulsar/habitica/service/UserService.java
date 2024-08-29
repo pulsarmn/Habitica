@@ -1,5 +1,6 @@
 package com.pulsar.habitica.service;
 
+import com.pulsar.habitica.dao.user.UserBalanceDaoImpl;
 import com.pulsar.habitica.dao.user.UserDao;
 import com.pulsar.habitica.dto.LoginUserDto;
 import com.pulsar.habitica.dto.RegisterUserDto;
@@ -20,11 +21,13 @@ public class UserService {
     private final Validator<LoginUserDto> loginValidator;
     private final Mapper<RegisterUserDto, User> registerUserMapper = RegisterUserMapper.getInstance();
     private final Mapper<User, UserDto> userMapper = UserMapper.getInstance();
+    private final UserBalanceService userBalanceService;
 
     public UserService(UserDao userDao) {
         this.userDao = userDao;
         this.registerValidator = new RegisterValidator(userDao);
         this.loginValidator = new LoginValidator(userDao);
+        this.userBalanceService = new UserBalanceService(UserBalanceDaoImpl.getInstance());
     }
 
     public UserDto create(RegisterUserDto registerUserDto) {
@@ -34,6 +37,7 @@ public class UserService {
         }
         User user = registerUserMapper.mapFrom(registerUserDto);
         user = userDao.save(user);
+        userBalanceService.initUserBalance(user);
         return userMapper.mapFrom(user);
     }
 
