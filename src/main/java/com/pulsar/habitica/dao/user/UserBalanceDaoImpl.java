@@ -1,6 +1,5 @@
 package com.pulsar.habitica.dao.user;
 
-import com.pulsar.habitica.dao.table.UserBalanceTable;
 import com.pulsar.habitica.entity.user.UserBalance;
 import com.pulsar.habitica.util.ConnectionManager;
 
@@ -16,6 +15,10 @@ public class UserBalanceDaoImpl implements UserBalanceDao {
             .formatted(FULL_TABLE_NAME, USER_ID);
     private static final String UPDATE_SQL = "UPDATE %s SET %s = ? WHERE %s = ?"
             .formatted(FULL_TABLE_NAME, USER_BALANCE, USER_ID);
+    private static final String INIT_SQL = "INSERT INTO %s (%s) VALUES (?) RETURNING *"
+            .formatted(FULL_TABLE_NAME, USER_ID);
+    private static final String DELETE_SQL = "DELETE FROM %s WHERE %s = ?"
+            .formatted(FULL_TABLE_NAME, USER_ID);
     private volatile static UserBalanceDaoImpl INSTANCE;
 
     private UserBalanceDaoImpl() {
@@ -44,6 +47,34 @@ public class UserBalanceDaoImpl implements UserBalanceDao {
             statement.setBigDecimal(1, userBalance.getBalance());
             statement.setInt(2, userBalance.getUserId());
             statement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public UserBalance init(Integer userId) {
+        try (var connection = ConnectionManager.get();
+        var statement = connection.prepareStatement(INIT_SQL)) {
+            statement.setInt(1, userId);
+            var resultSet = statement.executeQuery();
+            resultSet.next();
+            return UserBalance.builder()
+                    .userId(resultSet.getInt("user_id"))
+                    .balance(resultSet.getBigDecimal("balance"))
+                    .build();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public boolean delete(Integer userId) {
+        try (var connection = ConnectionManager.get();
+             var statement = connection.prepareStatement(DELETE_SQL)) {
+            statement.setInt(1, userId);
+            int status = statement.executeUpdate();
+            return status > 0;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

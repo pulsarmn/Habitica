@@ -9,4 +9,8 @@ public interface UserBalanceDao {
     Optional<UserBalance> findByUserId(Integer id);
 
     void update(UserBalance userBalance);
+
+    UserBalance init(Integer userId);
+
+    boolean delete(Integer userId);
 }
