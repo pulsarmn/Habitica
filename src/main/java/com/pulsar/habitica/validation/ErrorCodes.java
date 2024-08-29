@@ -15,6 +15,7 @@ public final class ErrorCodes {
     public static final String LONG_PASSWORD = "password.too.long";
     public static final String SHORT_PASSWORD = "password.too.short";
     public static final String INVALID_PASSWORD = "password.invalid";
+    public static final String DONT_MATCH = "password.dont.match";
 
     public static final String IDENTIFIER_REQUIRED = "identifier.required";
 

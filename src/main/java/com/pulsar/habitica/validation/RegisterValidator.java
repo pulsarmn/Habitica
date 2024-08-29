@@ -66,7 +66,7 @@ public class RegisterValidator implements Validator<RegisterUserDto> {
 
     private void checkDoublePassword(RegisterUserDto userDto) {
         if (!userDto.getPassword().equals(userDto.getDoublePassword())) {
-            validationResult.getErrors().add(Error.of(INVALID_PASSWORD, "Password aren`t equals!"));
+            validationResult.getErrors().add(Error.of(DONT_MATCH, "Passwords don`t match!"));
         }
     }
 }
