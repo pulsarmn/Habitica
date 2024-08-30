@@ -1,8 +1,6 @@
 package com.pulsar.habitica.service;
 
 import com.pulsar.habitica.dao.user.UserBalanceDao;
-import com.pulsar.habitica.dto.UserDto;
-import com.pulsar.habitica.entity.user.User;
 import com.pulsar.habitica.entity.user.UserBalance;
 
 import java.math.BigDecimal;
@@ -19,6 +17,13 @@ public class UserBalanceService {
         return userBalanceDao.save(UserBalance.builder()
                 .userId(userId)
                 .balance(BigDecimal.ZERO)
+                .build());
+    }
+
+    public UserBalance updateUserBalance(int userId, BigDecimal balance) {
+        return userBalanceDao.update(UserBalance.builder()
+                .userId(userId)
+                .balance(balance)
                 .build());
     }
 }
