@@ -22,6 +22,8 @@ public class UserStatisticsDaoImpl implements UserStatisticsDao {
             .formatted(FULL_TABLE_NAME);
     private static final String UPDATE_SQL = "UPDATE %s SET %s = ? WHERE %s = ?"
             .formatted(FULL_TABLE_NAME, TOTAL_VISITS, USER_ID);
+    private static final String DELETE_BY_ID_SQL = "DELETE FROM %s WHERE %s = ?"
+            .formatted(FULL_TABLE_NAME, USER_ID);
     private volatile static UserStatisticsDaoImpl INSTANCE;
 
     private UserStatisticsDaoImpl() {}
@@ -85,8 +87,15 @@ public class UserStatisticsDaoImpl implements UserStatisticsDao {
     }
 
     @Override
-    public boolean deleteById(Integer id) {
-        return false;
+    public boolean deleteById(Integer userId) {
+        try (var connection = ConnectionManager.get();
+        var statement = connection.prepareStatement(DELETE_BY_ID_SQL)) {
+            statement.setInt(1, userId);
+            int status = statement.executeUpdate();
+            return status > 0;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
