@@ -18,6 +18,8 @@ public class UserStatisticsDaoImpl implements UserStatisticsDao {
             .formatted(FULL_TABLE_NAME);
     private static final String FIND_BY_USER_ID_SQL = "SELECT * FROM %s WHERE %s = ?"
             .formatted(FULL_TABLE_NAME, USER_ID);
+    private static final String SAVE_SQL = "INSERT INTO %s VALUES (?, ?) RETURNING *"
+            .formatted(FULL_TABLE_NAME);
     private static final String UPDATE_SQL = "UPDATE %s SET %s = ? WHERE %s = ?"
             .formatted(FULL_TABLE_NAME, TOTAL_VISITS, USER_ID);
     private volatile static UserStatisticsDaoImpl INSTANCE;
@@ -58,7 +60,15 @@ public class UserStatisticsDaoImpl implements UserStatisticsDao {
 
     @Override
     public UserStatistics save(UserStatistics entity) {
-        return null;
+        try (var connection = ConnectionManager.get();
+        var statement = connection.prepareStatement(SAVE_SQL)) {
+            statement.setInt(1, entity.getUserId());
+            statement.setInt(2, entity.getTotalVisits());
+            var resultSet = statement.executeQuery();
+            return buildUserStatistics(resultSet);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
