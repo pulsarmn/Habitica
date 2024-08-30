@@ -1,6 +1,5 @@
 package com.pulsar.habitica.dao.user;
 
-import com.pulsar.habitica.dao.table.UserImageTable;
 import com.pulsar.habitica.entity.user.UserImage;
 import com.pulsar.habitica.util.ConnectionManager;
 
@@ -8,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static com.pulsar.habitica.dao.table.UserImageTable.*;
 
@@ -15,7 +15,7 @@ public class UserImageDaoImpl implements UserImageDao {
 
     private static final String FIND_ALL_BY_USER_ID_SQL = "SELECT * FROM %s WHERE %s = ?"
             .formatted(FULL_TABLE_NAME, USER_ID);
-    private static final String SAVE_SQL = "INSERT INTO %s VALUES (?, ?)"
+    private static final String SAVE_SQL = "INSERT INTO %s VALUES (?, ?) RETURNING *"
             .formatted(FULL_TABLE_NAME);
     private static final String DELETE_SQL = "DELETE FROM %s WHERE %s = ? AND %s = ?"
             .formatted(FULL_TABLE_NAME, USER_ID, IMAGE_ADDRESS);
@@ -41,16 +41,37 @@ public class UserImageDaoImpl implements UserImageDao {
     }
 
     @Override
-    public boolean save(UserImage entity) {
+    public List<UserImage> findAll() {
+        return null;
+    }
+
+    @Override
+    public Optional<UserImage> findById(Integer id) {
+        return Optional.empty();
+    }
+
+    @Override
+    public UserImage save(UserImage entity) {
         try (var connection = ConnectionManager.get();
         var statement = connection.prepareStatement(SAVE_SQL)) {
             statement.setInt(1, entity.getUserId());
             statement.setString(2, entity.getImageAddr());
-            int status = statement.executeUpdate();
-            return status > 0;
+            var resultSet = statement.executeQuery();
+            resultSet.next();
+            return buildUserImage(resultSet);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public UserImage update(UserImage entity) {
+        return null;
+    }
+
+    @Override
+    public boolean deleteById(Integer id) {
+        return false;
     }
 
     @Override
