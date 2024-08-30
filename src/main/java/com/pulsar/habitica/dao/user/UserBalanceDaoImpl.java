@@ -45,8 +45,19 @@ public class UserBalanceDaoImpl implements UserBalanceDao {
     }
 
     @Override
-    public Optional<UserBalance> findById(Integer id) {
-        return Optional.empty();
+    public Optional<UserBalance> findById(Integer userId) {
+        try (var connection = ConnectionManager.get();
+             var statement = connection.prepareStatement(FIND_BY_USER_ID_SQL)) {
+            statement.setInt(1, userId);
+            var resultSet = statement.executeQuery();
+            UserBalance userBalance = null;
+            if (resultSet.next()) {
+                userBalance = buildUserBalance(resultSet);
+            }
+            return Optional.ofNullable(userBalance);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
