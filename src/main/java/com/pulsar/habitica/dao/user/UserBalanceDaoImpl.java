@@ -88,8 +88,15 @@ public class UserBalanceDaoImpl implements UserBalanceDao {
     }
 
     @Override
-    public boolean deleteById(Integer id) {
-        return false;
+    public boolean deleteById(Integer userId) {
+        try (var connection = ConnectionManager.get();
+             var statement = connection.prepareStatement(DELETE_BY_USER_ID_SQL)) {
+            statement.setInt(1, userId);
+            int status = statement.executeUpdate();
+            return status > 0;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
