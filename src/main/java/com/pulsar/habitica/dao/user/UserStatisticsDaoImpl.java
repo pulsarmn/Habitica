@@ -1,6 +1,5 @@
 package com.pulsar.habitica.dao.user;
 
-import com.pulsar.habitica.dao.table.UserStatisticsTable;
 import com.pulsar.habitica.entity.user.UserStatistics;
 import com.pulsar.habitica.util.ConnectionManager;
 
@@ -100,7 +99,7 @@ public class UserStatisticsDaoImpl implements UserStatisticsDao {
 
     @Override
     public boolean delete(UserStatistics entity) {
-        return false;
+        return deleteById(entity.getUserId());
     }
 
     private UserStatistics buildUserStatistics(ResultSet resultSet) throws SQLException {
