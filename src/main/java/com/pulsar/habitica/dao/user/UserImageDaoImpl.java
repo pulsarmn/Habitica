@@ -15,6 +15,8 @@ public class UserImageDaoImpl implements UserImageDao {
 
     private static final String FIND_ALL_SQL = "SELECT * FROM %s"
             .formatted(FULL_TABLE_NAME);
+    private static final String FIND_BY_USER_ID_SQL = "SELECT * FROM %s WHERE %s = ?"
+            .formatted(FULL_TABLE_NAME, USER_ID);
     private static final String SAVE_SQL = "INSERT INTO %s VALUES (?, ?) RETURNING *"
             .formatted(FULL_TABLE_NAME);
     private static final String DELETE_SQL = "DELETE FROM %s WHERE %s = ? AND %s = ?"
@@ -40,8 +42,18 @@ public class UserImageDaoImpl implements UserImageDao {
     }
 
     @Override
-    public Optional<UserImage> findById(Integer id) {
-        return Optional.empty();
+    public Optional<UserImage> findById(Integer userId) {
+        try (var connection = ConnectionManager.get();
+        var statement = connection.prepareStatement(FIND_BY_USER_ID_SQL)) {
+            var resultSet = statement.executeQuery();
+            UserImage userImage = null;
+            if (resultSet.next()) {
+                userImage = buildUserImage(resultSet);
+            }
+            return Optional.ofNullable(userImage);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
