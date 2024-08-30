@@ -19,6 +19,8 @@ public class UserImageDaoImpl implements UserImageDao {
             .formatted(FULL_TABLE_NAME, USER_ID);
     private static final String SAVE_SQL = "INSERT INTO %s VALUES (?, ?) RETURNING *"
             .formatted(FULL_TABLE_NAME);
+    private static final String UPDATE_SQL = "UPDATE %s SET %s = ? WHERE %s = ?"
+            .formatted(FULL_TABLE_NAME, IMAGE_ADDRESS, USER_ID);
     private static final String DELETE_SQL = "DELETE FROM %s WHERE %s = ? AND %s = ?"
             .formatted(FULL_TABLE_NAME, USER_ID, IMAGE_ADDRESS);
     private volatile static UserImageDaoImpl INSTANCE;
@@ -72,7 +74,15 @@ public class UserImageDaoImpl implements UserImageDao {
 
     @Override
     public UserImage update(UserImage entity) {
-        return null;
+        try (var connection = ConnectionManager.get();
+        var statement = connection.prepareStatement(UPDATE_SQL)) {
+            statement.setString(1, entity.getImageAddr());
+            statement.setInt(2, entity.getUserId());
+            statement.executeUpdate();
+            return entity;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
