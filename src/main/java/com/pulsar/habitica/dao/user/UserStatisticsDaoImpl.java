@@ -6,6 +6,7 @@ import com.pulsar.habitica.util.ConnectionManager;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Optional;
 
 import static com.pulsar.habitica.dao.table.UserStatisticsTable.*;
@@ -21,31 +22,33 @@ public class UserStatisticsDaoImpl implements UserStatisticsDao {
     private UserStatisticsDaoImpl() {}
 
     @Override
-    public Optional<UserStatistics> findByUserId(Integer id) {
-        try (var connection = ConnectionManager.get();
-        var statement = connection.prepareStatement(FIND_BY_USER_ID_SQL)) {
-            statement.setInt(1, id);
-            var resultSet = statement.executeQuery();
-            UserStatistics userStatistics = null;
-            if (resultSet.next()) {
-                userStatistics = buildUserStatistics(resultSet);
-            }
-            return Optional.ofNullable(userStatistics);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+    public List<UserStatistics> findAll() {
+        return null;
     }
 
     @Override
-    public void update(UserStatistics userStatistics) {
-        try (var connection = ConnectionManager.get();
-        var statement = connection.prepareStatement(UPDATE_SQL)) {
-            statement.setInt(1, userStatistics.getTotalVisits());
-            statement.setInt(2, userStatistics.getUserId());
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+    public Optional<UserStatistics> findById(Integer id) {
+        return Optional.empty();
+    }
+
+    @Override
+    public UserStatistics save(UserStatistics entity) {
+        return null;
+    }
+
+    @Override
+    public UserStatistics update(UserStatistics entity) {
+        return null;
+    }
+
+    @Override
+    public boolean deleteById(Integer id) {
+        return false;
+    }
+
+    @Override
+    public boolean delete(UserStatistics entity) {
+        return false;
     }
 
     private UserStatistics buildUserStatistics(ResultSet resultSet) throws SQLException {
