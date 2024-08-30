@@ -73,7 +73,15 @@ public class UserStatisticsDaoImpl implements UserStatisticsDao {
 
     @Override
     public UserStatistics update(UserStatistics entity) {
-        return null;
+        try (var connection = ConnectionManager.get();
+            var statement = connection.prepareStatement(UPDATE_SQL)) {
+            statement.setInt(1, entity.getTotalVisits());
+            statement.setInt(2, entity.getUserId());
+            statement.executeUpdate();
+            return entity;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
