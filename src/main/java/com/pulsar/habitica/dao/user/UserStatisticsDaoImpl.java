@@ -41,8 +41,19 @@ public class UserStatisticsDaoImpl implements UserStatisticsDao {
     }
 
     @Override
-    public Optional<UserStatistics> findById(Integer id) {
-        return Optional.empty();
+    public Optional<UserStatistics> findById(Integer userId) {
+        try (var connection = ConnectionManager.get();
+        var statement = connection.prepareStatement(FIND_BY_USER_ID_SQL)) {
+            statement.setInt(1, userId);
+            var resultSet = statement.executeQuery();
+            UserStatistics userStatistics = null;
+            if (resultSet.next()) {
+                userStatistics = buildUserStatistics(resultSet);
+            }
+            return Optional.ofNullable(userStatistics);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
