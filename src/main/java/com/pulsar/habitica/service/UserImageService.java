@@ -29,4 +29,18 @@ public class UserImageService {
                 .build();
         return userImageDao.save(userImage);
     }
+
+    public UserImage uploadUserImage(User user, InputStream imageContent) throws IOException {
+        Path fullImagePath = Path.of(ABSOLUTE_PATH, "user" + user.getId(), USER_AVATAR);
+        Path relativePath = Path.of(RELATIVE_PATH, "user" + user.getId(), USER_AVATAR);
+        System.out.println(fullImagePath);
+        try (imageContent) {
+            Files.createDirectories(fullImagePath.getParent());
+            Files.write(fullImagePath, imageContent.readAllBytes());
+        }
+        return userImageDao.update(UserImage.builder()
+                .userId(user.getId())
+                .imageAddr(relativePath.toString())
+                .build());
+    }
 }
