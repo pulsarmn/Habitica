@@ -100,8 +100,8 @@ public class UserBalanceDaoImpl implements UserBalanceDao {
     }
 
     @Override
-    public boolean delete(UserBalance entity) {
-        return false;
+    public boolean delete(UserBalance userBalance) {
+        return deleteById(userBalance.getUserId());
     }
 
     private UserBalance buildUserBalance(ResultSet resultSet) throws SQLException {
