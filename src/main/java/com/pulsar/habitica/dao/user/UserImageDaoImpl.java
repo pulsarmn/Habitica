@@ -21,6 +21,8 @@ public class UserImageDaoImpl implements UserImageDao {
             .formatted(FULL_TABLE_NAME);
     private static final String UPDATE_SQL = "UPDATE %s SET %s = ? WHERE %s = ?"
             .formatted(FULL_TABLE_NAME, IMAGE_ADDRESS, USER_ID);
+    private static final String DELETE_BY_ID_SQL = "DELETE FROM %s WHERE %s = ?"
+            .formatted(FULL_TABLE_NAME, USER_ID);
     private static final String DELETE_SQL = "DELETE FROM %s WHERE %s = ? AND %s = ?"
             .formatted(FULL_TABLE_NAME, USER_ID, IMAGE_ADDRESS);
     private volatile static UserImageDaoImpl INSTANCE;
@@ -87,7 +89,14 @@ public class UserImageDaoImpl implements UserImageDao {
 
     @Override
     public boolean deleteById(Integer id) {
-        return false;
+        try (var connection = ConnectionManager.get();
+        var statement = connection.prepareStatement(DELETE_BY_ID_SQL)) {
+            statement.setInt(1, id);
+            int status = statement.executeUpdate();
+            return status > 0;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
