@@ -6,6 +6,7 @@ import com.pulsar.habitica.util.ConnectionManager;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,6 +14,8 @@ import static com.pulsar.habitica.dao.table.UserStatisticsTable.*;
 
 public class UserStatisticsDaoImpl implements UserStatisticsDao {
 
+    private static final String FIND_ALL_SQL = "SELECT * FROM %s"
+            .formatted(FULL_TABLE_NAME);
     private static final String FIND_BY_USER_ID_SQL = "SELECT * FROM %s WHERE %s = ?"
             .formatted(FULL_TABLE_NAME, USER_ID);
     private static final String UPDATE_SQL = "UPDATE %s SET %s = ? WHERE %s = ?"
@@ -23,7 +26,18 @@ public class UserStatisticsDaoImpl implements UserStatisticsDao {
 
     @Override
     public List<UserStatistics> findAll() {
-        return null;
+        try (var connection = ConnectionManager.get();
+        var statement = connection.prepareStatement(FIND_ALL_SQL)) {
+            var resultSet = statement.executeQuery();
+            List<UserStatistics> userStatistics = new ArrayList<>();
+            while (resultSet.next()) {
+                var statistics = buildUserStatistics(resultSet);
+                userStatistics.add(statistics);
+            }
+            return userStatistics;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
