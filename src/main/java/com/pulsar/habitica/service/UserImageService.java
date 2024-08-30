@@ -21,4 +21,12 @@ public class UserImageService {
     public UserImageService(UserImageDao userImageDao) {
         this.userImageDao = userImageDao;
     }
+
+    public UserImage initUserImage(User user) throws IOException {
+        var userImage = UserImage.builder()
+                .userId(user.getId())
+                .imageAddr(RELATIVE_PATH + EMPTY_AVATAR)
+                .build();
+        return userImageDao.save(userImage);
+    }
 }
