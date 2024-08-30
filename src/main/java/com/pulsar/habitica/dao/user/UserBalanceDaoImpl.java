@@ -61,8 +61,17 @@ public class UserBalanceDaoImpl implements UserBalanceDao {
     }
 
     @Override
-    public UserBalance save(UserBalance entity) {
-        return null;
+    public UserBalance save(UserBalance userBalance) {
+        try (var connection = ConnectionManager.get();
+             var statement = connection.prepareStatement(SAVE_SQL)) {
+            statement.setInt(1, userBalance.getUserId());
+            statement.setBigDecimal(2, userBalance.getBalance());
+            var resultSet = statement.executeQuery();
+            resultSet.next();
+            return buildUserBalance(resultSet);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
