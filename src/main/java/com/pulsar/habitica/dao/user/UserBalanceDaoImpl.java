@@ -5,19 +5,23 @@ import com.pulsar.habitica.util.ConnectionManager;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static com.pulsar.habitica.dao.table.UserBalanceTable.*;
 
 public class UserBalanceDaoImpl implements UserBalanceDao {
 
+    private static final String FIND_ALL_SQL = "SELECT * FROM %s"
+            .formatted(FULL_TABLE_NAME);
     private static final String FIND_BY_USER_ID_SQL = "SELECT * FROM %s WHERE %s = ?"
             .formatted(FULL_TABLE_NAME, USER_ID);
     private static final String UPDATE_SQL = "UPDATE %s SET %s = ? WHERE %s = ?"
             .formatted(FULL_TABLE_NAME, USER_BALANCE, USER_ID);
-    private static final String INIT_SQL = "INSERT INTO %s (%s) VALUES (?) RETURNING *"
-            .formatted(FULL_TABLE_NAME, USER_ID);
-    private static final String DELETE_SQL = "DELETE FROM %s WHERE %s = ?"
+    private static final String SAVE_SQL = "INSERT INTO %s (%s, %s) VALUES (?, ?) RETURNING *"
+            .formatted(FULL_TABLE_NAME, USER_ID, USER_BALANCE);
+    private static final String DELETE_BY_USER_ID_SQL = "DELETE FROM %s WHERE %s = ?"
             .formatted(FULL_TABLE_NAME, USER_ID);
     private volatile static UserBalanceDaoImpl INSTANCE;
 
@@ -25,10 +29,26 @@ public class UserBalanceDaoImpl implements UserBalanceDao {
     }
 
     @Override
-    public Optional<UserBalance> findByUserId(Integer id) {
+    public List<UserBalance> findAll() {
+        try (var connection = ConnectionManager.get();
+             var statement = connection.prepareStatement(FIND_ALL_SQL)) {
+            var resultSet = statement.executeQuery();
+            List<UserBalance> userBalances = new ArrayList<>();
+            while (resultSet.next()) {
+                var userBalance = buildUserBalance(resultSet);
+                userBalances.add(userBalance);
+            }
+            return userBalances;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public Optional<UserBalance> findById(Integer userId) {
         try (var connection = ConnectionManager.get();
              var statement = connection.prepareStatement(FIND_BY_USER_ID_SQL)) {
-            statement.setInt(1, id);
+            statement.setInt(1, userId);
             var resultSet = statement.executeQuery();
             UserBalance userBalance = null;
             if (resultSet.next()) {
@@ -41,43 +61,47 @@ public class UserBalanceDaoImpl implements UserBalanceDao {
     }
 
     @Override
-    public void update(UserBalance userBalance) {
+    public UserBalance save(UserBalance userBalance) {
+        try (var connection = ConnectionManager.get();
+             var statement = connection.prepareStatement(SAVE_SQL)) {
+            statement.setInt(1, userBalance.getUserId());
+            statement.setBigDecimal(2, userBalance.getBalance());
+            var resultSet = statement.executeQuery();
+            resultSet.next();
+            return buildUserBalance(resultSet);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public UserBalance update(UserBalance userBalance) {
         try (var connection = ConnectionManager.get();
              var statement = connection.prepareStatement(UPDATE_SQL)) {
             statement.setBigDecimal(1, userBalance.getBalance());
             statement.setInt(2, userBalance.getUserId());
             statement.executeUpdate();
+            return userBalance;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
     @Override
-    public UserBalance init(Integer userId) {
+    public boolean deleteById(Integer userId) {
         try (var connection = ConnectionManager.get();
-        var statement = connection.prepareStatement(INIT_SQL)) {
-            statement.setInt(1, userId);
-            var resultSet = statement.executeQuery();
-            resultSet.next();
-            return UserBalance.builder()
-                    .userId(resultSet.getInt("user_id"))
-                    .balance(resultSet.getBigDecimal("balance"))
-                    .build();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
-    public boolean delete(Integer userId) {
-        try (var connection = ConnectionManager.get();
-             var statement = connection.prepareStatement(DELETE_SQL)) {
+             var statement = connection.prepareStatement(DELETE_BY_USER_ID_SQL)) {
             statement.setInt(1, userId);
             int status = statement.executeUpdate();
             return status > 0;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public boolean delete(UserBalance userBalance) {
+        return deleteById(userBalance.getUserId());
     }
 
     private UserBalance buildUserBalance(ResultSet resultSet) throws SQLException {
