@@ -5,6 +5,7 @@ import com.pulsar.habitica.util.ConnectionManager;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,6 +13,8 @@ import static com.pulsar.habitica.dao.table.UserImageTable.*;
 
 public class UserImageDaoImpl implements UserImageDao {
 
+    private static final String FIND_ALL_SQL = "SELECT * FROM %s"
+            .formatted(FULL_TABLE_NAME);
     private static final String SAVE_SQL = "INSERT INTO %s VALUES (?, ?) RETURNING *"
             .formatted(FULL_TABLE_NAME);
     private static final String DELETE_SQL = "DELETE FROM %s WHERE %s = ? AND %s = ?"
@@ -22,7 +25,18 @@ public class UserImageDaoImpl implements UserImageDao {
 
     @Override
     public List<UserImage> findAll() {
-        return null;
+        try (var connection = ConnectionManager.get();
+        var statement = connection.prepareStatement(FIND_ALL_SQL)) {
+            var resultSet = statement.executeQuery();
+            List<UserImage> images = new ArrayList<>();
+            while (resultSet.next()) {
+                var userImage = buildUserImage(resultSet);
+                images.add(userImage);
+            }
+            return images;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
