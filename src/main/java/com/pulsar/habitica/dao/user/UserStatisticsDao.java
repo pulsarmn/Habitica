@@ -1,12 +1,10 @@
 package com.pulsar.habitica.dao.user;
 
+import com.pulsar.habitica.dao.Dao;
 import com.pulsar.habitica.entity.user.UserStatistics;
 
 import java.util.Optional;
 
-public interface UserStatisticsDao {
+public interface UserStatisticsDao extends Dao<Integer, UserStatistics> {
 
-    Optional<UserStatistics> findByUserId(Integer id);
-
-    void update(UserStatistics userStatistics);
 }
