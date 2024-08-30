@@ -1,6 +1,5 @@
 package com.pulsar.habitica.dao.user;
 
-import com.pulsar.habitica.dao.table.UserImageTable;
 import com.pulsar.habitica.entity.user.UserImage;
 import com.pulsar.habitica.util.ConnectionManager;
 
@@ -8,15 +7,22 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static com.pulsar.habitica.dao.table.UserImageTable.*;
 
 public class UserImageDaoImpl implements UserImageDao {
 
-    private static final String FIND_ALL_BY_USER_ID_SQL = "SELECT * FROM %s WHERE %s = ?"
-            .formatted(FULL_TABLE_NAME, USER_ID);
-    private static final String SAVE_SQL = "INSERT INTO %s VALUES (?, ?)"
+    private static final String FIND_ALL_SQL = "SELECT * FROM %s"
             .formatted(FULL_TABLE_NAME);
+    private static final String FIND_BY_USER_ID_SQL = "SELECT * FROM %s WHERE %s = ?"
+            .formatted(FULL_TABLE_NAME, USER_ID);
+    private static final String SAVE_SQL = "INSERT INTO %s VALUES (?, ?) RETURNING *"
+            .formatted(FULL_TABLE_NAME);
+    private static final String UPDATE_SQL = "UPDATE %s SET %s = ? WHERE %s = ?"
+            .formatted(FULL_TABLE_NAME, IMAGE_ADDRESS, USER_ID);
+    private static final String DELETE_BY_ID_SQL = "DELETE FROM %s WHERE %s = ?"
+            .formatted(FULL_TABLE_NAME, USER_ID);
     private static final String DELETE_SQL = "DELETE FROM %s WHERE %s = ? AND %s = ?"
             .formatted(FULL_TABLE_NAME, USER_ID, IMAGE_ADDRESS);
     private volatile static UserImageDaoImpl INSTANCE;
@@ -24,14 +30,13 @@ public class UserImageDaoImpl implements UserImageDao {
     private UserImageDaoImpl() {}
 
     @Override
-    public List<UserImage> findAllByUserId(Integer id) {
+    public List<UserImage> findAll() {
         try (var connection = ConnectionManager.get();
-        var statement = connection.prepareStatement(FIND_ALL_BY_USER_ID_SQL)) {
-            statement.setInt(1, id);
+        var statement = connection.prepareStatement(FIND_ALL_SQL)) {
             var resultSet = statement.executeQuery();
             List<UserImage> images = new ArrayList<>();
             while (resultSet.next()) {
-                UserImage userImage = buildUserImage(resultSet);
+                var userImage = buildUserImage(resultSet);
                 images.add(userImage);
             }
             return images;
@@ -41,11 +46,52 @@ public class UserImageDaoImpl implements UserImageDao {
     }
 
     @Override
-    public boolean save(UserImage entity) {
+    public Optional<UserImage> findById(Integer userId) {
+        try (var connection = ConnectionManager.get();
+        var statement = connection.prepareStatement(FIND_BY_USER_ID_SQL)) {
+            var resultSet = statement.executeQuery();
+            UserImage userImage = null;
+            if (resultSet.next()) {
+                userImage = buildUserImage(resultSet);
+            }
+            return Optional.ofNullable(userImage);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public UserImage save(UserImage entity) {
         try (var connection = ConnectionManager.get();
         var statement = connection.prepareStatement(SAVE_SQL)) {
             statement.setInt(1, entity.getUserId());
             statement.setString(2, entity.getImageAddr());
+            var resultSet = statement.executeQuery();
+            resultSet.next();
+            return buildUserImage(resultSet);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public UserImage update(UserImage entity) {
+        try (var connection = ConnectionManager.get();
+        var statement = connection.prepareStatement(UPDATE_SQL)) {
+            statement.setString(1, entity.getImageAddr());
+            statement.setInt(2, entity.getUserId());
+            statement.executeUpdate();
+            return entity;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public boolean deleteById(Integer id) {
+        try (var connection = ConnectionManager.get();
+        var statement = connection.prepareStatement(DELETE_BY_ID_SQL)) {
+            statement.setInt(1, id);
             int status = statement.executeUpdate();
             return status > 0;
         } catch (SQLException e) {
