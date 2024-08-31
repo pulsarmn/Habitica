@@ -22,24 +22,24 @@ public class UserImageService {
         this.userImageDao = userImageDao;
     }
 
-    public UserImage initUserImage(User user) throws IOException {
+    public UserImage initUserImage(int userId) throws IOException {
         var userImage = UserImage.builder()
-                .userId(user.getId())
+                .userId(userId)
                 .imageAddr(RELATIVE_PATH + EMPTY_AVATAR)
                 .build();
         return userImageDao.save(userImage);
     }
 
-    public UserImage uploadUserImage(User user, InputStream imageContent) throws IOException {
-        Path fullImagePath = Path.of(ABSOLUTE_PATH, "user" + user.getId(), USER_AVATAR);
-        Path relativePath = Path.of(RELATIVE_PATH, "user" + user.getId(), USER_AVATAR);
+    public UserImage uploadUserImage(int userId, InputStream imageContent) throws IOException {
+        Path fullImagePath = Path.of(ABSOLUTE_PATH, "user" + userId, USER_AVATAR);
+        Path relativePath = Path.of(RELATIVE_PATH, "user" + userId, USER_AVATAR);
         System.out.println(fullImagePath);
         try (imageContent) {
             Files.createDirectories(fullImagePath.getParent());
             Files.write(fullImagePath, imageContent.readAllBytes());
         }
         return userImageDao.update(UserImage.builder()
-                .userId(user.getId())
+                .userId(userId)
                 .imageAddr(relativePath.toString())
                 .build());
     }

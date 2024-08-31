@@ -66,6 +66,7 @@ public class UserStatisticsDaoImpl implements UserStatisticsDao {
             statement.setInt(1, entity.getUserId());
             statement.setInt(2, entity.getTotalVisits());
             var resultSet = statement.executeQuery();
+            resultSet.next();
             return buildUserStatistics(resultSet);
         } catch (SQLException e) {
             throw new RuntimeException(e);
