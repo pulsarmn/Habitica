@@ -1,5 +1,6 @@
 package com.pulsar.habitica.servlet;
 
+import com.pulsar.habitica.dto.ProfileUserDto;
 import com.pulsar.habitica.dto.RegisterUserDto;
 import com.pulsar.habitica.exception.ValidationException;
 import com.pulsar.habitica.filter.PrivatePaths;
@@ -41,13 +42,20 @@ public class RegisterServlet extends HttpServlet {
                 .doublePassword(request.getParameter("doublePassword"))
                 .build();
         try {
-            var user = userService.create(registerUserDto);
-            request.getSession().setAttribute("user", user);
+            var profileUser = userService.create(registerUserDto);
+            addUserToSession(request, profileUser);
             response.sendRedirect(PrivatePaths.HOME.getPath());
         }catch (ValidationException exception) {
             request.setAttribute("errors", exception.getErrors());
             doGet(request, response);
         }
+    }
+
+    private void addUserToSession(HttpServletRequest request, ProfileUserDto profileUser) {
+        request.getSession().setAttribute("user", profileUser.getUserDto());
+        request.getSession().setAttribute("userBalance", profileUser.getUserBalance());
+        request.getSession().setAttribute("userImage", profileUser.getUserImage());
+        request.getSession().setAttribute("userStatistics", profileUser.getUserStatistics());
     }
 
     @Override
