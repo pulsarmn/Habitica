@@ -49,6 +49,7 @@ public class UserImageDaoImpl implements UserImageDao {
     public Optional<UserImage> findById(Integer userId) {
         try (var connection = ConnectionManager.get();
         var statement = connection.prepareStatement(FIND_BY_USER_ID_SQL)) {
+            statement.setInt(1, userId);
             var resultSet = statement.executeQuery();
             UserImage userImage = null;
             if (resultSet.next()) {
