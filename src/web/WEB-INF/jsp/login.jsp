@@ -4,8 +4,8 @@
 <html>
 <head>
     <title>Вход | Habitica</title>
-    <link rel="stylesheet" href="<c:url value="/static/css/index.css"/>?v=1.0">
-    <link rel="stylesheet" href="<c:url value="/static/css/login.css"/>?v=1.0">
+    <link rel="stylesheet" href="<c:url value="/static/css/index.css"/>">
+    <link rel="stylesheet" href="<c:url value="/static/css/login.css"/>">
     <%@include file="bundles.jsp"%>
 </head>
 <body>
