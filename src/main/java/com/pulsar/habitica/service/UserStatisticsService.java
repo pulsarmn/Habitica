@@ -3,6 +3,8 @@ package com.pulsar.habitica.service;
 import com.pulsar.habitica.dao.user.UserStatisticsDao;
 import com.pulsar.habitica.entity.user.UserStatistics;
 
+import java.util.Optional;
+
 public class UserStatisticsService {
 
     private final UserStatisticsDao userStatisticsDao;
@@ -23,5 +25,9 @@ public class UserStatisticsService {
                 .userId(userId)
                 .totalVisits(totalVisits)
                 .build());
+    }
+
+    public UserStatistics findUserStatistics(int userId) {
+        return userStatisticsDao.findById(userId).get();
     }
 }
