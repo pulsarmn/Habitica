@@ -10,6 +10,7 @@ public final class ErrorCodes {
     public static final String EMAIL_REQUIRED = "email.required";
     public static final String EMAIL_TAKEN = "email.already.taken";
     public static final String INVALID_EMAIL = "email.invalid";
+    public static final String EMAIL_NOT_EXIST = "email.not.exist";
 
     public static final String PASSWORD_REQUIRED = "password.required";
     public static final String LONG_PASSWORD = "password.too.long";

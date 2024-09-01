@@ -44,7 +44,7 @@ public class LoginValidator implements Validator<LoginUserDto> {
         if (!email.matches(EMAIL_PATTERN)) {
             validationResult.getErrors().add(Error.of(INVALID_EMAIL, "Invalid email!"));
         }else if (userDao.findByEmail(email).isEmpty()) {
-            validationResult.getErrors().add(Error.of(EMAIL_TAKEN, "The user with this email does not exist!"));
+            validationResult.getErrors().add(Error.of(EMAIL_NOT_EXIST, "The user with this email does not exist!"));
         }
     }
 
