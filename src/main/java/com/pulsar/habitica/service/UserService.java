@@ -63,7 +63,7 @@ public class UserService {
                 .build();
     }
 
-    public UserDto login(LoginUserDto loginUserDto) {
+    public ProfileUserDto login(LoginUserDto loginUserDto) {
         var validationResult = loginValidator.isValid(loginUserDto);
         if (validationResult.isInvalid()) {
             throw new ValidationException(validationResult.getErrors());
@@ -74,6 +74,16 @@ public class UserService {
         }else {
             user = userDao.findByNickname(loginUserDto.getIdetifier()).get();
         }
-        return userMapper.mapFrom(user);
+
+        var userBalance = userBalanceService.findUserBalance(user.getId());
+        var userImage = userImageService.findUserImage(user.getId());
+        var userStatistics = userStatisticsService.findUserStatistics(user.getId());
+
+        return ProfileUserDto.builder()
+                .userDto(userMapper.mapFrom(user))
+                .userBalance(userBalance)
+                .userImage(userImage)
+                .userStatistics(userStatistics)
+                .build();
      }
 }

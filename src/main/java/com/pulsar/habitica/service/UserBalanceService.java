@@ -4,6 +4,7 @@ import com.pulsar.habitica.dao.user.UserBalanceDao;
 import com.pulsar.habitica.entity.user.UserBalance;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 public class UserBalanceService {
 
@@ -25,5 +26,9 @@ public class UserBalanceService {
                 .userId(userId)
                 .balance(balance)
                 .build());
+    }
+
+    public UserBalance findUserBalance(int userId) {
+        return userBalanceDao.findById(userId).get();
     }
 }

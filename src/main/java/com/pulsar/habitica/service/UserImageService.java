@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Optional;
 
 public class UserImageService {
 
@@ -42,5 +43,9 @@ public class UserImageService {
                 .userId(userId)
                 .imageAddr(relativePath.toString())
                 .build());
+    }
+
+    public UserImage findUserImage(int userId) {
+        return userImageDao.findById(userId).get();
     }
 }
