@@ -28,7 +28,11 @@ public class UserImageService {
     }
 
     public UserImage uploadUserImage(int userId, String rootPath, InputStream imageContent) throws IOException {
-        String imageName = System.currentTimeMillis() + ".png";
+        var userImage = findUserImage(userId);
+        if (userImage.getImageAddr().equals(EMPTY_AVATAR)) {
+            saveUserImage(userImage);
+        }
+        String imageName = System.currentTimeMillis() + "";
         String userFolder = "user" + userId;
         Path fullImagePath = Path.of(rootPath, BASE_PATH, userFolder, imageName);
         Path relativePath = Path.of(BASE_PATH, userFolder, imageName);
@@ -47,6 +51,10 @@ public class UserImageService {
                 .userId(userId)
                 .imageAddr(EMPTY_AVATAR)
                 .build());
+    }
+
+    public UserImage saveUserImage(UserImage userImage) {
+        return userImageDao.save(userImage);
     }
 
     private void writeUserImage(Path imagePath, InputStream imageContent) throws IOException {
