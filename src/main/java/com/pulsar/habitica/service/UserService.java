@@ -87,7 +87,7 @@ public class UserService {
 
      public ProfileUserDto getProfileUserDto(int userId) {
          var userBalance = userBalanceService.findUserBalance(userId);
-         var userImage = userImageService.findUserImage(userId);
+         var userImage = userImageService.findOrCreateUserImage(userId);
          var userStatistics = userStatisticsService.findUserStatistics(userId);
          return ProfileUserDto.builder()
                  .userDto(UserDto.builder()
