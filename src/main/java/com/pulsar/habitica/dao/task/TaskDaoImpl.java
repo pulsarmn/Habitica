@@ -22,7 +22,7 @@ public class TaskDaoImpl implements TaskDao<Task> {
     private static final String SAVE_SQL = "INSERT INTO %s (%s, %s, %s, %s, %s, %s) VALUES (?, ?, ?, ?, ?, ?)"
             .formatted(FULL_TABLE_NAME,
                     HEADING_COLUMN,
-                    DEADLINE_COLUMN,
+                    DESCRIPTION_COLUMN,
                     COMPLEXITY_COLUMN,
                     DEADLINE_COLUMN,
                     STATUS_COLUMN,
@@ -168,8 +168,8 @@ public class TaskDaoImpl implements TaskDao<Task> {
     private void setTaskParameters(PreparedStatement statement, Task entity) throws SQLException {
         statement.setString(1, entity.getHeading());
         statement.setString(2, entity.getDescription());
-        statement.setString(3, entity.getComplexity().name());
-        statement.setDate(4, Date.valueOf(entity.getDeadline()));
+        statement.setString(3, entity.getComplexity() != null ? entity.getComplexity().name() : null);
+        statement.setDate(4, entity.getDeadline() != null ? Date.valueOf(entity.getDeadline()) : null);
         statement.setBoolean(5, entity.getStatus());
     }
 
