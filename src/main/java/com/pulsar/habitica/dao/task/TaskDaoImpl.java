@@ -158,8 +158,12 @@ public class TaskDaoImpl implements TaskDao<Task> {
                 .id(resultSet.getInt(ID_COLUMN))
                 .heading(resultSet.getString(HEADING_COLUMN))
                 .description(resultSet.getString(DESCRIPTION_COLUMN))
-                .complexity(Complexity.valueOf(resultSet.getString(COMPLEXITY_COLUMN)))
-                .deadline(resultSet.getDate(DEADLINE_COLUMN).toLocalDate())
+                .complexity(Complexity.valueOf(resultSet.getString(COMPLEXITY_COLUMN) != null
+                        ? resultSet.getString(COMPLEXITY_COLUMN)
+                        : Complexity.EMPTY.name()))
+                .deadline(resultSet.getDate(DEADLINE_COLUMN) != null
+                        ? resultSet.getDate(DEADLINE_COLUMN).toLocalDate()
+                        : null)
                 .status(resultSet.getBoolean(STATUS_COLUMN))
                 .userId(resultSet.getInt(USER_ID_COLUMN))
                 .build();
