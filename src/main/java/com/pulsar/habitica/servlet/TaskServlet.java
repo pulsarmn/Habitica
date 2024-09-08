@@ -48,6 +48,18 @@ public class TaskServlet extends HttpServlet {
     }
 
     @Override
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        var user = (UserDto) request.getSession().getAttribute("user");
+        var id = request.getParameter("taskId");
+        int taskId = id.matches("\\d+") ? Integer.parseInt(id) : 0;
+
+        var result = taskService.deleteTask(taskId);
+        var tasksList = taskService.findAllByUserId(user.getId());
+
+        request.getSession().setAttribute("tasks", tasksList);
+    }
+
+    @Override
     public void destroy() {
 
     }
