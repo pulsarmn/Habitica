@@ -17,6 +17,8 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
+import static com.pulsar.habitica.servlet.SessionAttribute.*;
+
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
 
@@ -45,16 +47,16 @@ public class LoginServlet extends HttpServlet {
             addUserToSession(request, profileUser);
             response.sendRedirect(PrivatePaths.HOME.getPath());
         }catch (ValidationException exception) {
-            request.setAttribute("errors", exception.getErrors());
+            request.setAttribute(ERRORS.getValue(), exception.getErrors());
             doGet(request, response);
         }
     }
 
     private void addUserToSession(HttpServletRequest request, ProfileUserDto profileUser) {
-        request.getSession().setAttribute("user", profileUser.getUserDto());
-        request.getSession().setAttribute("userBalance", profileUser.getUserBalance());
-        request.getSession().setAttribute("userImage", profileUser.getUserImage());
-        request.getSession().setAttribute("userStatistics", profileUser.getUserStatistics());
+        request.getSession().setAttribute(USER.getValue(), profileUser.getUserDto());
+        request.getSession().setAttribute(USER_BALANCE.getValue(), profileUser.getUserBalance());
+        request.getSession().setAttribute(USER_IMAGE.getValue(), profileUser.getUserImage());
+        request.getSession().setAttribute(USER_STATISTICS.getValue(), profileUser.getUserStatistics());
     }
 
     @Override
