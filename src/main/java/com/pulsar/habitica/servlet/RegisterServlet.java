@@ -3,6 +3,7 @@ package com.pulsar.habitica.servlet;
 import com.pulsar.habitica.dto.ProfileUserDto;
 import com.pulsar.habitica.dto.RegisterUserDto;
 import com.pulsar.habitica.exception.ValidationException;
+import com.pulsar.habitica.filter.GuestPaths;
 import com.pulsar.habitica.filter.PrivatePaths;
 import com.pulsar.habitica.service.UserService;
 import com.pulsar.habitica.dao.user.UserDao;
@@ -32,7 +33,7 @@ public class RegisterServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.getRequestDispatcher((JspHelper.getPath("register"))).forward(request, response);
+        request.getRequestDispatcher((JspHelper.getPath(GuestPaths.REGISTER.getPath()))).forward(request, response);
     }
 
     @Override

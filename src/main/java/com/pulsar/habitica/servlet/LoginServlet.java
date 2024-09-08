@@ -5,6 +5,7 @@ import com.pulsar.habitica.dao.user.UserDaoImpl;
 import com.pulsar.habitica.dto.LoginUserDto;
 import com.pulsar.habitica.dto.ProfileUserDto;
 import com.pulsar.habitica.exception.ValidationException;
+import com.pulsar.habitica.filter.GuestPaths;
 import com.pulsar.habitica.filter.PrivatePaths;
 import com.pulsar.habitica.service.UserService;
 import com.pulsar.habitica.util.JspHelper;
@@ -32,7 +33,7 @@ public class LoginServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.getRequestDispatcher(JspHelper.getPath("login")).forward(request, response);
+        request.getRequestDispatcher(JspHelper.getPath(GuestPaths.LOGIN.getPath())).forward(request, response);
     }
 
     @Override
