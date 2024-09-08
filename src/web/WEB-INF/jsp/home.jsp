@@ -4,8 +4,8 @@
 <html>
 <head>
     <title>Задачи | Habitica</title>
-    <link rel="stylesheet" href="<c:url value="/static/css/index.css"/>?v=1.1">
-    <link rel="stylesheet" href="<c:url value="/static/css/home.css"/>?v=1.2">
+    <link rel="stylesheet" href="<c:url value="/static/css/index.css"/>?v=${System.currentTimeMillis()}">
+    <link rel="stylesheet" href="<c:url value="/static/css/home.css"/>?v=${System.currentTimeMillis()}">
 </head>
 <body>
 <div id="app">
@@ -101,7 +101,7 @@
                                     <h2>Привычки</h2>
                                 </div>
                                 <div class="tasks-list">
-                                    <textarea class="quick-add" id="taskInput" name="task" rows="1" cols="30" placeholder="Добавить привычку"></textarea>
+                                    <textarea class="quick-add" name="task" rows="1" cols="30" placeholder="Добавить привычку"></textarea>
                                 </div>
                             </div>
                             <div class="tasks-column daily">
@@ -120,7 +120,12 @@
                                     <h2>Задачи</h2>
                                 </div>
                                 <div class="tasks-list">
-                                    <textarea class="quick-add" placeholder="Добавить задачу" rows="1"></textarea>
+                                    <textarea class="quick-add" id="taskInput" placeholder="Добавить задачу" rows="1"></textarea>
+                                    <div class="sortable-tasks">
+                                        <c:forEach var="task" items="${sessionScope.tasks}">
+                                            <%@ include file="task.jsp" %>
+                                        </c:forEach>
+                                    </div>
                                 </div>
                             </div>
                             <div class="tasks-column reward">
@@ -139,5 +144,5 @@
     </div>
 </div>
 </body>
-<script src="../../static/js/home.js?v=1.0"></script>
+<script src="../../static/js/home.js?v=${System.currentTimeMillis()}"></script>
 </html>
