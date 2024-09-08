@@ -6,6 +6,8 @@ import com.pulsar.habitica.entity.task.Task;
 import com.pulsar.habitica.mapper.Mapper;
 import com.pulsar.habitica.mapper.TaskDtoMapper;
 
+import java.util.List;
+
 public class TaskService {
 
     private final TaskDao<Task> taskDao;
@@ -18,5 +20,9 @@ public class TaskService {
     public Task createTask(TaskDto taskDto) {
         var task = dtoTaskMapper.mapFrom(taskDto);
         return taskDao.save(task);
+    }
+
+    public List<Task> findAllByUserId(int userId) {
+        return taskDao.findAllByUserId(userId);
     }
 }
