@@ -71,9 +71,9 @@
                         </div>
                         <div class="member-stats">
                             <div class="member-data">
-                                <h3 class="character-name">pulsarmn</h3>
+                                <h3 class="character-name">${sessionScope.user.getNickname()}</h3>
                                 <div class="character-level">
-                                    <span>@pulsarmn</span>
+                                    <span>@${sessionScope.user.getNickname()}</span>
                                     <!-- <span>•</span>
                                     <span>Уровень 4 воин</span> -->
                                 </div>

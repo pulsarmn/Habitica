@@ -3,8 +3,8 @@ package com.pulsar.habitica.servlet;
 public enum SessionAttribute {
 
     USER("user"),
-    USER_BALANCE("user_balance"),
-    USER_IMAGE("user_image"),
+    USER_BALANCE("userBalance"),
+    USER_IMAGE("userImage"),
     USER_STATISTICS("userStatistics"),
     TASKS("tasks"),
     LANGUAGE("lang"),

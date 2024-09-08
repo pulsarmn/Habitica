@@ -32,7 +32,7 @@ public class LocaleServlet extends HttpServlet {
         var userLocale = request.getLocale();
         var locale = (selectedLanguage == null) ? userLocale.toString() : selectedLanguage;
 
-        request.getSession().setAttribute("lang", locale);
+        request.getSession().setAttribute(SessionAttribute.LANGUAGE.getValue(), locale);
 
         var prevPage = request.getHeader("referer");
         var page = (prevPage != null) ? prevPage : GuestPaths.LOGIN.getPath();
