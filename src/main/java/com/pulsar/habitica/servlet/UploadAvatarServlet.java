@@ -33,11 +33,10 @@ public class UploadAvatarServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         var imagePart = request.getPart("profileAvatar");
-        var user = (UserDto) request.getSession().getAttribute("user");
+        var user = (UserDto) request.getSession().getAttribute(SessionAttribute.USER.getValue());
         var newUserImage = userImageService.uploadUserImage(user.getId(), imagePart.getInputStream());
 
-        request.getSession().removeAttribute("userImage");
-        request.getSession().setAttribute("userImage", newUserImage);
+        request.getSession().setAttribute(SessionAttribute.USER_IMAGE.getValue(), newUserImage);
 
         response.setStatus(HttpServletResponse.SC_OK);
     }
