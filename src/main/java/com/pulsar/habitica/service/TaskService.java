@@ -25,4 +25,8 @@ public class TaskService {
     public List<Task> findAllByUserId(int userId) {
         return taskDao.findAllByUserId(userId);
     }
+
+    public boolean deleteTask(int taskId) {
+        return taskDao.deleteById(taskId);
+    }
 }
