@@ -34,7 +34,17 @@ public class TaskServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        
+        var taskHeading = request.getParameter("taskHeading");
+        var user = (UserDto) request.getSession().getAttribute("user");
+        var taskDto = TaskDto.builder()
+                .userId(user.getId())
+                .heading(taskHeading)
+                .build();
+        var task = taskService.createTask(taskDto);
+        var tasksList = getTaskList(request);
+
+        tasksList.add(0, task);
+        request.getSession().setAttribute("tasks", tasksList);
     }
 
     @Override
