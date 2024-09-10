@@ -2,7 +2,7 @@ package com.pulsar.habitica.util;
 
 public final class JspHelper {
 
-    private static final String JSP_FORMAT = "/WEB-INF/jsp/%s.jsp";
+    private static final String JSP_FORMAT = "/WEB-INF/jsp%s.jsp";
 
     private JspHelper() {}
 

@@ -3,6 +3,7 @@ package com.pulsar.habitica.servlet;
 import com.pulsar.habitica.dto.ProfileUserDto;
 import com.pulsar.habitica.dto.RegisterUserDto;
 import com.pulsar.habitica.exception.ValidationException;
+import com.pulsar.habitica.filter.GuestPaths;
 import com.pulsar.habitica.filter.PrivatePaths;
 import com.pulsar.habitica.service.UserService;
 import com.pulsar.habitica.dao.user.UserDao;
@@ -17,6 +18,8 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
+import static com.pulsar.habitica.servlet.SessionAttribute.*;
+
 @WebServlet("/register")
 public class RegisterServlet extends HttpServlet {
 
@@ -30,7 +33,7 @@ public class RegisterServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.getRequestDispatcher((JspHelper.getPath("register"))).forward(request, response);
+        request.getRequestDispatcher((JspHelper.getPath(GuestPaths.REGISTER.getPath()))).forward(request, response);
     }
 
     @Override
@@ -46,16 +49,16 @@ public class RegisterServlet extends HttpServlet {
             addUserToSession(request, profileUser);
             response.sendRedirect(PrivatePaths.HOME.getPath());
         }catch (ValidationException exception) {
-            request.setAttribute("errors", exception.getErrors());
+            request.setAttribute(ERRORS.getValue(), exception.getErrors());
             doGet(request, response);
         }
     }
 
     private void addUserToSession(HttpServletRequest request, ProfileUserDto profileUser) {
-        request.getSession().setAttribute("user", profileUser.getUserDto());
-        request.getSession().setAttribute("userBalance", profileUser.getUserBalance());
-        request.getSession().setAttribute("userImage", profileUser.getUserImage());
-        request.getSession().setAttribute("userStatistics", profileUser.getUserStatistics());
+        request.getSession().setAttribute(USER.getValue(), profileUser.getUserDto());
+        request.getSession().setAttribute(USER_BALANCE.getValue(), profileUser.getUserBalance());
+        request.getSession().setAttribute(USER_IMAGE.getValue(), profileUser.getUserImage());
+        request.getSession().setAttribute(USER_STATISTICS.getValue(), profileUser.getUserStatistics());
     }
 
     @Override

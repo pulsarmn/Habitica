@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
     const taskInput = document.getElementById('taskInput');
-    // const taskForm = document.getElementById('taskForm');
 
     taskInput.addEventListener('keypress', function (e) {
         if (e.key === 'Enter') {
@@ -9,12 +8,12 @@ document.addEventListener('DOMContentLoaded', function () {
             const taskValue = taskInput.value.trim(); // Удаляем лишние пробелы
             if (taskValue) { // Проверяем, что поле не пустое
                 // Отправляем данные на сервер
-                fetch('/submit-task', {
+                fetch('/tasks', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',
                     },
-                    body: `task=${encodeURIComponent(taskValue)}` // Кодируем данные для отправки
+                    body: `taskHeading=${encodeURIComponent(taskValue)}` // Кодируем данные для отправки
                 })
                     .then(response => {
                         if (response.ok) {
@@ -80,4 +79,43 @@ document.getElementById('fileInput').addEventListener('change', function() {
         };
         xhr.send(formData);
     }
+});
+
+document.querySelectorAll('.task-control').forEach(function (taskControl) {
+    taskControl.addEventListener('click', function () {
+        const taskWrapper = this.closest('.task-wrapper'); // Найдем родительский элемент с классом task-wrapper
+        const leftControl = taskWrapper.querySelector('.left-control'); // Найдем элемент с классом left-control внутри task-wrapper
+        const svgCheck = taskWrapper.querySelector('.check'); // Найдем иконку checkbox внутри текущей задачи
+
+        const taskId = taskWrapper.querySelector('.task-id').textContent;
+
+        if (svgCheck) { // Если checkbox не установлен
+            leftControl.classList.remove('task-neutral-bg-color'); // Убираем нейтральный цвет фона у left-control
+            leftControl.classList.add('task-disabled'); // Добавляем стиль для отключённой задачи на left-control
+
+            svgCheck.classList.add('display-check-icon'); // Отображаем галочку
+            svgCheck.classList.remove('check'); // Убираем старый класс
+
+            // Отправляем запрос на удаление задачи
+
+            fetch(`/tasks?taskId=${taskId}`, {
+                method: 'DELETE'
+            }).then(response => {
+                if (response.ok) {
+                    console.log(`Задача с ID ${taskId} удалена`);
+                } else {
+                    console.error('Ошибка при удалении задачи');
+                }
+            }).catch(error => {
+                console.error('Ошибка сети:', error);
+            });
+        } else { // Если checkbox уже установлен
+            leftControl.classList.remove('task-disabled'); // Убираем стиль для отключённой задачи
+            leftControl.classList.add('task-neutral-bg-color'); // Возвращаем нейтральный цвет фона
+
+            const displayCheck = taskWrapper.querySelector('.display-check-icon');
+            displayCheck.classList.add('check'); // Возвращаем старый класс checkbox
+            displayCheck.classList.remove('display-check-icon'); // Убираем класс отображаемой галочки
+        }
+    });
 });

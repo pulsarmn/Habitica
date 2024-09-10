@@ -78,7 +78,7 @@ public class UserService {
         var profileUserDto = getProfileUserDto(user.getId());
 
         return ProfileUserDto.builder()
-                .userDto(userMapper.mapFrom(user))
+                .userDto(profileUserDto.getUserDto())
                 .userBalance(profileUserDto.getUserBalance())
                 .userImage(profileUserDto.getUserImage())
                 .userStatistics(profileUserDto.getUserStatistics())
@@ -86,13 +86,12 @@ public class UserService {
      }
 
      public ProfileUserDto getProfileUserDto(int userId) {
+         var user = userDao.findById(userId).orElse(User.builder().id(userId).build());
          var userBalance = userBalanceService.findUserBalance(userId);
          var userImage = userImageService.findOrCreateUserImage(userId);
          var userStatistics = userStatisticsService.findUserStatistics(userId);
          return ProfileUserDto.builder()
-                 .userDto(UserDto.builder()
-                         .id(userId)
-                         .build())
+                 .userDto(userMapper.mapFrom(user))
                  .userBalance(userBalance)
                  .userImage(userImage)
                  .userStatistics(userStatistics)

@@ -3,7 +3,8 @@ package com.pulsar.habitica.filter;
 public enum PrivatePaths {
 
     HOME("/home"),
-    UPLOAD_AVATAR("/upload-avatar");
+    UPLOAD_AVATAR("/upload-avatar"),
+    SAVE_TASK("/tasks");
 
     private String path;
 
