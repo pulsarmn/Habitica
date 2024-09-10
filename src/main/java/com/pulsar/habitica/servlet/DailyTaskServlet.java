@@ -30,7 +30,17 @@ public class DailyTaskServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        var dailyTaskHeading = request.getParameter("dailyTaskHeading");
+        var user = (UserDto) request.getSession().getAttribute(SessionAttribute.USER.getValue());
+        var taskDto = TaskDto.builder()
+                .userId(user.getId())
+                .heading(dailyTaskHeading)
+                .build();
+        var dailyTask = taskService.createDailyTask(taskDto);
+        var dailyTasksList = getDailyTaskList(request);
 
+        dailyTasksList.add(0, dailyTask);
+        request.getSession().setAttribute(SessionAttribute.DAILY_TASKS.getValue(), dailyTasksList);
     }
 
     @Override
@@ -39,8 +49,8 @@ public class DailyTaskServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        
+    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
     }
 
     @Override
