@@ -8,8 +8,12 @@ public class DailyTaskDtoMapper implements Mapper<TaskDto, DailyTask> {
     private static DailyTaskDtoMapper INSTANCE;
 
     @Override
-    public DailyTask mapFrom(TaskDto object) {
-        return null;
+    public DailyTask mapFrom(TaskDto taskDto) {
+        return DailyTask.builder()
+                .userId(taskDto.getUserId())
+                .heading(taskDto.getHeading())
+                .series(0)
+                .build();
     }
 
     public static DailyTaskDtoMapper getInstance() {
