@@ -175,7 +175,7 @@ public class DailyTaskDaoImpl implements TaskDao<DailyTask> {
         statement.setString(2, entity.getDescription());
         statement.setString(3, (entity.getComplexity() != null) ? entity.getComplexity().name() : null);
         statement.setDate(4, (entity.getDeadline() != null) ? Date.valueOf(entity.getDeadline()) : null);
-        statement.setBoolean(5, entity.getStatus());
+        statement.setBoolean(5, (entity.getStatus() != null) ? entity.getStatus() : false);
         statement.setInt(6, entity.getSeries());
     }
 
