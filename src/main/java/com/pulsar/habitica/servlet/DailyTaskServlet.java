@@ -14,6 +14,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @WebServlet("/daily-tasks")
 public class DailyTaskServlet extends HttpServlet {
@@ -37,7 +39,23 @@ public class DailyTaskServlet extends HttpServlet {
     }
 
     @Override
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        
+    }
+
+    @Override
     public void destroy() {
 
+    }
+
+    private List<DailyTask> getDailyTaskList(HttpServletRequest request) {
+        var tempObject = request.getSession().getAttribute(SessionAttribute.DAILY_TASKS.getValue());
+        List<DailyTask> dailyTasks = new ArrayList<>();
+        if (tempObject instanceof List<?> tempList) {
+            if (!tempList.isEmpty() && tempList.get(0) instanceof DailyTask) {
+                dailyTasks = (List<DailyTask>) tempList;
+            }
+        }
+        return dailyTasks;
     }
 }
