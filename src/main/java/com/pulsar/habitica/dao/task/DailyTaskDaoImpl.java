@@ -173,8 +173,8 @@ public class DailyTaskDaoImpl implements TaskDao<DailyTask> {
     public void setDailyTaskParameters(PreparedStatement statement, DailyTask entity) throws SQLException {
         statement.setString(1, entity.getHeading());
         statement.setString(2, entity.getDescription());
-        statement.setString(3, entity.getComplexity().name());
-        statement.setDate(4, Date.valueOf(entity.getDeadline()));
+        statement.setString(3, (entity.getComplexity() != null) ? entity.getComplexity().name() : null);
+        statement.setDate(4, (entity.getDeadline() != null) ? Date.valueOf(entity.getDeadline()) : null);
         statement.setBoolean(5, entity.getStatus());
         statement.setInt(6, entity.getSeries());
     }
