@@ -32,4 +32,11 @@ public class DailyTaskService {
     public List<DailyTask> findAllByUserId(int userId) {
         return taskDao.findAllByUserId(userId);
     }
+
+    public DailyTask incrementSeries(int dailyTaskId) {
+        var dailyTask = findById(dailyTaskId);
+        dailyTask.setSeries(dailyTask.getSeries() + 1);
+        dailyTask.setStatus(true);
+        return taskDao.update(dailyTask);
+    }
 }
