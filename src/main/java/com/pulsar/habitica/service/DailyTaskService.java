@@ -28,4 +28,8 @@ public class DailyTaskService {
                         .id(id)
                         .build());
     }
+
+    public List<DailyTask> findAllByUserId(int userId) {
+        return taskDao.findAllByUserId(userId);
+    }
 }
