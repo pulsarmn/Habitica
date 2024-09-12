@@ -39,4 +39,14 @@ public class DailyTaskService {
         dailyTask.setStatus(true);
         return taskDao.update(dailyTask);
     }
+
+    public DailyTask decrementSeries(int dailyTaskId) {
+        var dailyTask = findById(dailyTaskId);
+        int currentSeries = dailyTask.getSeries();
+        if (currentSeries > 0) {
+            dailyTask.setSeries(currentSeries - 1);
+            dailyTask.setStatus(false);
+        }
+        return taskDao.update(dailyTask);
+    }
 }
