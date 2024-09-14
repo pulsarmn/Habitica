@@ -163,43 +163,37 @@ document.querySelectorAll('.task-control').forEach(function (taskControl) {
     });
 });
 
-document.querySelectorAll('.daily-task-control').forEach(function (taskControl) {
-    taskControl.addEventListener('click', function () {
-        const taskWrapper = this.closest('.daily-task-wrapper'); // Найдем родительский элемент с классом task-wrapper
-        const leftControl = taskWrapper.querySelector('.left-control'); // Найдем элемент с классом left-control внутри task-wrapper
-        const svgCheck = taskWrapper.querySelector('.check'); // Найдем иконку checkbox внутри текущей задачи
-        const displayCheck = taskWrapper.querySelector('.display-check-icon'); // Найдем отображаемую галочку
+document.querySelectorAll('.daily-task-wrapper').forEach(function (taskWrapper) {
+    const status = taskWrapper.getAttribute('data-task-status') === 'true';
+    const leftControl = taskWrapper.querySelector('.left-control');
+    const svgCheck = taskWrapper.querySelector('.check');
+    const displayCheck = taskWrapper.querySelector('.display-check-icon');
 
+    if (status) {
+        leftControl.classList.remove('task-neutral-bg-color');
+        leftControl.classList.add('task-disabled');
+        if (svgCheck) {
+            svgCheck.classList.add('display-check-icon');
+            svgCheck.classList.remove('check');
+        }
+    } else {
+        leftControl.classList.remove('task-disabled');
+        leftControl.classList.add('task-neutral-bg-color');
+        if (displayCheck) {
+            displayCheck.classList.add('check');
+            displayCheck.classList.remove('display-check-icon');
+        }
+    }
+
+    taskWrapper.querySelector('.daily-task-control').addEventListener('click', function () {
         const dailyTaskId = taskWrapper.querySelector('.daily-task-id').textContent;
+        const isTaskCompleted = leftControl.classList.contains('task-disabled');
 
-        if (svgCheck) { // Если checkbox не установлен (задача еще не выполнена)
-            leftControl.classList.remove('task-neutral-bg-color'); // Убираем нейтральный цвет фона у left-control
-            leftControl.classList.add('task-disabled'); // Добавляем стиль для отключённой задачи на left-control
-
-            svgCheck.classList.add('display-check-icon'); // Отображаем галочку
-            svgCheck.classList.remove('check'); // Убираем старый класс
-
-            fetch(`/daily-tasks?dailyTaskId=${dailyTaskId}`, {
-                method: 'PUT',
-                body: JSON.stringify({ action: 'increment' }), // Увеличиваем счётчик
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            }).then(response => {
-                if (response.ok) {
-                    console.log(`Задача с ID ${dailyTaskId} обновлена (увеличение)`);
-                } else {
-                    console.error('Ошибка при увеличении счётчика');
-                }
-            }).catch(error => {
-                console.error('Ошибка сети:', error);
-            });
-        } else if (displayCheck) { // Если checkbox установлен (задача выполнена)
-            leftControl.classList.remove('task-disabled'); // Убираем стиль для отключённой задачи
-            leftControl.classList.add('task-neutral-bg-color'); // Возвращаем нейтральный цвет фона
-
-            displayCheck.classList.add('check'); // Возвращаем старый класс checkbox
-            displayCheck.classList.remove('display-check-icon'); // Убираем класс отображаемой галочки
+        if (isTaskCompleted) {
+            leftControl.classList.remove('task-disabled');
+            leftControl.classList.add('task-neutral-bg-color');
+            displayCheck.classList.add('check');
+            displayCheck.classList.remove('display-check-icon');
 
             fetch(`/daily-tasks?dailyTaskId=${dailyTaskId}`, {
                 method: 'PUT',
@@ -212,6 +206,28 @@ document.querySelectorAll('.daily-task-control').forEach(function (taskControl) 
                     console.log(`Задача с ID ${dailyTaskId} обновлена (уменьшение)`);
                 } else {
                     console.error('Ошибка при уменьшении счётчика');
+                }
+            }).catch(error => {
+                console.error('Ошибка сети:', error);
+            });
+
+        } else {
+            leftControl.classList.remove('task-neutral-bg-color');
+            leftControl.classList.add('task-disabled');
+            svgCheck.classList.add('display-check-icon');
+            svgCheck.classList.remove('check');
+
+            fetch(`/daily-tasks?dailyTaskId=${dailyTaskId}`, {
+                method: 'PUT',
+                body: JSON.stringify({ action: 'increment' }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).then(response => {
+                if (response.ok) {
+                    console.log(`Задача с ID ${dailyTaskId} обновлена (увеличение)`);
+                } else {
+                    console.error('Ошибка при увеличении счётчика');
                 }
             }).catch(error => {
                 console.error('Ошибка сети:', error);
