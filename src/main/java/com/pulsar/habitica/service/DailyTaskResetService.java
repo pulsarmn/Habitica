@@ -15,4 +15,27 @@ public class DailyTaskResetService {
     public DailyTaskResetService(DailyTaskService dailyTaskService) {
         this.dailyTaskService = dailyTaskService;
     }
+
+    public void scheduleDailyReset() {
+        long initialDelay = calculateInitialDelay();
+        scheduler.scheduleAtFixedRate(this::resetDailyTasks, initialDelay, 1, TimeUnit.HOURS);
+    }
+
+    private long calculateInitialDelay() {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime nextDayMidnight = now.toLocalDate().plusDays(1).atStartOfDay();
+        return Duration.between(now, nextDayMidnight).toHours();
+    }
+
+    private void resetDailyTasks() {
+        System.out.println("Сброс задач!!!");
+        for (var dailyTask: dailyTaskService.findAll()) {
+            dailyTask.setStatus(false);
+            dailyTaskService.update(dailyTask);
+        }
+    }
+
+    public void shutdown() {
+        scheduler.shutdown();
+    }
 }
