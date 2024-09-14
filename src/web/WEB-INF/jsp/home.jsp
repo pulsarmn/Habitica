@@ -109,9 +109,11 @@
                                     <h2>Ежедневные дела</h2>
                                 </div>
                                 <div class="tasks-list">
-                                    <textarea class="quick-add" placeholder="Добавить ежедневное дело" rows="1"></textarea>
+                                    <textarea class="quick-add" id="dailyTaskInput" placeholder="Добавить ежедневное дело" rows="1"></textarea>
                                     <div class="sortable-tasks">
-
+                                        <c:forEach var="dailyTask" items="${sessionScope.dailyTasks}">
+                                            <%@ include file="daily_task.jsp"%>
+                                        </c:forEach>
                                     </div>
                                 </div>
                             </div>

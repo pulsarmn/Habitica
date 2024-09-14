@@ -162,8 +162,12 @@ public class DailyTaskDaoImpl implements TaskDao<DailyTask> {
                 .id(resultSet.getInt(ID_COLUMN))
                 .heading(resultSet.getString(HEADING_COLUMN))
                 .description(resultSet.getString(DESCRIPTION_COLUMN))
-                .complexity(Complexity.valueOf(resultSet.getString(COMPLEXITY_COLUMN)))
-                .deadline(resultSet.getDate(DEADLINE_COLUMN).toLocalDate())
+                .complexity((resultSet.getString(COMPLEXITY_COLUMN) != null)
+                        ? Complexity.valueOf(resultSet.getString(COMPLEXITY_COLUMN))
+                        : Complexity.EMPTY)
+                .deadline((resultSet.getDate(DEADLINE_COLUMN) != null)
+                        ? resultSet.getDate(DEADLINE_COLUMN).toLocalDate()
+                        : null)
                 .status(resultSet.getBoolean(STATUS_COLUMN))
                 .series(resultSet.getInt(SERIES_COLUMN))
                 .userId(resultSet.getInt(USER_ID_COLUMN))
@@ -173,9 +177,9 @@ public class DailyTaskDaoImpl implements TaskDao<DailyTask> {
     public void setDailyTaskParameters(PreparedStatement statement, DailyTask entity) throws SQLException {
         statement.setString(1, entity.getHeading());
         statement.setString(2, entity.getDescription());
-        statement.setString(3, entity.getComplexity().name());
-        statement.setDate(4, Date.valueOf(entity.getDeadline()));
-        statement.setBoolean(5, entity.getStatus());
+        statement.setString(3, (entity.getComplexity() != null) ? entity.getComplexity().name() : null);
+        statement.setDate(4, (entity.getDeadline() != null) ? Date.valueOf(entity.getDeadline()) : null);
+        statement.setBoolean(5, (entity.getStatus() != null) ? entity.getStatus() : false);
         statement.setInt(6, entity.getSeries());
     }
 

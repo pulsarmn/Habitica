@@ -7,6 +7,7 @@ public enum SessionAttribute {
     USER_IMAGE("userImage"),
     USER_STATISTICS("userStatistics"),
     TASKS("tasks"),
+    DAILY_TASKS("dailyTasks"),
     LANGUAGE("lang"),
     ERRORS("errors");
 
