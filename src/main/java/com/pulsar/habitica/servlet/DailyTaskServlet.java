@@ -5,6 +5,7 @@ import com.pulsar.habitica.dao.task.TaskDao;
 import com.pulsar.habitica.dto.TaskDto;
 import com.pulsar.habitica.dto.UserDto;
 import com.pulsar.habitica.entity.task.DailyTask;
+import com.pulsar.habitica.entity.user.User;
 import com.pulsar.habitica.service.DailyTaskService;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
@@ -12,6 +13,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -67,5 +69,17 @@ public class DailyTaskServlet extends HttpServlet {
             }
         }
         return dailyTasks;
+    }
+
+    private String getAction(HttpServletRequest request) throws IOException {
+        StringBuilder sb = new StringBuilder();
+        try (var bufferedReader = request.getReader()) {
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                sb.append(line);
+            }
+        }
+        JSONObject json = new JSONObject(sb.toString());
+        return json.getString("action");
     }
 }
