@@ -37,6 +37,10 @@ public class DailyTaskService {
         return taskDao.findAllByUserId(userId);
     }
 
+    public DailyTask update(DailyTask dailyTask) {
+        return taskDao.update(dailyTask);
+    }
+
     public DailyTask incrementSeries(int dailyTaskId) {
         var dailyTask = findById(dailyTaskId);
         dailyTask.setSeries(dailyTask.getSeries() + 1);
