@@ -82,4 +82,12 @@ public class DailyTaskServlet extends HttpServlet {
         JSONObject json = new JSONObject(sb.toString());
         return json.getString("action");
     }
+
+    private void doAction(String action, int dailyTaskId) {
+        if (action.equals("increment")) {
+            taskService.incrementSeries(dailyTaskId);
+        }else if (action.equals("decrement")) {
+            taskService.decrementSeries(dailyTaskId);
+        }
+    }
 }
