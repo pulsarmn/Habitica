@@ -1,10 +1,12 @@
 package com.pulsar.habitica.servlet;
 
+import com.pulsar.habitica.dao.task.DailyTaskDaoImpl;
 import com.pulsar.habitica.dao.task.TaskDaoImpl;
 import com.pulsar.habitica.dao.user.UserDaoImpl;
 import com.pulsar.habitica.dto.ProfileUserDto;
 import com.pulsar.habitica.dto.UserDto;
 import com.pulsar.habitica.filter.PrivatePaths;
+import com.pulsar.habitica.service.DailyTaskService;
 import com.pulsar.habitica.service.TaskService;
 import com.pulsar.habitica.service.UserService;
 import com.pulsar.habitica.util.JspHelper;
@@ -24,6 +26,7 @@ public class HomeServlet extends HttpServlet {
 
     private UserService userService;
     private TaskService taskService;
+    private DailyTaskService dailyTaskService;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -31,6 +34,8 @@ public class HomeServlet extends HttpServlet {
         userService = new UserService(userDao);
         var taskDao = TaskDaoImpl.getInstance();
         taskService = new TaskService(taskDao);
+        var dailyTaskDao = DailyTaskDaoImpl.getInstance();
+        dailyTaskService = new DailyTaskService(dailyTaskDao);
     }
 
     @Override
@@ -38,7 +43,9 @@ public class HomeServlet extends HttpServlet {
         var user = (UserDto) request.getSession().getAttribute(USER.getValue());
         var profileUserDto = userService.getProfileUserDto(user.getId());
         var taskList = taskService.findAllByUserId(user.getId());
+        var dailyTaskList = dailyTaskService.findAllByUserId(user.getId());
 
+        request.getSession().setAttribute(DAILY_TASKS.getValue(), dailyTaskList);
         request.getSession().setAttribute(TASKS.getValue(), taskList);
         addUserToSession(request, profileUserDto);
         request.getRequestDispatcher(JspHelper.getPath(PrivatePaths.HOME.getPath())).forward(request, response);
