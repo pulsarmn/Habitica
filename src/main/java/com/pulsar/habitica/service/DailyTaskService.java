@@ -22,6 +22,10 @@ public class DailyTaskService {
         return taskDao.save(dailyTask);
     }
 
+    public List<DailyTask> findAll() {
+        return taskDao.findAll();
+    }
+
     public DailyTask findById(int id) {
         return taskDao.findById(id).orElse(
                 DailyTask.builder()
