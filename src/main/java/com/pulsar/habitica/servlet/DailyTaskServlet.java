@@ -1,11 +1,9 @@
 package com.pulsar.habitica.servlet;
 
 import com.pulsar.habitica.dao.task.DailyTaskDaoImpl;
-import com.pulsar.habitica.dao.task.TaskDao;
 import com.pulsar.habitica.dto.TaskDto;
 import com.pulsar.habitica.dto.UserDto;
 import com.pulsar.habitica.entity.task.DailyTask;
-import com.pulsar.habitica.entity.user.User;
 import com.pulsar.habitica.service.DailyTaskService;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
@@ -52,7 +50,11 @@ public class DailyTaskServlet extends HttpServlet {
 
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        var action = getAction(request);
+        var id = request.getParameter("dailyTaskId");
+        int dailyTaskId = (id.matches("\\d+")) ? Integer.parseInt(id) : 0;
 
+        doAction(action, dailyTaskId);
     }
 
     @Override
