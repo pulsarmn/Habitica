@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <div class="habit-wrapper task-wrapper">
     <span class="habit-id" style="display: none">${habit.id}</span>
@@ -16,17 +17,17 @@
             <div class="task-content">
                 <div class="d-flex justify-content-between pl-75">
                     <h3 class="task-title markdown">
-                        <p>Title</p>
+                        <p>${habit.heading}</p>
                     </h3>
                     <%@ include file="dropdown-menu.jsp"%>
                 </div>
                 <div class="task-notes small-text markdown pl-75">
-                    <p>Desc</p>
+                    <p>${habit.description}</p>
                 </div>
                 <div class="icons-right d-flex justify-content-end">
-                    <span class="">+0</span>
+                    <span class="">+${habit.goodSeries}</span>
                     <span>&nbsp;|&nbsp;</span>
-                    <span>-0</span>
+                    <span>-${habit.badSeries}</span>
                 </div>
             </div>
             <div class="right-control d-flex align-items-center justify-content-center task-neutral-bg-color">

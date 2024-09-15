@@ -101,7 +101,7 @@
                                     <h2>Привычки</h2>
                                 </div>
                                 <div class="tasks-list">
-                                    <textarea class="quick-add" name="task" rows="1" cols="30" placeholder="Добавить привычку"></textarea>
+                                    <textarea class="quick-add" id="habitInput" rows="1" placeholder="Добавить привычку"></textarea>
                                 </div>
                             </div>
                             <div class="tasks-column daily">
