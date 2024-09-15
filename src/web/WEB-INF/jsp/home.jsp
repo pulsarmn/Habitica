@@ -102,6 +102,11 @@
                                 </div>
                                 <div class="tasks-list">
                                     <textarea class="quick-add" id="habitInput" rows="1" placeholder="Добавить привычку"></textarea>
+                                    <div class="sortable-tasks">
+                                        <c:forEach var="habit" items="${sessionScope.habits}">
+                                            <%@ include file="habit.jsp"%>
+                                        </c:forEach>
+                                    </div>
                                 </div>
                             </div>
                             <div class="tasks-column daily">
@@ -147,4 +152,7 @@
 </div>
 </body>
 <script src="../../static/js/home.js?v=${System.currentTimeMillis()}"></script>
+<script src="../../static/js/task.js?v=${System.currentTimeMillis()}"></script>
+<script src="../../static/js/daily-task.js?v=${System.currentTimeMillis()}"></script>
+<script src="../../static/js/habit.js?v=${System.currentTimeMillis()}"></script>
 </html>
