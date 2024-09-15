@@ -355,12 +355,10 @@ h3.markdown {
     padding-top: 0;
     padding-bottom: 7px;
     -webkit-box-flex: 1;
-    -ms-flex-positive: 1;
     flex-grow: 1;
     background: #fff;
     border: 1px solid transparent;
-    -webkit-transition-duration: .15;
-    transition-duration: .15;
+    transition-duration: 0.15s;
     min-width: 0;
     border-top-right-radius: 4px;
     border-bottom-right-radius: 4px;
@@ -567,12 +565,10 @@ h3.markdown {
     padding-top: 0;
     padding-bottom: 7px;
     -webkit-box-flex: 1;
-    -ms-flex-positive: 1;
     flex-grow: 1;
     background: #fff;
     border: 1px solid transparent;
-    -webkit-transition-duration: .15;
-    transition-duration: .15;
+    transition-duration: 0.15s;
     min-width: 0;
     border-top-right-radius: 4px;
     border-bottom-right-radius: 4px;
@@ -598,4 +594,46 @@ h3.markdown {
     padding-right: 20px;
     min-width: 0;
     overflow-wrap: break-word;
+}
+
+.icons-right {
+    margin-right: 7px;
+}
+
+.habit-control {
+    cursor: pointer;
+    width: 28px;
+    height: 28px;
+    border: 1px solid transparent;
+    border-radius: 100px!important;
+    background: rgba(127,51,0,.25)!important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition-duration: 0.2s;
+}
+
+.habit-control:hover {
+    background: rgba(127,51,0,.4)!important;
+    transition-duration: 0.2s;
+}
+
+.positive-svg {
+    width: 13px;
+    fill: white;
+}
+
+.negative-svg {
+    width: 13px;
+    fill: white;
+}
+
+.right-control {
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+    min-height: 60px;
+    border: 1px solid transparent;
+    border-right: none;
+    width: 40px;
+    flex-shrink: 0;
 }
