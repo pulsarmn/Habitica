@@ -8,6 +8,7 @@ public enum SessionAttribute {
     USER_STATISTICS("userStatistics"),
     TASKS("tasks"),
     DAILY_TASKS("dailyTasks"),
+    HABITS("habits"),
     LANGUAGE("lang"),
     ERRORS("errors");
 
