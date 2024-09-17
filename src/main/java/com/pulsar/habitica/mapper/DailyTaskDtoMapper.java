@@ -1,6 +1,7 @@
 package com.pulsar.habitica.mapper;
 
 import com.pulsar.habitica.dto.TaskDto;
+import com.pulsar.habitica.entity.task.Complexity;
 import com.pulsar.habitica.entity.task.DailyTask;
 
 public class DailyTaskDtoMapper implements Mapper<TaskDto, DailyTask> {
@@ -12,6 +13,7 @@ public class DailyTaskDtoMapper implements Mapper<TaskDto, DailyTask> {
         return DailyTask.builder()
                 .userId(taskDto.getUserId())
                 .heading(taskDto.getHeading())
+                .complexity(Complexity.EASY)
                 .series(0)
                 .build();
     }
