@@ -40,4 +40,11 @@ public class HabitService {
     public Habit update(Habit habit) {
         return habitDao.update(habit);
     }
+
+    public Habit incrementGoodSeries(int habitId) {
+        var habit = findById(habitId);
+        var goodSeries = habit.getGoodSeries();
+        habit.setGoodSeries(++goodSeries);
+        return habitDao.update(habit);
+    }
 }
