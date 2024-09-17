@@ -12,7 +12,11 @@ public class HabitDtoMapper implements Mapper<TaskDto, Habit> {
 
     @Override
     public Habit mapFrom(TaskDto taskDto) {
-        return null;
+        return Habit.builder()
+                .heading(taskDto.getHeading())
+                .userId(taskDto.getUserId())
+                .complexity(Complexity.EASY)
+                .build();
     }
 
     public static HabitDtoMapper getInstance() {
