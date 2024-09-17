@@ -11,6 +11,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -66,5 +67,17 @@ public class HabitServlet extends HttpServlet {
             }
         }
         return habits;
+    }
+
+    private String getAction(HttpServletRequest request) throws IOException {
+        StringBuilder sb = new StringBuilder();
+        try (var bufferedReader = request.getReader()) {
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                sb.append(line);
+            }
+        }
+        JSONObject object = new JSONObject(sb.toString());
+        return object.getString("action");
     }
 }
