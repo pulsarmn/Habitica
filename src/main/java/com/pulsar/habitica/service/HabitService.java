@@ -36,4 +36,8 @@ public class HabitService {
     public List<Habit> findAllByUserId(int userId) {
         return habitDao.findAllByUserId(userId);
     }
+
+    public Habit update(Habit habit) {
+        return habitDao.update(habit);
+    }
 }
