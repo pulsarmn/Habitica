@@ -29,7 +29,17 @@ public class HabitServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        var habitHeading = request.getParameter("habitHeading");
+        var user = (UserDto) request.getSession().getAttribute(SessionAttribute.USER.getValue());
+        var habitDto = TaskDto.builder()
+                .userId(user.getId())
+                .heading(habitHeading)
+                .build();
+        var habit = habitService.createHabit(habitDto);
+        var habitsList = getHabitList(request);
 
+        habitsList.add(0, habit);
+        request.getSession().setAttribute(SessionAttribute.HABITS.getValue(), habitsList);
     }
 
     @Override
