@@ -80,4 +80,12 @@ public class HabitServlet extends HttpServlet {
         JSONObject object = new JSONObject(sb.toString());
         return object.getString("action");
     }
+
+    private void doAction(String action, int habitId) {
+        if (action.equals("increment")) {
+            habitService.incrementGoodSeries(habitId);
+        }else if (action.equals("decrement")) {
+            habitService.decrementBadSeries(habitId);
+        }
+    }
 }
