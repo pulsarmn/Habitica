@@ -25,4 +25,11 @@ public class HabitService {
     public List<Habit> findAll() {
         return habitDao.findAll();
     }
+
+    public Habit findById(int habitId) {
+        return habitDao.findById(habitId)
+                .orElse(Habit.builder()
+                        .id(habitId)
+                        .build());
+    }
 }
