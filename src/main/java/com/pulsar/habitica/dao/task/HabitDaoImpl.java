@@ -18,7 +18,10 @@ public class HabitDaoImpl implements TaskDao<Habit> {
             .formatted(FULL_TABLE_NAME);
     private static final String FIND_BY_ID_SQL = "SELECT * FROM %s WHERE %s = ?"
             .formatted(FULL_TABLE_NAME, ID_COLUMN);
-    private static final String SAVE_SQL = "INSERT INTO %s (%s, %s, %s, %s, %s, %s) VALUES (?, ?, ?, ?, ?, ?)"
+    private static final String SAVE_SQL = """
+            INSERT INTO %s (%s, %s, %s, %s, %s, %s)
+            VALUES (?, ?, ?, COALESCE(?, 0), COALESCE(?, 0), ?)
+            """
             .formatted(FULL_TABLE_NAME,
                     HEADING_COLUMN,
                     DESCRIPTION_COLUMN,
@@ -168,9 +171,9 @@ public class HabitDaoImpl implements TaskDao<Habit> {
     private void setHabitParameters(PreparedStatement statement, Habit entity) throws SQLException {
         statement.setString(1, entity.getHeading());
         statement.setString(2, entity.getDescription());
-        statement.setString(3, entity.getComplexity().name());
-        statement.setInt(4, entity.getBadSeries());
-        statement.setInt(5, entity.getGoodSeries());
+        statement.setString(3, (entity.getComplexity() != null) ? entity.getComplexity().name() : null);
+        statement.setObject(4, entity.getBadSeries());
+        statement.setObject(5, entity.getGoodSeries());
     }
 
     public static HabitDaoImpl getInstance() {
