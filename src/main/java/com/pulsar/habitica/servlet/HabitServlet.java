@@ -45,7 +45,11 @@ public class HabitServlet extends HttpServlet {
 
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        var action = getAction(request);
+        var id = request.getParameter("habitId");
+        int habitId = (id != null && id.matches("\\d+")) ? Integer.parseInt(id) : 0;
 
+        doAction(action, habitId);
     }
 
     @Override
