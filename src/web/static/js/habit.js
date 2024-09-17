@@ -42,9 +42,9 @@ document.querySelectorAll('.habit-wrapper').forEach(function (habitWrapper) {
     const rightControl = habitWrapper.querySelector('.right-control');
 
     leftControl.addEventListener('click', function () {
-        fetch(`/habits/update`, {
+        fetch(`/habit?habitId=${habitId}`, {
             method: 'PUT',
-            body: JSON.stringify({ habitId: habitId, action: 'increase' }),
+            body: JSON.stringify({ habitId: habitId, action: 'increment' }),
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -60,9 +60,9 @@ document.querySelectorAll('.habit-wrapper').forEach(function (habitWrapper) {
     });
 
     rightControl.addEventListener('click', function () {
-        fetch(`/habits/update`, {
+        fetch(`/habit?habitId=${habitId}`, {
             method: 'PUT',
-            body: JSON.stringify({ habitId: habitId, action: 'decrease' }),
+            body: JSON.stringify({ habitId: habitId, action: 'decrement' }),
             headers: {
                 'Content-Type': 'application/json'
             }
