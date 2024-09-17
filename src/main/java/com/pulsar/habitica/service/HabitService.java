@@ -47,4 +47,11 @@ public class HabitService {
         habit.setGoodSeries(++goodSeries);
         return habitDao.update(habit);
     }
+
+    public Habit decrementBadSeries(int habitId) {
+        var habit = findById(habitId);
+        var badSeries = habit.getBadSeries();
+        habit.setBadSeries(++badSeries);
+        return habitDao.update(habit);
+    }
 }
