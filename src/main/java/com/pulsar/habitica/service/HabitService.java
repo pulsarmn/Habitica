@@ -32,4 +32,8 @@ public class HabitService {
                         .id(habitId)
                         .build());
     }
+
+    public List<Habit> findAllByUserId(int userId) {
+        return habitDao.findAllByUserId(userId);
+    }
 }
