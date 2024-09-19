@@ -8,8 +8,11 @@ public class RewardDtoMapper implements Mapper<RewardDto, Reward> {
     private static RewardDtoMapper INSTANCE;
 
     @Override
-    public Reward mapFrom(RewardDto object) {
-        return null;
+    public Reward mapFrom(RewardDto entity) {
+        return Reward.builder()
+                .heading(entity.getHeading())
+                .userId(entity.getUserId())
+                .build();
     }
 
     public static RewardDtoMapper getInstance() {
