@@ -21,4 +21,8 @@ public class RewardService {
     public List<Reward> findAllByUserId(int userId) {
         return rewardDao.findAllByUserId(userId);
     }
+
+    public Reward update(Reward reward) {
+        return rewardDao.update(reward);
+    }
 }
