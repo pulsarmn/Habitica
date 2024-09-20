@@ -1,5 +1,6 @@
 package com.pulsar.habitica.servlet;
 
+import com.pulsar.habitica.dao.reward.RewardDaoImpl;
 import com.pulsar.habitica.dao.task.DailyTaskDaoImpl;
 import com.pulsar.habitica.dao.task.HabitDaoImpl;
 import com.pulsar.habitica.dao.task.TaskDaoImpl;
@@ -7,10 +8,7 @@ import com.pulsar.habitica.dao.user.UserDaoImpl;
 import com.pulsar.habitica.dto.ProfileUserDto;
 import com.pulsar.habitica.dto.UserDto;
 import com.pulsar.habitica.filter.PrivatePaths;
-import com.pulsar.habitica.service.DailyTaskService;
-import com.pulsar.habitica.service.HabitService;
-import com.pulsar.habitica.service.TaskService;
-import com.pulsar.habitica.service.UserService;
+import com.pulsar.habitica.service.*;
 import com.pulsar.habitica.util.JspHelper;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
@@ -30,6 +28,7 @@ public class HomeServlet extends HttpServlet {
     private TaskService taskService;
     private DailyTaskService dailyTaskService;
     private HabitService habitService;
+    private RewardService rewardService;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -41,6 +40,8 @@ public class HomeServlet extends HttpServlet {
         dailyTaskService = new DailyTaskService(dailyTaskDao);
         var habitDao = HabitDaoImpl.getInstance();
         habitService = new HabitService(habitDao);
+        var rewardDao = RewardDaoImpl.getInstance();
+        rewardService = new RewardService(rewardDao);
     }
 
     @Override
@@ -58,20 +59,10 @@ public class HomeServlet extends HttpServlet {
         request.getRequestDispatcher(JspHelper.getPath(PrivatePaths.HOME.getPath())).forward(request, response);
     }
 
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
-    }
-
     private void addUserToSession(HttpServletRequest request, ProfileUserDto profileUser) {
         request.getSession().setAttribute(USER.getValue(), profileUser.getUserDto());
         request.getSession().setAttribute(USER_BALANCE.getValue(), profileUser.getUserBalance());
         request.getSession().setAttribute(USER_IMAGE.getValue(), profileUser.getUserImage());
         request.getSession().setAttribute(USER_STATISTICS.getValue(), profileUser.getUserStatistics());
-    }
-
-    @Override
-    public void destroy() {
-
     }
 }
