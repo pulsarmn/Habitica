@@ -51,10 +51,13 @@ public class HomeServlet extends HttpServlet {
         var tasksList = taskService.findAllByUserId(user.getId());
         var dailyTasksList = dailyTaskService.findAllByUserId(user.getId());
         var habitsList = habitService.findAllByUserId(user.getId());
+        var rewardsList = rewardService.findAllByUserId(user.getId());
 
         request.getSession().setAttribute(TASKS.getValue(), tasksList);
         request.getSession().setAttribute(DAILY_TASKS.getValue(), dailyTasksList);
         request.getSession().setAttribute(HABITS.getValue(), habitsList);
+        request.getSession().setAttribute(REWARDS.getValue(), rewardsList);
+        
         addUserToSession(request, profileUserDto);
         request.getRequestDispatcher(JspHelper.getPath(PrivatePaths.HOME.getPath())).forward(request, response);
     }
