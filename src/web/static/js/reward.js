@@ -33,3 +33,14 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 });
+
+function updateBalance() {
+    fetch('/balance', {
+        method: 'GET',
+    })
+        .then(response => response.json())
+        .then(balance => {
+            document.getElementById('userBalance').textContent = balance;
+        })
+        .catch(error => console.error('Ошибка обновления баланса: ', error));
+}
