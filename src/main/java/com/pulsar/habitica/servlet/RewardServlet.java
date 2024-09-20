@@ -46,4 +46,15 @@ public class RewardServlet extends HttpServlet {
     public void destroy() {
 
     }
+
+    private List<Reward> getRewardList(HttpServletRequest request) {
+        var tempObject = request.getSession().getAttribute(SessionAttribute.REWARDS.getValue());
+        List<Reward> rewards = new ArrayList<>();
+        if (tempObject instanceof List<?> tempList) {
+            if (!tempList.isEmpty() && tempList.get(0) instanceof Reward) {
+                rewards = (List<Reward>) tempList;
+            }
+        }
+        return rewards;
+    }
 }
