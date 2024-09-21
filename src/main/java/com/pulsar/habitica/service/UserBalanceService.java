@@ -4,6 +4,7 @@ import com.pulsar.habitica.dao.user.UserBalanceDao;
 import com.pulsar.habitica.entity.user.UserBalance;
 
 import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.util.Optional;
 
 public class UserBalanceService {
@@ -30,5 +31,24 @@ public class UserBalanceService {
 
     public UserBalance findUserBalance(int userId) {
         return userBalanceDao.findById(userId).get();
+    }
+
+    public boolean isPurchased(int userId, BigDecimal cost) {
+        if (cost == null) {
+            return false;
+        }
+
+        var userBalance = findUserBalance(userId);
+
+        BigDecimal balance = userBalance.getBalance();
+        if (balance.compareTo(cost) < 0) {
+            return false;
+        }
+
+        BigDecimal newBalance = balance.subtract(cost);
+        userBalance.setBalance(newBalance);
+        updateUserBalance(userId, newBalance);
+
+        return true;
     }
 }

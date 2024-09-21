@@ -36,7 +36,7 @@
                                     </g>
                                 </svg>
                             </div>
-                            <span>${sessionScope.userBalance.getBalance()}</span>
+                            <span id="userBalance">${sessionScope.userBalance.getBalance()}</span>
                         </div>
                     </div>
                     <div class="form-inline">
@@ -140,7 +140,12 @@
                                     <h2>Награды</h2>
                                 </div>
                                 <div class="tasks-list">
-                                    <textarea class="quick-add" placeholder="Добавить награду" rows="1"></textarea>
+                                    <textarea class="quick-add" id="rewardInput" placeholder="Добавить награду" rows="1"></textarea>
+                                    <div class="sortable-tasks">
+                                        <c:forEach var="reward" items="${sessionScope.rewards}">
+                                            <%@ include file="reward.jsp" %>
+                                        </c:forEach>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -155,4 +160,5 @@
 <script src="../../static/js/task.js?v=${System.currentTimeMillis()}"></script>
 <script src="../../static/js/daily-task.js?v=${System.currentTimeMillis()}"></script>
 <script src="../../static/js/habit.js?v=${System.currentTimeMillis()}"></script>
+<script src="../../static/js/reward.js?v=${System.currentTimeMillis()}"></script>
 </html>
