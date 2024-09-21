@@ -36,7 +36,7 @@
                                     </g>
                                 </svg>
                             </div>
-                            <span>${sessionScope.userBalance.getBalance()}</span>
+                            <span id="userBalance">${sessionScope.userBalance.getBalance()}</span>
                         </div>
                     </div>
                     <div class="form-inline">
