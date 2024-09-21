@@ -19,6 +19,7 @@ import java.util.Map;
 public class UserBalanceServlet extends HttpServlet {
 
     private UserBalanceService userBalanceService;
+    private static final Gson gson = new Gson();
 
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -28,6 +29,22 @@ public class UserBalanceServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        
+        var user = (UserDto) request.getSession().getAttribute(SessionAttribute.USER.getValue());
+        if (user == null) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+        }
+
+        var userBalance = userBalanceService.findUserBalance(user.getId());
+        if (userBalance == null) {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+        }
+
+        String balance = userBalance.getBalance().toString();
+        String jsonResponse = gson.toJson(Map.of("balance", balance));
+
+        response.setContentType("application/json");
+        response.setCharacterEncoding(StandardCharsets.UTF_8.name());
+        response.getWriter().write(jsonResponse);
     }
 }
