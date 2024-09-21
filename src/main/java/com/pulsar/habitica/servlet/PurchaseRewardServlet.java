@@ -31,6 +31,38 @@ public class PurchaseRewardServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        var user = (UserDto) request.getSession().getAttribute(SessionAttribute.USER.getValue());
+        if (user == null) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+        }
+        var userRewards = rewardService.findAllByUserId(user.getId());
+        var id = request.getParameter("rewardId");
 
+        int rewardId;
+        try {
+            rewardId = Integer.parseInt(id);
+        }catch (NumberFormatException e) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return;
+        }
+
+        var reward = userRewards.stream()
+                .filter(userReward -> userReward.getId().equals(rewardId))
+                .findFirst();
+
+        if (reward.isEmpty()) {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return;
+        }
+
+        BigDecimal cost = reward.get().getCost();
+        boolean isPurchased = userBalanceService.isPurchased(user.getId(), cost);
+
+        if (isPurchased) {
+            response.setStatus(HttpServletResponse.SC_OK);
+        }else {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+        }
     }
 }
