@@ -38,14 +38,13 @@ document.querySelectorAll('.right-reward-control').forEach(function (reward_cont
     reward_control.addEventListener('click', function () {
         const rewardWrapper = this.closest('.reward-wrapper');
         const rewardId = rewardWrapper.querySelector('.reward-id').textContent;
-        const rewardCost = rewardWrapper.querySelector('.reward-cost').textContent;
 
         fetch(`/purchase-reward`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
             },
-            body: `rewardId=${encodeURIComponent(rewardId)}&rewardCost=${rewardCost}`
+            body: `rewardId=${encodeURIComponent(rewardId)}`
         }).then(response => {
             if (response.ok) {
                 console.log(`Вознаграждение с ID ${rewardId} успешно куплено!`);
@@ -67,7 +66,28 @@ function updateBalance() {
     })
         .then(response => response.json())
         .then(balance => {
-            document.getElementById('userBalance').textContent = balance;
+            animateBalanceChange(balance.balance, 1000);
         })
         .catch(error => console.error('Ошибка обновления баланса: ', error));
+}
+
+function animateBalanceChange(targetBalance, duration) {
+    const balanceElement = document.getElementById('userBalance');
+    const startTime = performance.now();
+    const initialBalance = Number(balanceElement.textContent);
+
+        function updateBalanceAnimation(currentTime) {
+        const elapsedTime = currentTime - startTime;
+        const progress = Math.min(elapsedTime / duration, 1);
+
+        const currentBalance = initialBalance + (targetBalance - initialBalance) * progress;
+
+        balanceElement.textContent = currentBalance.toFixed(2);
+
+        if (progress < 1) {
+            requestAnimationFrame(updateBalanceAnimation);
+        }
+    }
+
+    requestAnimationFrame(updateBalanceAnimation);
 }
