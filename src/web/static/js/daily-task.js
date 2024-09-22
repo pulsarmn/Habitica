@@ -1,5 +1,7 @@
 // tracking daily task events
 
+updateDailyTasks();
+
 document.addEventListener('DOMContentLoaded', function () {
     const taskInput = document.getElementById('dailyTaskInput');
 
@@ -19,6 +21,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     .then(response => {
                         if (response.ok) {
                             taskInput.value = '';
+                            updateDailyTasks();
                             console.assert('Задача отправлена успешно!');
                         } else {
                             console.assert('Ошибка при отправке задачи');
@@ -38,46 +41,32 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
-document.querySelectorAll('.daily-task-wrapper').forEach(function (taskWrapper) {
-    const status = taskWrapper.getAttribute('data-task-status') === 'true';
-    const leftControl = taskWrapper.querySelector('.left-control');
-    const svgCheck = taskWrapper.querySelector('.check');
-    const displayCheck = taskWrapper.querySelector('.display-check-icon');
-
-    if (status) {
-        leftControl.classList.remove('task-neutral-bg-color');
-        leftControl.classList.add('task-disabled');
-        if (svgCheck) {
-            svgCheck.classList.add('display-check-icon');
-            svgCheck.classList.remove('check');
-        }
-    } else {
-        leftControl.classList.remove('task-disabled');
-        leftControl.classList.add('task-neutral-bg-color');
-        if (displayCheck) {
-            displayCheck.classList.add('check');
-            displayCheck.classList.remove('display-check-icon');
-        }
-    }
-
-    taskWrapper.querySelector('.daily-task-control').addEventListener('click', function () {
+document.getElementById('daily-tasks-container').addEventListener('click', function(event) {
+    if (event.target.closest('.daily-task-control')) {
+        const taskWrapper = event.target.closest('.daily-task-wrapper');
+        const leftControl = taskWrapper.querySelector('.left-control');
+        const svgCheck = taskWrapper.querySelector('.check');
+        const displayCheck = taskWrapper.querySelector('.display-check-icon');
         const dailyTaskId = taskWrapper.querySelector('.daily-task-id').textContent;
         const isTaskCompleted = leftControl.classList.contains('task-disabled');
 
         if (isTaskCompleted) {
             leftControl.classList.remove('task-disabled');
             leftControl.classList.add('task-neutral-bg-color');
-            displayCheck.classList.add('check');
-            displayCheck.classList.remove('display-check-icon');
+            if (displayCheck) {
+                displayCheck.classList.add('check');
+                displayCheck.classList.remove('display-check-icon');
+            }
 
             fetch(`/daily-tasks?dailyTaskId=${dailyTaskId}`, {
                 method: 'PUT',
-                body: JSON.stringify({ action: 'decrement' }), // Уменьшаем счётчик
+                body: JSON.stringify({ action: 'decrement' }),
                 headers: {
                     'Content-Type': 'application/json'
                 }
             }).then(response => {
                 if (response.ok) {
+                    updateDailyTasks();
                     console.log(`Задача с ID ${dailyTaskId} обновлена (уменьшение)`);
                 } else {
                     console.error('Ошибка при уменьшении счётчика');
@@ -85,12 +74,13 @@ document.querySelectorAll('.daily-task-wrapper').forEach(function (taskWrapper) 
             }).catch(error => {
                 console.error('Ошибка сети:', error);
             });
-
         } else {
             leftControl.classList.remove('task-neutral-bg-color');
             leftControl.classList.add('task-disabled');
-            svgCheck.classList.add('display-check-icon');
-            svgCheck.classList.remove('check');
+            if (svgCheck) {
+                svgCheck.classList.add('display-check-icon');
+                svgCheck.classList.remove('check');
+            }
 
             fetch(`/daily-tasks?dailyTaskId=${dailyTaskId}`, {
                 method: 'PUT',
@@ -100,6 +90,7 @@ document.querySelectorAll('.daily-task-wrapper').forEach(function (taskWrapper) 
                 }
             }).then(response => {
                 if (response.ok) {
+                    updateDailyTasks();
                     console.log(`Задача с ID ${dailyTaskId} обновлена (увеличение)`);
                 } else {
                     console.error('Ошибка при увеличении счётчика');
@@ -108,5 +99,25 @@ document.querySelectorAll('.daily-task-wrapper').forEach(function (taskWrapper) 
                 console.error('Ошибка сети:', error);
             });
         }
+    }
+})
+
+function updateDailyTasks() {
+    fetch(`/daily-tasks`, {
+        method: `GET`,
+        headers: {
+            'Content-Type': 'text/html'
+        }
+    }).then(response => {
+        if (response.ok) {
+            return response.text();
+        }else {
+            throw new Error('Ошибка при получении списка ежедневных задач!');
+        }
+    }).then(html => {
+        const dailyTaskList = document.getElementById('daily-tasks-container');
+        dailyTaskList.innerHTML = html;
+    }).catch(error => {
+        console.error('Error', error);
     });
-});
+}
