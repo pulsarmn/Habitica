@@ -7,7 +7,7 @@ public enum PrivatePaths {
     TASKS("/tasks"),
     HABITS("/habit"),
     DAILY_TASKS("/daily-tasks"),
-    REWARDS("/reward"),
+    REWARDS("/rewards"),
     PURCHASE_REWARD("/purchase-reward"),
     USER_BALANCE("/balance");
 
