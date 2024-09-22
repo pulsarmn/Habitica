@@ -128,8 +128,7 @@
                                 </div>
                                 <div class="tasks-list">
                                     <textarea class="quick-add" id="taskInput" placeholder="Добавить задачу" rows="1"></textarea>
-                                    <div class="sortable-tasks" id="tasks-container">
-                                    </div>
+                                    <div class="sortable-tasks" id="tasks-container"></div>
                                 </div>
                             </div>
                             <div class="tasks-column reward">
