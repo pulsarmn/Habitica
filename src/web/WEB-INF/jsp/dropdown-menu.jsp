@@ -19,30 +19,6 @@
                 <span class="text">Изменить</span>
             </span>
         </div>
-        <div class="dropdown-item up-task-item">
-            <span class="dropdown-icon-item">
-                <span class="edit-svg-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 11">
-                        <g fill="none" fill-rule="evenodd" stroke="#686274" stroke-width="2">
-                            <path d="M5 3v8M9 6L5 2 1 6"></path>
-                        </g>
-                    </svg>
-                </span>
-                <span class="text">Наверх</span>
-            </span>
-        </div>
-        <div class="dropdown-item down-task-item">
-            <span class="dropdown-icon-item">
-                <span class="edit-svg-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 11">
-                        <g fill="none" fill-rule="evenodd" stroke="#686274" stroke-width="2">
-                            <path d="M5,0v8 M1,5l4,4l4-4"></path>
-                        </g>
-                    </svg>
-                </span>
-                <span class="text">Вниз</span>
-            </span>
-        </div>
         <div class="dropdown-item delete-task-item">
             <span class="dropdown-icon-item">
                 <span class="edit-svg-icon delete-svg-icon">
