@@ -128,10 +128,7 @@
                                 </div>
                                 <div class="tasks-list">
                                     <textarea class="quick-add" id="taskInput" placeholder="Добавить задачу" rows="1"></textarea>
-                                    <div class="sortable-tasks">
-                                        <c:forEach var="task" items="${sessionScope.tasks}">
-                                            <%@ include file="task.jsp" %>
-                                        </c:forEach>
+                                    <div class="sortable-tasks" id="tasks-container">
                                     </div>
                                 </div>
                             </div>
