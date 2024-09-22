@@ -4,7 +4,12 @@ public enum PrivatePaths {
 
     HOME("/home"),
     UPLOAD_AVATAR("/upload-avatar"),
-    SAVE_TASK("/tasks");
+    TASKS("/tasks"),
+    HABITS("/habits"),
+    DAILY_TASKS("/daily-tasks"),
+    REWARDS("/rewards"),
+    PURCHASE_REWARD("/purchase-reward"),
+    USER_BALANCE("/balance");
 
     private String path;
 

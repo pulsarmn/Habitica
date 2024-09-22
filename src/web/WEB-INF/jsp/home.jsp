@@ -102,11 +102,7 @@
                                 </div>
                                 <div class="tasks-list">
                                     <textarea class="quick-add" id="habitInput" rows="1" placeholder="Добавить привычку"></textarea>
-                                    <div class="sortable-tasks">
-                                        <c:forEach var="habit" items="${sessionScope.habits}">
-                                            <%@ include file="habit.jsp"%>
-                                        </c:forEach>
-                                    </div>
+                                    <div class="sortable-tasks" id="habits-container"></div>
                                 </div>
                             </div>
                             <div class="tasks-column daily">
@@ -115,11 +111,7 @@
                                 </div>
                                 <div class="tasks-list">
                                     <textarea class="quick-add" id="dailyTaskInput" placeholder="Добавить ежедневное дело" rows="1"></textarea>
-                                    <div class="sortable-tasks">
-                                        <c:forEach var="dailyTask" items="${sessionScope.dailyTasks}">
-                                            <%@ include file="daily_task.jsp"%>
-                                        </c:forEach>
-                                    </div>
+                                    <div class="sortable-tasks" id="daily-tasks-container"></div>
                                 </div>
                             </div>
                             <div class="tasks-column todo">
@@ -128,11 +120,7 @@
                                 </div>
                                 <div class="tasks-list">
                                     <textarea class="quick-add" id="taskInput" placeholder="Добавить задачу" rows="1"></textarea>
-                                    <div class="sortable-tasks">
-                                        <c:forEach var="task" items="${sessionScope.tasks}">
-                                            <%@ include file="task.jsp" %>
-                                        </c:forEach>
-                                    </div>
+                                    <div class="sortable-tasks" id="tasks-container"></div>
                                 </div>
                             </div>
                             <div class="tasks-column reward">
@@ -141,11 +129,7 @@
                                 </div>
                                 <div class="tasks-list">
                                     <textarea class="quick-add" id="rewardInput" placeholder="Добавить награду" rows="1"></textarea>
-                                    <div class="sortable-tasks">
-                                        <c:forEach var="reward" items="${sessionScope.rewards}">
-                                            <%@ include file="reward.jsp" %>
-                                        </c:forEach>
-                                    </div>
+                                    <div class="sortable-tasks" id="rewards-container"></div>
                                 </div>
                             </div>
                         </div>

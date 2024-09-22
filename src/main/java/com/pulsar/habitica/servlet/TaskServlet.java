@@ -5,7 +5,9 @@ import com.pulsar.habitica.dao.task.TaskDaoImpl;
 import com.pulsar.habitica.dto.TaskDto;
 import com.pulsar.habitica.dto.UserDto;
 import com.pulsar.habitica.entity.task.Task;
+import com.pulsar.habitica.filter.PrivatePaths;
 import com.pulsar.habitica.service.TaskService;
+import com.pulsar.habitica.util.JspHelper;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -29,6 +31,19 @@ public class TaskServlet extends HttpServlet {
     }
 
     @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        var user = (UserDto) request.getSession().getAttribute(SessionAttribute.USER.getValue());
+        if (user == null) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+        }
+        List<Task> tasks = taskService.findAllByUserId(user.getId());
+
+        request.setAttribute(SessionAttribute.TASKS.getValue(), tasks);
+        request.getRequestDispatcher(JspHelper.getPath(PrivatePaths.TASKS.getPath())).include(request, response);
+    }
+
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         var taskHeading = request.getParameter("taskHeading");
         var user = (UserDto) request.getSession().getAttribute(SessionAttribute.USER.getValue());
@@ -37,10 +52,6 @@ public class TaskServlet extends HttpServlet {
                 .heading(taskHeading)
                 .build();
         var task = taskService.createTask(taskDto);
-        var tasksList = getTaskList(request);
-
-        tasksList.add(0, task);
-        request.getSession().setAttribute(SessionAttribute.TASKS.getValue(), tasksList);
     }
 
     @Override

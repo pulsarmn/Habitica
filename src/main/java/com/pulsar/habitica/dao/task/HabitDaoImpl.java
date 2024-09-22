@@ -41,8 +41,8 @@ public class HabitDaoImpl implements TaskDao<Habit> {
             .formatted(FULL_TABLE_NAME, ID_COLUMN);
     private static final String FIND_BY_HEADING_SQL = "SELECT * FROM %s WHERE LOWER(%s) LIKE CONCAT('%', ?, '%')"
             .replaceFirst("%s", FULL_TABLE_NAME).replaceFirst("%s", HEADING_COLUMN);
-    private static final String FIND_BY_USER_ID_SQL = "SELECT * FROM %s WHERE %s = ?"
-            .formatted(FULL_TABLE_NAME, USER_ID_COLUMN);
+    private static final String FIND_BY_USER_ID_SQL = "SELECT * FROM %s WHERE %s = ? ORDER BY %s"
+            .formatted(FULL_TABLE_NAME, USER_ID_COLUMN, ID_COLUMN);
     private static HabitDaoImpl INSTANCE;
 
     private HabitDaoImpl() {

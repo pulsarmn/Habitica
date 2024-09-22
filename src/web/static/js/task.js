@@ -1,5 +1,7 @@
 // tracking task events
 
+updateTasks();
+
 document.addEventListener('DOMContentLoaded', function () {
     const taskInput = document.getElementById('taskInput');
 
@@ -19,9 +21,10 @@ document.addEventListener('DOMContentLoaded', function () {
                     .then(response => {
                         if (response.ok) {
                             taskInput.value = '';
-                            console.assert('Задача отправлена успешно!');
+                            console.log('Задача отправлена успешно!');
+                            updateTasks();
                         } else {
-                            console.assert('Ошибка при отправке задачи');
+                            console.log('Ошибка при отправке задачи');
                         }
                     })
                     .catch(error => {
@@ -38,12 +41,12 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
-document.querySelectorAll('.task-control').forEach(function (taskControl) {
-    taskControl.addEventListener('click', function () {
-        const taskWrapper = this.closest('.task-wrapper');
+document.getElementById('tasks-container').addEventListener('click', function(event) {
+    if (event.target.closest('.task-control')) {
+        const taskControl = event.target.closest('.task-control');
+        const taskWrapper = taskControl.closest('.task-wrapper');
         const leftControl = taskWrapper.querySelector('.left-control');
         const svgCheck = taskWrapper.querySelector('.check');
-
         const taskId = taskWrapper.querySelector('.task-id').textContent;
 
         if (svgCheck) {
@@ -58,6 +61,7 @@ document.querySelectorAll('.task-control').forEach(function (taskControl) {
             }).then(response => {
                 if (response.ok) {
                     console.log(`Задача с ID ${taskId} удалена`);
+                    updateTasks();
                 } else {
                     console.error('Ошибка при удалении задачи');
                 }
@@ -72,5 +76,25 @@ document.querySelectorAll('.task-control').forEach(function (taskControl) {
             displayCheck.classList.add('check');
             displayCheck.classList.remove('display-check-icon');
         }
-    });
-});
+    }
+})
+
+function updateTasks() {
+    fetch(`/tasks`, {
+        method: `GET`,
+        headers: {
+            'Content-Type': 'text/html'
+        }
+    }).then(response => {
+        if (response.ok) {
+            return response.text();
+        }else {
+            throw new Error('Ошибка при получении списка задач!');
+        }
+    }).then(html => {
+        const taskList = document.getElementById('tasks-container');
+        taskList.innerHTML = html;
+    }).catch(error => {
+        console.error("Error: ", error);
+    })
+}
