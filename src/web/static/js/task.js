@@ -89,7 +89,7 @@ function updateTasks() {
         if (response.ok) {
             return response.text();
         }else {
-            throw new Error('Ошибка при получении списка задач!')
+            throw new Error('Ошибка при получении списка задач!');
         }
     }).then(html => {
         const taskList = document.getElementById('tasks-container');

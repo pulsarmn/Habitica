@@ -128,8 +128,7 @@
                                 </div>
                                 <div class="tasks-list">
                                     <textarea class="quick-add" id="taskInput" placeholder="Добавить задачу" rows="1"></textarea>
-                                    <div class="sortable-tasks" id="tasks-container">
-                                    </div>
+                                    <div class="sortable-tasks" id="tasks-container"></div>
                                 </div>
                             </div>
                             <div class="tasks-column reward">
@@ -138,11 +137,7 @@
                                 </div>
                                 <div class="tasks-list">
                                     <textarea class="quick-add" id="rewardInput" placeholder="Добавить награду" rows="1"></textarea>
-                                    <div class="sortable-tasks">
-                                        <c:forEach var="reward" items="${sessionScope.rewards}">
-                                            <%@ include file="reward.jsp" %>
-                                        </c:forEach>
-                                    </div>
+                                    <div class="sortable-tasks" id="rewards-container"></div>
                                 </div>
                             </div>
                         </div>
