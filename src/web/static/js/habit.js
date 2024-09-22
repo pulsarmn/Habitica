@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function () {
             e.preventDefault();
             const taskValue = taskInput.value.trim();
             if (taskValue) {
-                fetch('/habit', {
+                fetch('/habits', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',
@@ -42,7 +42,7 @@ document.querySelectorAll('.habit-wrapper').forEach(function (habitWrapper) {
     const rightControl = habitWrapper.querySelector('.right-control');
 
     leftControl.addEventListener('click', function () {
-        fetch(`/habit?habitId=${habitId}`, {
+        fetch(`/habits?habitId=${habitId}`, {
             method: 'PUT',
             body: JSON.stringify({ habitId: habitId, action: 'increment' }),
             headers: {
@@ -60,7 +60,7 @@ document.querySelectorAll('.habit-wrapper').forEach(function (habitWrapper) {
     });
 
     rightControl.addEventListener('click', function () {
-        fetch(`/habit?habitId=${habitId}`, {
+        fetch(`/habits?habitId=${habitId}`, {
             method: 'PUT',
             body: JSON.stringify({ habitId: habitId, action: 'decrement' }),
             headers: {

@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-@WebServlet("/habit")
+@WebServlet("/habits")
 public class HabitServlet extends HttpServlet {
 
     private HabitService habitService;
