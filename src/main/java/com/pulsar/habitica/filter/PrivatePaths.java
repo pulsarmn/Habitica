@@ -5,7 +5,7 @@ public enum PrivatePaths {
     HOME("/home"),
     UPLOAD_AVATAR("/upload-avatar"),
     TASKS("/tasks"),
-    HABITS("/habit"),
+    HABITS("/habits"),
     DAILY_TASKS("/daily-tasks"),
     REWARDS("/rewards"),
     PURCHASE_REWARD("/purchase-reward"),
