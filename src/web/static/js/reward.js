@@ -66,32 +66,6 @@ document.getElementById('rewards-container').addEventListener('click', function(
     }
 })
 
-// document.querySelectorAll('.right-reward-control').forEach(function (reward_control) {
-//     reward_control.addEventListener('click', function () {
-//         const rewardWrapper = this.closest('.reward-wrapper');
-//         const rewardId = rewardWrapper.querySelector('.reward-id').textContent;
-//
-//         fetch(`/purchase-reward`, {
-//             method: 'POST',
-//             headers: {
-//                 'Content-Type': 'application/x-www-form-urlencoded'
-//             },
-//             body: `rewardId=${encodeURIComponent(rewardId)}`
-//         }).then(response => {
-//             if (response.ok) {
-//                 console.log(`Вознаграждение с ID ${rewardId} успешно куплено!`);
-//                 updateBalance();
-//             }else if (response.status === 400) {
-//                 console.error("Недостаточно средств!");
-//             }else {
-//                 console.error("Ошибка при покупке вознаграждения!");
-//             }
-//         }).catch(error => {
-//             console.error('Ошибка сети: ', error);
-//         });
-//     });
-// });
-
 function updateBalance() {
     fetch('/balance', {
         method: 'GET',
