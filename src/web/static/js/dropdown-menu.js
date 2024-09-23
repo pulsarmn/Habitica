@@ -98,3 +98,27 @@ document.getElementById('habits-container').addEventListener('click', function(e
         });
     }
 });
+
+document.getElementById(`rewards-container`).addEventListener(`click`, function(event) {
+    if (event.target.closest(`.habitica-menu-dropdown-toggle`)) {
+        const dropdownToggle = event.target.closest('.habitica-menu-dropdown-toggle');
+        const rewardWrapper = dropdownToggle.closest('.reward-wrapper');
+        const dropdownMenu = rewardWrapper.querySelector('.dropdown-menu');
+        const rewardId = rewardWrapper.querySelector('.reward-id').textContent;
+
+        dropdownMenu.addEventListener(`click`, function(event) {
+            if (event.target.closest(`.delete-task-item`)) {
+                fetch(`/rewards?rewardId=${rewardId}`, {
+                    method: `DELETE`
+                }).then(response => {
+                    if (response.ok) {
+                        console.log(`Награда с ID ${rewardId} удалена`);
+                        updateRewards();
+                    }
+                }).catch(error => {
+                    console.error(`Error: `, error);
+                });
+            }
+        });
+    }
+});
