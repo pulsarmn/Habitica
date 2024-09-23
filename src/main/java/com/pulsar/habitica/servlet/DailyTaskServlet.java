@@ -56,6 +56,17 @@ public class DailyTaskServlet extends HttpServlet {
 
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        var user = (UserDto) request.getSession().getAttribute(SessionAttribute.USER.getValue());
+        var id = request.getParameter("dailyTaskId");
+        int dailyTaskId;
+        try {
+            dailyTaskId = Integer.parseInt(id);
+        }catch (NumberFormatException e) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return;
+        }
+
+        var result = taskService.deleteDailyTask(dailyTaskId);
 
     }
 
