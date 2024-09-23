@@ -67,6 +67,34 @@ document.getElementById('daily-tasks-container').addEventListener('click', funct
             }else if (event.target.closest('.edit-task-item')) {
 
             }
-        })
+        });
+    }
+});
+
+document.getElementById('habits-container').addEventListener('click', function(event) {
+    if (event.target.closest('.habitica-menu-dropdown-toggle')) {
+        const dropdownToggle = event.target.closest('.habitica-menu-dropdown-toggle');
+        const habitWrapper = dropdownToggle.closest('.habit-wrapper');
+        const dropdownMenu = habitWrapper.querySelector('.dropdown-menu');
+        const habitId = habitWrapper.querySelector('.habit-id').textContent;
+
+        dropdownMenu.addEventListener('click', function(event) {
+            if (event.target.closest('.delete-task-item')) {
+                fetch(`/habits?habitId=${habitId}`, {
+                    method: `DELETE`
+                }).then(response => {
+                    if (response.ok) {
+                        console.log(`Привычка с ID ${habitId} удалена`);
+                        updateHabits();
+                    }else {
+                        console.error(`Ошибка при удалении привычки`);
+                    }
+                }).catch(error => {
+                    console.error(`Error: `, error);
+                })
+            }else if (event.target.closest('.edit-task-item')) {
+
+            }
+        });
     }
 });
