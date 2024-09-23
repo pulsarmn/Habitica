@@ -41,6 +41,10 @@ public class HabitService {
         return habitDao.update(habit);
     }
 
+    public boolean deleteHabit(int habitId) {
+        return habitDao.deleteById(habitId);
+    }
+
     public Habit incrementGoodSeries(int habitId) {
         var habit = findById(habitId);
         var goodSeries = habit.getGoodSeries();
