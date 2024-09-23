@@ -2,7 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <div class="task-wrapper">
-    <span class="task-id" style="display: none">${task.id}</span>
+  <span class="task-id" style="display: none">${task.id}</span>
   <div class="task transition">
     <div class="d-flex">
       <div class="left-control d-flex justify-content-center task-neutral-bg-color">

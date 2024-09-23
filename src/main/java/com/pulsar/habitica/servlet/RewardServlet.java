@@ -60,7 +60,23 @@ public class RewardServlet extends HttpServlet {
 
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        var user = (UserDto) request.getSession().getAttribute(SessionAttribute.USER.getValue());
+        if (user == null) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+        }
 
+        var id = request.getParameter("rewardId");
+        int rewardId;
+
+        try {
+            rewardId = Integer.parseInt(id);
+        }catch (NumberFormatException e) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return;
+        }
+
+        rewardService.deleteReward(rewardId);
     }
 
     @Override

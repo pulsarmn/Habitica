@@ -61,9 +61,6 @@ public class TaskServlet extends HttpServlet {
         int taskId = id.matches("\\d+") ? Integer.parseInt(id) : 0;
 
         var result = taskService.deleteTask(taskId);
-        var tasksList = taskService.findAllByUserId(user.getId());
-
-        request.getSession().setAttribute(SessionAttribute.TASKS.getValue(), tasksList);
     }
 
     @Override

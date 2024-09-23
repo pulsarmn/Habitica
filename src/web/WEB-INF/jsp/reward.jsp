@@ -10,15 +10,7 @@
                     <h3 class="task-title markdown">
                         <p>${reward.heading}</p>
                     </h3>
-                    <div role="button" class="habitica-menu-drop-down dropdown">
-                        <div class="habitica-menu-dropdown-toggle">
-                            <div class="dropdown-icon d-flex">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4 16">
-                                    <path fill-rule="evenodd" d="M2 4a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm0 6a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm0 6a2 2 0 1 1 0-4 2 2 0 0 1 0 4z"></path>
-                                </svg>
-                            </div>
-                        </div>
-                    </div>
+                    <%@ include file="dropdown-menu.jsp"%>
                 </div>
                 <div class="task-notes small-text markdown pl-75">
                     <p>${reward.description}</p>

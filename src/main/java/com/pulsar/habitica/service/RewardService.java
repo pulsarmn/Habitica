@@ -34,4 +34,8 @@ public class RewardService {
     public Reward update(Reward reward) {
         return rewardDao.update(reward);
     }
+
+    public boolean deleteReward(int rewardId) {
+        return rewardDao.deleteById(rewardId);
+    }
 }

@@ -41,6 +41,10 @@ public class DailyTaskService {
         return taskDao.update(dailyTask);
     }
 
+    public boolean deleteDailyTask(int dailyTaskId) {
+        return taskDao.deleteById(dailyTaskId);
+    }
+
     public DailyTask incrementSeries(int dailyTaskId) {
         var dailyTask = findById(dailyTaskId);
         dailyTask.setSeries(dailyTask.getSeries() + 1);

@@ -65,7 +65,22 @@ public class HabitServlet extends HttpServlet {
 
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        var user = (UserDto) request.getSession().getAttribute(SessionAttribute.USER.getValue());
+        if (user == null) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+        }
 
+        var id = request.getParameter("habitId");
+        int habitId;
+        try {
+            habitId = Integer.parseInt(id);
+        }catch (NumberFormatException e) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return;
+        }
+
+        habitService.deleteHabit(habitId);
     }
 
     @Override
