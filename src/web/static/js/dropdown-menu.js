@@ -42,3 +42,31 @@ document.getElementById('tasks-container').addEventListener('click', function(ev
         });
     }
 });
+
+document.getElementById('daily-tasks-container').addEventListener('click', function(event) {
+    if (event.target.closest('.habitica-menu-dropdown-toggle')) {
+        const dropdownToggle = event.target.closest('.habitica-menu-dropdown-toggle');
+        const taskWrapper = dropdownToggle.closest('.daily-task-wrapper');
+        const dropdownMenu = taskWrapper.querySelector('.dropdown-menu');
+        const dailyTaskId = taskWrapper.querySelector('.daily-task-id').textContent;
+
+        dropdownMenu.addEventListener('click', function(event) {
+            if (event.target.closest('.delete-task-item')) {
+                fetch(`/daily-tasks?dailyTaskId=${dailyTaskId}`, {
+                    method: 'DELETE'
+                }).then(response => {
+                    if (response.ok) {
+                        console.log(`Задача с ID ${dailyTaskId} удалена`);
+                        updateDailyTasks();
+                    } else {
+                        console.error('Ошибка при удалении задачи');
+                    }
+                }).catch(error => {
+                    console.error('Ошибка сети:', error);
+                });
+            }else if (event.target.closest('.edit-task-item')) {
+
+            }
+        })
+    }
+});
