@@ -59,6 +59,28 @@ document.getElementById('tasks-container').addEventListener('click', function(ev
     }
 });
 
+function handleSaveTask(modalWindowWrapper, taskId) {
+    const saveButton = modalWindowWrapper.querySelector(`.save-task`);
+    saveButton.addEventListener(`click`, function() {
+        const taskTitle = modalWindowWrapper.querySelector(`#task-title`);
+        const taskDescription = modalWindowWrapper.querySelector(`#task-notes`);
+        const taskComplexity = modalWindowWrapper.querySelector(`#task-difficulty`);
+        const taskDeadline = modalWindowWrapper.querySelector(`#task-deadline`);
+
+        const taskData = {
+            id: taskId,
+            heading: taskTitle.value,
+            description: taskDescription.textContent,
+            complexity: taskComplexity.value,
+            deadline: taskDeadline.value
+        };
+
+        saveTask(taskId, taskData).then(() => {
+            hideModal(modalWindowWrapper.querySelector(`#edit-task-modal`));
+        });
+    });
+}
+
 function handleDeleteItem(modalWindowWrapper, taskId) {
     const modalWindow = modalWindowWrapper.querySelector(`#edit-task-modal`);
     const deleteButton = modalWindowWrapper.querySelector(`.delete-task`);
