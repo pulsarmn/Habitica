@@ -32,4 +32,14 @@ public final class ServletUtil {
         }
         return new JSONObject(sb.toString());
     }
+
+    public static void handleException(HttpServletResponse response, Exception e) {
+        if (e instanceof UnauthorizedException) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        }else if (e instanceof JSONException) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        }else {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        }
+    }
 }
