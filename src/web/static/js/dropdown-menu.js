@@ -59,6 +59,21 @@ document.getElementById('tasks-container').addEventListener('click', function(ev
     }
 });
 
+function fillTaskModalWindow(modalWindowWrapper) {
+    const taskTitle = modalWindowWrapper.querySelector(`#task-title`);
+    const taskDescription = modalWindowWrapper.querySelector(`#task-notes`);
+    const taskComplexity = modalWindowWrapper.querySelector(`#task-difficulty`);
+    const taskDeadline = modalWindowWrapper.querySelector(`#task-deadline`);
+
+    const taskData = getJsonTask(modalWindowWrapper);
+    console.log(taskData);
+
+    taskTitle.value = taskData.heading;
+    taskDescription.innerHTML = (taskData.description === undefined) ? `` : taskData.description;
+    taskComplexity.value = taskData.complexity;
+    taskDeadline.value = taskData.deadline;
+}
+
 function getJsonTask() {
     const modalWindowWrapper = document.getElementById(`modal-window-wrapper`);
     const taskDataElement = modalWindowWrapper.querySelector(`#task-data`);
