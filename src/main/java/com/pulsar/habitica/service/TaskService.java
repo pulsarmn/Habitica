@@ -7,6 +7,7 @@ import com.pulsar.habitica.mapper.Mapper;
 import com.pulsar.habitica.mapper.TaskDtoMapper;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 public class TaskService {
 
@@ -20,6 +21,11 @@ public class TaskService {
     public Task createTask(TaskDto taskDto) {
         var task = dtoTaskMapper.mapFrom(taskDto);
         return taskDao.save(task);
+    }
+
+    public Task findById(int taskId) {
+        return taskDao.findById(taskId)
+                .orElseThrow(() -> new NoSuchElementException("The task with id 3 was not found!"));
     }
 
     public List<Task> findAllByUserId(int userId) {
