@@ -27,24 +27,46 @@ document.getElementById('tasks-container').addEventListener('click', function(ev
 
         dropdownMenu.addEventListener('click', function(event) {
             if (event.target.closest('.delete-task-item')) {
-                fetch(`/tasks?taskId=${taskId}`, {
-                    method: 'DELETE'
-                }).then(response => {
-                    if (response.ok) {
-                        console.log(`Задача с ID ${taskId} удалена`);
-                        updateTasks();
-                    } else {
-                        console.error('Ошибка при удалении задачи');
-                    }
-                }).catch(error => {
-                    console.error('Ошибка сети:', error);
-                });
+                handleDeleteItem(taskId, `tasks`, updateTasks);
             }else if (event.target.closest('.edit-task-item')) {
+                getTaskDataToEdit(taskId).then(html => {
+                    const modalWindowWrapper = document.getElementById(`modal-window-wrapper`);
+                    modalWindowWrapper.innerHTML = html;
+                    const modalWindow = modalWindowWrapper.querySelector(`#edit-task-modal`);
+                    const saveButton = modalWindowWrapper.querySelector(`.save-task`);
+                    const taskTitleInput = modalWindowWrapper.querySelector(`#task-title`);
 
+                    fillTaskModalWindow(modalWindowWrapper);
+                    showModal(modalWindow);
+                    toggleSaveButton(taskTitleInput, saveButton);
+
+                    taskTitleInput.addEventListener(`input`, function(event) {
+                        toggleSaveButton(taskTitleInput, saveButton);
+                    });
+
+                    handleSaveTask(modalWindowWrapper, taskId);
+                    handleDeleteItem(modalWindowWrapper, taskId);
+
+                    document.getElementById('close-modal-btn').addEventListener('click', function() {
+                        hideModal(modalWindow);
+                        modalWindowWrapper.innerHTML = ``;
+                    });
+                }).catch(error => {
+                    console.log(`Error while receiving task data`, error);
+                });
             }
         });
     }
 });
+
+function handleDeleteItem(modalWindowWrapper, taskId) {
+    const modalWindow = modalWindowWrapper.querySelector(`#edit-task-modal`);
+    const deleteButton = modalWindowWrapper.querySelector(`.delete-task`);
+
+    deleteButton.addEventListener(`click`, function() {
+        deleteItem(taskId, `tasks`, updateTasks).then(() => hideModal(modalWindow));
+    });
+}
 
 document.getElementById('daily-tasks-container').addEventListener('click', function(event) {
     if (event.target.closest('.habitica-menu-dropdown-toggle')) {
