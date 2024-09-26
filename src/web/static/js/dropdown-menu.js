@@ -59,6 +59,12 @@ document.getElementById('tasks-container').addEventListener('click', function(ev
     }
 });
 
+function getJsonTask() {
+    const modalWindowWrapper = document.getElementById(`modal-window-wrapper`);
+    const taskDataElement = modalWindowWrapper.querySelector(`#task-data`);
+    return JSON.parse(taskDataElement.textContent);
+}
+
 function handleSaveTask(modalWindowWrapper, taskId) {
     const saveButton = modalWindowWrapper.querySelector(`.save-task`);
     saveButton.addEventListener(`click`, function() {
