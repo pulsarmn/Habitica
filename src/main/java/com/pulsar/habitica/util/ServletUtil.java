@@ -13,4 +13,12 @@ import java.io.IOException;
 public final class ServletUtil {
 
     private ServletUtil() {}
+
+    public static UserDto getAuthenticatedUser(HttpServletRequest request) {
+        var user = (UserDto) request.getSession().getAttribute(SessionAttribute.USER.getValue());
+        if (user == null) {
+            throw new UnauthorizedException();
+        }
+        return user;
+    }
 }
