@@ -21,4 +21,15 @@ public final class ServletUtil {
         }
         return user;
     }
+
+    public static JSONObject getJson(HttpServletRequest request) throws IOException {
+        StringBuilder sb = new StringBuilder();
+        try (var bufferedReader = request.getReader()) {
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                sb.append(line);
+            }
+        }
+        return new JSONObject(sb.toString());
+    }
 }
