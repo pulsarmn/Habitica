@@ -7,7 +7,7 @@ public enum Complexity {
 
     TRIFLE,
     EASY,
-    NORMALLY,
+    NORMAL,
     DIFFICULT,
     EMPTY;
 
