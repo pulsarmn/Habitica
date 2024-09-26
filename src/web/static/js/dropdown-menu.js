@@ -1,3 +1,6 @@
+import {getTaskDataToEdit, saveTask} from "./taskService.js";
+import {showModal, hideModal, disableSaveButton, enableSaveButton, toggleSaveButton} from "./modalService.js";
+
 document.addEventListener('click', function(event) {
     const toggleButton = event.target.closest('.habitica-menu-dropdown-toggle');
     if (toggleButton) {
@@ -122,3 +125,18 @@ document.getElementById(`rewards-container`).addEventListener(`click`, function(
         });
     }
 });
+
+function deleteItem(itemId, endpoint, updateFunction) {
+    return fetch(`/${endpoint}?id=${itemId}`, {
+        method: `DELETE`
+    }).then(response => {
+        if (response.ok) {
+            console.log(`Element with ID ${itemId} has been deleted`);
+            updateFunction();
+        }else {
+            console.error(`Error deleting ${endpoint} element`);
+        }
+    }).catch(error => {
+        console.error(`Error`, error);
+    });
+}
