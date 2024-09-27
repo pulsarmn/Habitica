@@ -7,12 +7,14 @@ import com.pulsar.habitica.entity.Reward;
 import com.pulsar.habitica.filter.PrivatePaths;
 import com.pulsar.habitica.service.RewardService;
 import com.pulsar.habitica.util.JspHelper;
+import com.pulsar.habitica.util.ServletUtil;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -31,15 +33,18 @@ public class RewardServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        var user = (UserDto) request.getSession().getAttribute(SessionAttribute.USER.getValue());
-        if (user == null) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            return;
-        }
-        List<Reward> rewards = rewardService.findAllByUserId(user.getId());
+        try {
+            var user = ServletUtil.getAuthenticatedUser(request);
+            var rewardId = request.getParameter("id");
 
-        request.setAttribute(SessionAttribute.REWARDS.getValue(), rewards);
-        request.getRequestDispatcher(JspHelper.getPath(PrivatePaths.REWARDS.getPath())).include(request, response);
+            if (rewardId == null) {
+                processAllRewards(request, response, user.getId());
+            }else {
+                processSingleReward(request, response, rewardId);
+            }
+        }catch (Exception e) {
+            ServletUtil.handleException(response, e);
+        }
     }
 
     @Override
@@ -66,7 +71,7 @@ public class RewardServlet extends HttpServlet {
             return;
         }
 
-        var id = request.getParameter("rewardId");
+        var id = request.getParameter("id");
         int rewardId;
 
         try {
@@ -79,9 +84,18 @@ public class RewardServlet extends HttpServlet {
         rewardService.deleteReward(rewardId);
     }
 
-    @Override
-    public void destroy() {
+    private void processAllRewards(HttpServletRequest request, HttpServletResponse response, int userId) throws ServletException, IOException {
+        List<Reward> rewards = rewardService.findAllByUserId(userId);
+        request.setAttribute(SessionAttribute.REWARDS.getValue(), rewards);
+        request.getRequestDispatcher(JspHelper.getPath(PrivatePaths.REWARDS.getPath())).include(request, response);
+    }
 
+    private void processSingleReward(HttpServletRequest request, HttpServletResponse response, String rewardId) throws ServletException, IOException {
+        int id = Integer.parseInt(rewardId);
+        var reward = rewardService.findById(id);
+
+        request.setAttribute("rewardData", new JSONObject(reward));
+        request.getRequestDispatcher(JspHelper.getPath("/reward-modal-window")).include(request, response);
     }
 
     private List<Reward> getRewardList(HttpServletRequest request) {
