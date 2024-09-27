@@ -1,0 +1,109 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --blue: #007bff;
+    --indigo: #6610f2;
+    --purple: #6f42c1;
+    --pink: #e83e8c;
+    --red: #dc3545;
+    --orange: #fd7e14;
+    --yellow: #ffc107;
+    --green: #28a745;
+    --teal: #20c997;
+    --cyan: #17a2b8;
+    --white: #fff;
+    --gray: #6c757d;
+    --gray-dark: #343a40;
+    --primary: #007bff;
+    --secondary: #6c757d;
+    --success: #28a745;
+    --info: #17a2b8;
+    --warning: #ffc107;
+    --danger: #dc3545;
+    --light: #f8f9fa;
+    --dark: #343a40;
+}
+
+a {
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.underline:hover {
+    text-decoration: underline;
+}
+
+label {
+    display: inline-block;
+    margin-bottom: 0.6rem;
+}
+
+.btn {
+    font-family: Roboto,sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.71;
+    border: 1px solid transparent;
+    padding: 4px 12px;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px 0 rgba(26,24,29,.12), 0 1px 2px 0 rgba(26,24,29,.24);
+    color: #fff;
+    cursor: pointer;
+}
+
+.btn-info {
+    color: #fff;
+    background-color: #17a2b8;
+    border-color: #17a2b8;
+    transition-duration: 0.4s;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.errors {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.error {
+    color: var(--danger);
+    font-style: italic;
+    font-weight: 600;
+    font-size: 15px;
+}
+
+#bottom-wrap {
+    margin-top: 6em;
+    position: static;
+    width: 100%;
+}
+
+#bottom-background {
+    position: relative;
+}
+
+.seamless_mountains_demo_repeat {
+    background-image: url(/static/images/mountains.png);
+    background-repeat: repeat-x;
+    width: 100%;
+    height: 300px;
+    position: absolute;
+    z-index: 0;
+    bottom: 0;
+}
+
+.midground_foreground_extended2 {
+    background-image: url(/static/images/midground_foreground_extended2.962cfd32.png);
+    position: relative;
+    width: 1500px;
+    max-width: 100%;
+    height: 150px;
+    margin: 0 auto;
+}
