@@ -60,7 +60,13 @@ public class RewardServlet extends HttpServlet {
 
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+        try {
+            var user = ServletUtil.getAuthenticatedUser(request);
+            JSONObject jsonReward = ServletUtil.getJson(request);
+            rewardService.updateReward(user.getId(), jsonReward);
+        }catch (Exception e) {
+            ServletUtil.handleException(response, e);
+        }
     }
 
     @Override
