@@ -160,7 +160,7 @@ public class TaskDaoImpl implements TaskDao<Task> {
                 .description(resultSet.getString(DESCRIPTION_COLUMN))
                 .complexity(Complexity.valueOf(resultSet.getString(COMPLEXITY_COLUMN) != null
                         ? resultSet.getString(COMPLEXITY_COLUMN)
-                        : Complexity.EMPTY.name()))
+                        : Complexity.EASY.name()))
                 .deadline(resultSet.getDate(DEADLINE_COLUMN) != null
                         ? resultSet.getDate(DEADLINE_COLUMN).toLocalDate()
                         : null)
@@ -172,7 +172,7 @@ public class TaskDaoImpl implements TaskDao<Task> {
     private void setTaskParameters(PreparedStatement statement, Task entity) throws SQLException {
         statement.setString(1, entity.getHeading());
         statement.setString(2, entity.getDescription());
-        statement.setString(3, entity.getComplexity() != null ? entity.getComplexity().name() : null);
+        statement.setString(3, entity.getComplexity() != null ? entity.getComplexity().name() : Complexity.EASY.name());
         statement.setDate(4, entity.getDeadline() != null ? Date.valueOf(entity.getDeadline()) : null);
         statement.setBoolean(5, entity.getStatus());
     }

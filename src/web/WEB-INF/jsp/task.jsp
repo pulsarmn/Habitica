@@ -24,6 +24,7 @@
         <div class="task-notes small-text markdown pl-75">
           <p>${task.description}</p>
         </div>
+        <div class="pl-75 task-date">${task.deadline}</div>
       </div>
     </div>
   </div>

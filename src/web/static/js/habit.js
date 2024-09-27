@@ -81,48 +81,6 @@ document.getElementById('habits-container').addEventListener('click', function(e
     }
 })
 
-// document.querySelectorAll('.habit-wrapper').forEach(function (habitWrapper) {
-//     const habitId = habitWrapper.querySelector('.habit-id').textContent.trim();
-//     const leftControl = habitWrapper.querySelector('.left-control');
-//     const rightControl = habitWrapper.querySelector('.right-control');
-//
-//     leftControl.addEventListener('click', function () {
-//         fetch(`/habits?habitId=${habitId}`, {
-//             method: 'PUT',
-//             body: JSON.stringify({ habitId: habitId, action: 'increment' }),
-//             headers: {
-//                 'Content-Type': 'application/json'
-//             }
-//         }).then(response => {
-//             if (response.ok) {
-//                 console.log(`Привычка с ID ${habitId} обновлена (увеличение)`);
-//             } else {
-//                 console.error('Ошибка при увеличении привычки');
-//             }
-//         }).catch(error => {
-//             console.error('Ошибка сети:', error);
-//         });
-//     });
-//
-//     rightControl.addEventListener('click', function () {
-//         fetch(`/habits?habitId=${habitId}`, {
-//             method: 'PUT',
-//             body: JSON.stringify({ habitId: habitId, action: 'decrement' }),
-//             headers: {
-//                 'Content-Type': 'application/json'
-//             }
-//         }).then(response => {
-//             if (response.ok) {
-//                 console.log(`Привычка с ID ${habitId} обновлена (уменьшение)`);
-//             } else {
-//                 console.error('Ошибка при уменьшении привычки');
-//             }
-//         }).catch(error => {
-//             console.error('Ошибка сети:', error);
-//         });
-//     });
-// });
-
 function updateHabits() {
     fetch(`/habits`, {
         method: `GET`,

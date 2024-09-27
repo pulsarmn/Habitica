@@ -1,4 +1,4 @@
-// tracking task events
+import {deleteTask, updateTasks} from "./taskService.js";
 
 updateTasks();
 
@@ -56,18 +56,7 @@ document.getElementById('tasks-container').addEventListener('click', function(ev
             svgCheck.classList.add('display-check-icon');
             svgCheck.classList.remove('check');
 
-            fetch(`/tasks?taskId=${taskId}`, {
-                method: 'DELETE'
-            }).then(response => {
-                if (response.ok) {
-                    console.log(`Задача с ID ${taskId} удалена`);
-                    updateTasks();
-                } else {
-                    console.error('Ошибка при удалении задачи');
-                }
-            }).catch(error => {
-                console.error('Ошибка сети:', error);
-            });
+            deleteTask(taskId).then(() => updateTasks());
         } else {
             leftControl.classList.remove('task-disabled');
             leftControl.classList.add('task-neutral-bg-color');
@@ -78,23 +67,3 @@ document.getElementById('tasks-container').addEventListener('click', function(ev
         }
     }
 })
-
-function updateTasks() {
-    fetch(`/tasks`, {
-        method: `GET`,
-        headers: {
-            'Content-Type': 'text/html'
-        }
-    }).then(response => {
-        if (response.ok) {
-            return response.text();
-        }else {
-            throw new Error('Ошибка при получении списка задач!');
-        }
-    }).then(html => {
-        const taskList = document.getElementById('tasks-container');
-        taskList.innerHTML = html;
-    }).catch(error => {
-        console.error("Error: ", error);
-    })
-}

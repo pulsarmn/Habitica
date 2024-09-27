@@ -164,7 +164,7 @@ public class DailyTaskDaoImpl implements TaskDao<DailyTask> {
                 .description(resultSet.getString(DESCRIPTION_COLUMN))
                 .complexity((resultSet.getString(COMPLEXITY_COLUMN) != null)
                         ? Complexity.valueOf(resultSet.getString(COMPLEXITY_COLUMN))
-                        : Complexity.EMPTY)
+                        : Complexity.EASY)
                 .deadline((resultSet.getDate(DEADLINE_COLUMN) != null)
                         ? resultSet.getDate(DEADLINE_COLUMN).toLocalDate()
                         : null)
