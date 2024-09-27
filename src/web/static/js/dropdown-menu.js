@@ -1,5 +1,6 @@
 import {getTaskDataToEdit, saveTask, updateTasks} from "./taskService.js";
 import {showModal, hideModal, toggleSaveButton, putModal, deleteModal} from "./modalService.js";
+import {getRewardDataToEdit, saveReward, updateRewards} from "./rewardService.js";
 
 document.addEventListener('click', function(event) {
     const toggleButton = event.target.closest('.habitica-menu-dropdown-toggle');
@@ -196,6 +197,20 @@ document.getElementById(`rewards-container`).addEventListener(`click`, function(
         });
     }
 });
+
+function handleDeleteReward(modalWindowWrapper, rewardId) {
+    const modalWindow = modalWindowWrapper.querySelector(`#edit-reward-modal`);
+    const deleteButton = modalWindowWrapper.querySelector(`.delete-reward`);
+
+    deleteButton.addEventListener(`click`, function() {
+        deleteItem(rewardId, `rewards`, updateRewards).then(() => {
+            if (modalWindow != null) {
+                hideModal(modalWindow);
+                deleteModal(modalWindowWrapper);
+            }
+        });
+    });
+}
 
 function deleteItem(itemId, endpoint, updateFunction) {
     return fetch(`/${endpoint}?id=${itemId}`, {
