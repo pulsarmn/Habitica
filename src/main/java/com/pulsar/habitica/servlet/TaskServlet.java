@@ -92,15 +92,4 @@ public class TaskServlet extends HttpServlet {
             ServletUtil.handleException(response, e);
         }
     }
-
-    private List<Task> getTaskList(HttpServletRequest request) {
-        var tempObject = request.getSession().getAttribute(SessionAttribute.TASKS.getValue());
-        List<Task> tasks = new ArrayList<>();
-        if (tempObject instanceof List<?> tempList) {
-            if (!tempList.isEmpty() && tempList.get(0) instanceof Task) {
-                tasks = (List<Task>) tempList;
-            }
-        }
-        return tasks;
-    }
 }
