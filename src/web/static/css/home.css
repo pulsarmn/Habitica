@@ -822,7 +822,7 @@ textarea, input {
     border-radius: 2px;
     background-color: rgba(41, 30, 30, 0.06);
     width: 100%;
-    resize: none;
+    resize: vertical;
     overflow: hidden;
     color: #4e4a57;
     border: 1px solid #c3c0c7;

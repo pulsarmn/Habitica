@@ -1,5 +1,5 @@
-import {getTaskDataToEdit, saveTask} from "./taskService.js";
-import {showModal, hideModal, disableSaveButton, enableSaveButton, toggleSaveButton} from "./modalService.js";
+import {getTaskDataToEdit, saveTask, updateTasks} from "./taskService.js";
+import {showModal, hideModal, toggleSaveButton, putModal, deleteModal} from "./modalService.js";
 
 document.addEventListener('click', function(event) {
     const toggleButton = event.target.closest('.habitica-menu-dropdown-toggle');
@@ -31,7 +31,7 @@ document.getElementById('tasks-container').addEventListener('click', function(ev
             }else if (event.target.closest('.edit-task-item')) {
                 getTaskDataToEdit(taskId).then(html => {
                     const modalWindowWrapper = document.getElementById(`modal-window-wrapper`);
-                    modalWindowWrapper.innerHTML = html;
+                    putModal(modalWindowWrapper, html);
                     const modalWindow = modalWindowWrapper.querySelector(`#edit-task-modal`);
                     const saveButton = modalWindowWrapper.querySelector(`.save-task`);
                     const taskTitleInput = modalWindowWrapper.querySelector(`#task-title`);
@@ -49,7 +49,7 @@ document.getElementById('tasks-container').addEventListener('click', function(ev
 
                     document.getElementById('close-modal-btn').addEventListener('click', function() {
                         hideModal(modalWindow);
-                        modalWindowWrapper.innerHTML = ``;
+                        deleteModal(modalWindowWrapper);
                     });
                 }).catch(error => {
                     console.log(`Error while receiving task data`, error);
@@ -66,7 +66,6 @@ function fillTaskModalWindow(modalWindowWrapper) {
     const taskDeadline = modalWindowWrapper.querySelector(`#task-deadline`);
 
     const taskData = getJsonTask(modalWindowWrapper);
-    console.log(taskData);
 
     taskTitle.value = taskData.heading;
     taskDescription.innerHTML = (taskData.description === undefined) ? `` : taskData.description;
@@ -91,13 +90,15 @@ function handleSaveTask(modalWindowWrapper, taskId) {
         const taskData = {
             id: taskId,
             heading: taskTitle.value,
-            description: taskDescription.textContent,
+            description: taskDescription.value,
             complexity: taskComplexity.value,
             deadline: taskDeadline.value
         };
 
         saveTask(taskId, taskData).then(() => {
+            updateTasks();
             hideModal(modalWindowWrapper.querySelector(`#edit-task-modal`));
+            deleteModal(modalWindowWrapper);
         });
     });
 }
@@ -107,7 +108,12 @@ function handleDeleteItem(modalWindowWrapper, taskId) {
     const deleteButton = modalWindowWrapper.querySelector(`.delete-task`);
 
     deleteButton.addEventListener(`click`, function() {
-        deleteItem(taskId, `tasks`, updateTasks).then(() => hideModal(modalWindow));
+        deleteItem(taskId, `tasks`, updateTasks).then(() => {
+            if (modalWindow != null) {
+                hideModal(modalWindow);
+                deleteModal(modalWindowWrapper);
+            }
+        });
     });
 }
 
