@@ -10,6 +10,10 @@ export function putModal(modalWindowWrapper, html) {
     modalWindowWrapper.innerHTML = html;
 }
 
+export function deleteModal(modalWindowWrapper) {
+    modalWindowWrapper.innerHTML = '';
+}
+
 export function toggleSaveButton(taskTitleInput, saveButton) {
     if (taskTitleInput.value.trim()) {
         saveButton.classList.remove('disable');
