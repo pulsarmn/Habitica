@@ -17,7 +17,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 @WebServlet("/rewards")
@@ -102,16 +101,5 @@ public class RewardServlet extends HttpServlet {
 
         request.setAttribute("rewardData", new JSONObject(reward));
         request.getRequestDispatcher(JspHelper.getPath("/reward-modal-window")).include(request, response);
-    }
-
-    private List<Reward> getRewardList(HttpServletRequest request) {
-        var tempObject = request.getSession().getAttribute(SessionAttribute.REWARDS.getValue());
-        List<Reward> rewards = new ArrayList<>();
-        if (tempObject instanceof List<?> tempList) {
-            if (!tempList.isEmpty() && tempList.get(0) instanceof Reward) {
-                rewards = (List<Reward>) tempList;
-            }
-        }
-        return rewards;
     }
 }
