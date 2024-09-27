@@ -6,6 +6,10 @@ export function hideModal(modalWindow) {
     modalWindow.classList.remove('active');
 }
 
+export function putModal(modalWindowWrapper, html) {
+    modalWindowWrapper.innerHTML = html;
+}
+
 export function toggleSaveButton(taskTitleInput, saveButton) {
     if (taskTitleInput.value.trim()) {
         saveButton.classList.remove('disable');
