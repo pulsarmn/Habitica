@@ -22,7 +22,7 @@ public class TaskDaoImpl implements TaskDao<Task> {
     private static final String SAVE_SQL = "INSERT INTO %s (%s, %s, %s, %s, %s, %s) VALUES (?, ?, ?, ?, ?, ?)"
             .formatted(FULL_TABLE_NAME,
                     HEADING_COLUMN,
-                    DEADLINE_COLUMN,
+                    DESCRIPTION_COLUMN,
                     COMPLEXITY_COLUMN,
                     DEADLINE_COLUMN,
                     STATUS_COLUMN,
@@ -158,8 +158,12 @@ public class TaskDaoImpl implements TaskDao<Task> {
                 .id(resultSet.getInt(ID_COLUMN))
                 .heading(resultSet.getString(HEADING_COLUMN))
                 .description(resultSet.getString(DESCRIPTION_COLUMN))
-                .complexity(Complexity.valueOf(resultSet.getString(COMPLEXITY_COLUMN)))
-                .deadline(resultSet.getDate(DEADLINE_COLUMN).toLocalDate())
+                .complexity(Complexity.valueOf(resultSet.getString(COMPLEXITY_COLUMN) != null
+                        ? resultSet.getString(COMPLEXITY_COLUMN)
+                        : Complexity.EASY.name()))
+                .deadline(resultSet.getDate(DEADLINE_COLUMN) != null
+                        ? resultSet.getDate(DEADLINE_COLUMN).toLocalDate()
+                        : null)
                 .status(resultSet.getBoolean(STATUS_COLUMN))
                 .userId(resultSet.getInt(USER_ID_COLUMN))
                 .build();
@@ -168,8 +172,8 @@ public class TaskDaoImpl implements TaskDao<Task> {
     private void setTaskParameters(PreparedStatement statement, Task entity) throws SQLException {
         statement.setString(1, entity.getHeading());
         statement.setString(2, entity.getDescription());
-        statement.setString(3, entity.getComplexity().name());
-        statement.setDate(4, Date.valueOf(entity.getDeadline()));
+        statement.setString(3, entity.getComplexity() != null ? entity.getComplexity().name() : Complexity.EASY.name());
+        statement.setDate(4, entity.getDeadline() != null ? Date.valueOf(entity.getDeadline()) : null);
         statement.setBoolean(5, entity.getStatus());
     }
 

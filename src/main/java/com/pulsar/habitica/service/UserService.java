@@ -75,15 +75,26 @@ public class UserService {
             user = userDao.findByNickname(loginUserDto.getIdetifier()).get();
         }
 
-        var userBalance = userBalanceService.findUserBalance(user.getId());
-        var userImage = userImageService.findUserImage(user.getId());
-        var userStatistics = userStatisticsService.findUserStatistics(user.getId());
+        var profileUserDto = getProfileUserDto(user.getId());
 
         return ProfileUserDto.builder()
-                .userDto(userMapper.mapFrom(user))
-                .userBalance(userBalance)
-                .userImage(userImage)
-                .userStatistics(userStatistics)
+                .userDto(profileUserDto.getUserDto())
+                .userBalance(profileUserDto.getUserBalance())
+                .userImage(profileUserDto.getUserImage())
+                .userStatistics(profileUserDto.getUserStatistics())
                 .build();
+     }
+
+     public ProfileUserDto getProfileUserDto(int userId) {
+         var user = userDao.findById(userId).orElse(User.builder().id(userId).build());
+         var userBalance = userBalanceService.findUserBalance(userId);
+         var userImage = userImageService.findOrCreateUserImage(userId);
+         var userStatistics = userStatisticsService.findUserStatistics(userId);
+         return ProfileUserDto.builder()
+                 .userDto(userMapper.mapFrom(user))
+                 .userBalance(userBalance)
+                 .userImage(userImage)
+                 .userStatistics(userStatistics)
+                 .build();
      }
 }
