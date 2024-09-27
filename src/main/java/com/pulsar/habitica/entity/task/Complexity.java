@@ -8,8 +8,7 @@ public enum Complexity {
     TRIFLE,
     EASY,
     NORMAL,
-    DIFFICULT,
-    EMPTY;
+    DIFFICULT;
 
     public static Optional<Complexity> find(String name) {
         return Arrays.stream(values())

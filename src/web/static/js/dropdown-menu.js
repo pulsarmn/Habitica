@@ -27,7 +27,7 @@ document.getElementById('tasks-container').addEventListener('click', function(ev
 
         dropdownMenu.addEventListener('click', function(event) {
             if (event.target.closest('.delete-task-item')) {
-                handleDeleteItem(taskId, `tasks`, updateTasks);
+                deleteItem(taskId, `tasks`, updateTasks);
             }else if (event.target.closest('.edit-task-item')) {
                 getTaskDataToEdit(taskId).then(html => {
                     const modalWindowWrapper = document.getElementById(`modal-window-wrapper`);
