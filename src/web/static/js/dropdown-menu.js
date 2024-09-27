@@ -198,6 +198,18 @@ document.getElementById(`rewards-container`).addEventListener(`click`, function(
     }
 });
 
+function fillRewardModalWindow(modalWindowWrapper) {
+    const rewardTitle = modalWindowWrapper.querySelector(`#reward-title`);
+    const rewardDescription = modalWindowWrapper.querySelector(`#reward-notes`);
+    const rewardCost = modalWindowWrapper.querySelector(`#reward-cost`);
+
+    const rewardData = getJsonReward(modalWindowWrapper);
+
+    rewardTitle.value = rewardData.heading;
+    rewardDescription.innerHTML = (rewardData.description === undefined) ? `` : rewardData.description;
+    rewardCost.value = rewardData.cost;
+}
+
 function getJsonReward() {
     const modalWindowWrapper = document.querySelector(`#modal-window-wrapper`);
     const taskDataElement = modalWindowWrapper.querySelector(`#reward-data`);
