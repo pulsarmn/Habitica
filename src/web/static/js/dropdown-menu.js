@@ -183,15 +183,32 @@ document.getElementById(`rewards-container`).addEventListener(`click`, function(
 
         dropdownMenu.addEventListener(`click`, function(event) {
             if (event.target.closest(`.delete-task-item`)) {
-                fetch(`/rewards?rewardId=${rewardId}`, {
-                    method: `DELETE`
-                }).then(response => {
-                    if (response.ok) {
-                        console.log(`Награда с ID ${rewardId} удалена`);
-                        updateRewards();
-                    }
+                deleteItem(rewardId, `rewards`, updateRewards);
+            }else if (event.target.closest(`.edit-task-item`)) {
+                getRewardDataToEdit(rewardId).then(html => {
+                    const modalWindowWrapper = document.querySelector(`#modal-window-wrapper`);
+                    putModal(modalWindowWrapper, html);
+                    const modalWindow = modalWindowWrapper.querySelector(`#edit-reward-modal`);
+                    const saveButton = modalWindowWrapper.querySelector(`.save-reward`);
+                    const rewardTitleInput = modalWindowWrapper.querySelector(`#reward-title`);
+
+                    fillRewardModalWindow(modalWindowWrapper);
+                    showModal(modalWindow);
+                    toggleSaveButton(rewardTitleInput, saveButton);
+
+                    rewardTitleInput.addEventListener(`input`, function(event) {
+                        toggleSaveButton(rewardTitleInput, saveButton);
+                    });
+
+                    handleSaveReward(modalWindowWrapper, rewardId);
+                    handleDeleteReward(modalWindowWrapper, rewardId);
+
+                    document.getElementById('close-modal-btn').addEventListener('click', function() {
+                        hideModal(modalWindow);
+                        deleteModal(modalWindowWrapper);
+                    });
                 }).catch(error => {
-                    console.error(`Error: `, error);
+                    console.log(`Error while receiving task data`, error);
                 });
             }
         });
