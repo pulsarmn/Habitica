@@ -198,6 +198,28 @@ document.getElementById(`rewards-container`).addEventListener(`click`, function(
     }
 });
 
+function handleSaveReward(modalWindowWrapper, rewardId) {
+    const saveButton = modalWindowWrapper.querySelector(`.save-reward`);
+    saveButton.addEventListener(`click`, function() {
+        const rewardTitle = modalWindowWrapper.querySelector(`#reward-title`);
+        const rewardDescription = modalWindowWrapper.querySelector(`#reward-notes`);
+        const rewardCost = modalWindowWrapper.querySelector(`#reward-cost`);
+
+        const rewardData = {
+            id: rewardId,
+            heading: rewardTitle.value,
+            description: rewardDescription.value,
+            cost: rewardCost.value
+        };
+
+        saveReward(rewardId, rewardData).then(() => {
+            updateRewards();
+            hideModal(modalWindowWrapper.querySelector(`#edit-reward-modal`));
+            deleteModal(modalWindowWrapper);
+        });
+    });
+}
+
 function handleDeleteReward(modalWindowWrapper, rewardId) {
     const modalWindow = modalWindowWrapper.querySelector(`#edit-reward-modal`);
     const deleteButton = modalWindowWrapper.querySelector(`.delete-reward`);
