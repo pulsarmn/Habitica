@@ -198,6 +198,13 @@ document.getElementById(`rewards-container`).addEventListener(`click`, function(
     }
 });
 
+function getJsonReward() {
+    const modalWindowWrapper = document.querySelector(`#modal-window-wrapper`);
+    const taskDataElement = modalWindowWrapper.querySelector(`#reward-data`);
+    return JSON.parse(taskDataElement.textContent);
+}
+
+
 function handleSaveReward(modalWindowWrapper, rewardId) {
     const saveButton = modalWindowWrapper.querySelector(`.save-reward`);
     saveButton.addEventListener(`click`, function() {
