@@ -32,46 +32,40 @@ public class DailyTaskServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        var user = (UserDto) request.getSession().getAttribute(SessionAttribute.USER.getValue());
-        if (user == null) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            return;
-        }
-        List<DailyTask> dailyTasks = taskService.findAllByUserId(user.getId());
+        try {
+            var user = ServletUtil.getAuthenticatedUser(request);
+            var dailyTaskId = request.getParameter("id");
 
-        request.setAttribute(SessionAttribute.DAILY_TASKS.getValue(), dailyTasks);
-        request.getRequestDispatcher(JspHelper.getPath(PrivatePaths.DAILY_TASKS.getPath())).include(request, response);
+            if (dailyTaskId == null) {
+                processAllTasks(request, response, user.getId());
+            }else {
+                processSingleTask(request, response, dailyTaskId);
+            }
+        }catch (Exception e) {
+            ServletUtil.handleException(response, e);
+        }
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         var dailyTaskHeading = request.getParameter("dailyTaskHeading");
-        var user = (UserDto) request.getSession().getAttribute(SessionAttribute.USER.getValue());
+        var user = ServletUtil.getAuthenticatedUser(request);
         var taskDto = TaskDto.builder()
                 .userId(user.getId())
                 .heading(dailyTaskHeading)
                 .build();
-        var dailyTask = taskService.createDailyTask(taskDto);
+        taskService.createDailyTask(taskDto);
     }
 
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        var user = (UserDto) request.getSession().getAttribute(SessionAttribute.USER.getValue());
-        if (user == null) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            return;
-        }
-        var id = request.getParameter("dailyTaskId");
-        int dailyTaskId;
         try {
-            dailyTaskId = Integer.parseInt(id);
-        }catch (NumberFormatException e) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return;
+            var dailyTaskId = request.getParameter("id");
+            int id = Integer.parseInt(dailyTaskId);
+            taskService.deleteDailyTask(id);
+        }catch (Exception e) {
+            ServletUtil.handleException(response, e);
         }
-
-        var result = taskService.deleteDailyTask(dailyTaskId);
-
     }
 
     @Override
@@ -94,32 +88,20 @@ public class DailyTaskServlet extends HttpServlet {
         }
     }
 
-    @Override
-    public void destroy() {
+    private void processAllTasks(HttpServletRequest request, HttpServletResponse response, int userId) throws ServletException, IOException {
+        List<DailyTask> dailyTasks = taskService.findAllByUserId(userId);
 
+        request.setAttribute(SessionAttribute.DAILY_TASKS.getValue(), dailyTasks);
+        request.getRequestDispatcher(JspHelper.getPath(PrivatePaths.DAILY_TASKS.getPath())).include(request, response);
     }
 
-    private List<DailyTask> getDailyTaskList(HttpServletRequest request) {
-        var tempObject = request.getSession().getAttribute(SessionAttribute.DAILY_TASKS.getValue());
-        List<DailyTask> dailyTasks = new ArrayList<>();
-        if (tempObject instanceof List<?> tempList) {
-            if (!tempList.isEmpty() && tempList.get(0) instanceof DailyTask) {
-                dailyTasks = (List<DailyTask>) tempList;
-            }
-        }
-        return dailyTasks;
-    }
+    private void processSingleTask(HttpServletRequest request, HttpServletResponse response, String dailyTaskId) throws ServletException, IOException {
+        int id = Integer.parseInt(dailyTaskId);
+        var dailyTask = taskService.findById(id);
 
-    private String getAction(HttpServletRequest request) throws IOException {
-        StringBuilder sb = new StringBuilder();
-        try (var bufferedReader = request.getReader()) {
-            String line;
-            while ((line = bufferedReader.readLine()) != null) {
-                sb.append(line);
-            }
-        }
-        JSONObject json = new JSONObject(sb.toString());
-        return json.getString("action");
+        request.setAttribute("dailyTask", dailyTask);
+        request.setAttribute("dailyTaskData", new JSONObject(dailyTask));
+        request.getRequestDispatcher(JspHelper.getPath("/daily-task-modal-window")).include(request, response);
     }
 
     private void doAction(String action, int dailyTaskId) {
