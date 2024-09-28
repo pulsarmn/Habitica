@@ -1,9 +1,9 @@
-// tracking a click on a specific button
+import {updateHabits, updateHabitSeries} from "./service/habitService.js";
 
 updateHabits();
 
 document.addEventListener('DOMContentLoaded', function () {
-    const taskInput = document.getElementById('habitInput');
+    const taskInput = document.querySelector('#habitInput');
     taskInput.addEventListener('keypress', function (e) {
         if (e.key === 'Enter') {
             e.preventDefault();
@@ -20,13 +20,13 @@ document.addEventListener('DOMContentLoaded', function () {
                         if (response.ok) {
                             taskInput.value = '';
                             updateHabits();
-                            console.assert('Привычка отправлена успешно!');
+                            console.log('Привычка отправлена успешно!');
                         } else {
-                            console.assert('Ошибка при отправке привычки!');
+                            console.log('Ошибка при отправке привычки!');
                         }
                     })
                     .catch(error => {
-                        console.assert('Ошибка сети: ' + error.message);
+                        console.log('Ошибка сети: ' + error.message);
                     });
             }
         }
@@ -39,64 +39,13 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
-document.getElementById('habits-container').addEventListener('click', function(event) {
+document.querySelector('#habits-container').addEventListener('click', function(event) {
     const habitWrapper = event.target.closest('.habit-wrapper');
     const habitId = habitWrapper.querySelector('.habit-id').textContent.trim();
 
     if (event.target.closest('.left-control')) {
-        fetch(`/habits?habitId=${habitId}`, {
-            method: 'PUT',
-            body: JSON.stringify({ habitId: habitId, action: 'increment' }),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }).then(response => {
-            if (response.ok) {
-                updateHabits();
-                console.log(`Привычка с ID ${habitId} обновлена (увеличение)`);
-            } else {
-                console.error('Ошибка при увеличении привычки');
-            }
-        }).catch(error => {
-            console.error('Ошибка сети:', error);
-        });
-
+        updateHabitSeries(habitId, `increment`);
     }else if (event.target.closest('.right-control')) {
-        fetch(`/habits?habitId=${habitId}`, {
-            method: 'PUT',
-            body: JSON.stringify({habitId: habitId, action: 'decrement'}),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }).then(response => {
-            if (response.ok) {
-                updateHabits();
-                console.log(`Привычка с ID ${habitId} обновлена (уменьшение)`);
-            } else {
-                console.error('Ошибка при уменьшении привычки');
-            }
-        }).catch(error => {
-            console.error('Ошибка сети:', error);
-        });
+        updateHabitSeries(habitId, `decrement`);
     }
 })
-
-function updateHabits() {
-    fetch(`/habits`, {
-        method: `GET`,
-        headers: {
-            'Content-Type': 'text/html'
-        }
-    }).then(response => {
-        if (response.ok) {
-            return response.text();
-        }else {
-            throw new Error('Ошибка при получении списка привычек!');
-        }
-    }).then(html => {
-        const habitList = document.getElementById('habits-container');
-        habitList.innerHTML = html;
-    }).catch(error => {
-        console.log("Error: ", error);
-    });
-}

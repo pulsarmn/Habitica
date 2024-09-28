@@ -1,4 +1,4 @@
-import {updateDailyTasks, updateDailyTaskSeries} from "./dailyTaskService.js";
+import {updateDailyTasks, updateDailyTaskSeries} from "./service/dailyTaskService.js";
 
 updateDailyTasks();
 
