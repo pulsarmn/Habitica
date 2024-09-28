@@ -1,4 +1,4 @@
-import {updateRewards} from "./rewardService.js";
+import {updateRewards} from "./service/rewardService.js";
 
 updateRewards();
 
