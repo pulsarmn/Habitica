@@ -48,12 +48,12 @@ public class HabitServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         var habitHeading = request.getParameter("habitHeading");
-        var user = (UserDto) request.getSession().getAttribute(SessionAttribute.USER.getValue());
+        var user = ServletUtil.getAuthenticatedUser(request);
         var habitDto = TaskDto.builder()
                 .userId(user.getId())
                 .heading(habitHeading)
                 .build();
-        var habit = habitService.createHabit(habitDto);
+        habitService.createHabit(habitDto);
     }
 
     @Override
@@ -67,22 +67,13 @@ public class HabitServlet extends HttpServlet {
 
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        var user = (UserDto) request.getSession().getAttribute(SessionAttribute.USER.getValue());
-        if (user == null) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            return;
-        }
-
-        var id = request.getParameter("habitId");
-        int habitId;
         try {
-            habitId = Integer.parseInt(id);
-        }catch (NumberFormatException e) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return;
+            var habitId = request.getParameter("id");
+            int id = Integer.parseInt(habitId);
+            habitService.deleteHabit(id);
+        }catch (Exception e) {
+            ServletUtil.handleException(response, e);
         }
-
-        habitService.deleteHabit(habitId);
     }
 
     private void processAllHabits(HttpServletRequest request, HttpServletResponse response, int userId) throws ServletException, IOException {
