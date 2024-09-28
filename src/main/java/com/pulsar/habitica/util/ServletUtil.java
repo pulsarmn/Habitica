@@ -36,7 +36,7 @@ public final class ServletUtil {
     public static void handleException(HttpServletResponse response, Exception e) {
         if (e instanceof UnauthorizedException) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        }else if (e instanceof JSONException || e instanceof NumberFormatException) {
+        }else if (e instanceof JSONException || e instanceof IllegalArgumentException) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         }else {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
