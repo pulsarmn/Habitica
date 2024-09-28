@@ -2,11 +2,11 @@ package com.pulsar.habitica.servlet;
 
 import com.pulsar.habitica.dao.task.DailyTaskDaoImpl;
 import com.pulsar.habitica.dto.TaskDto;
-import com.pulsar.habitica.dto.UserDto;
 import com.pulsar.habitica.entity.task.DailyTask;
 import com.pulsar.habitica.filter.PrivatePaths;
 import com.pulsar.habitica.service.DailyTaskService;
 import com.pulsar.habitica.util.JspHelper;
+import com.pulsar.habitica.util.ServletUtil;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -76,11 +76,22 @@ public class DailyTaskServlet extends HttpServlet {
 
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        var action = getAction(request);
-        var id = request.getParameter("dailyTaskId");
-        int dailyTaskId = (id.matches("\\d+")) ? Integer.parseInt(id) : 0;
+        try {
+            var updateParameter = request.getParameter("update");
+            var dailyTaskId = request.getParameter("id");
+            int id = Integer.parseInt(dailyTaskId);
 
-        doAction(action, dailyTaskId);
+            if (updateParameter == null) {
+                var action = ServletUtil.getJson(request).getString("action");
+                doAction(action, id);
+            }else {
+                var user = ServletUtil.getAuthenticatedUser(request);
+                JSONObject dailyTaskData = ServletUtil.getJson(request);
+                taskService.updateDailyTask(user.getId(), dailyTaskData);
+            }
+        }catch (Exception e) {
+            ServletUtil.handleException(response, e);
+        }
     }
 
     @Override
