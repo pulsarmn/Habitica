@@ -45,6 +45,33 @@ public class DailyTaskService {
         return taskDao.update(dailyTask);
     }
 
+    public DailyTask updateDailyTask(int userId, JSONObject dailyTaskData) {
+        if (dailyTaskData == null || dailyTaskData.isEmpty()) {
+            throw new JSONException("JSON is invalid or empty!");
+        }
+
+        int dailyTaskId = dailyTaskData.getInt("id");
+        DailyTask dailyTask = findById(dailyTaskId);
+
+        if (dailyTask.getUserId() != userId) {
+            throw new UnauthorizedException();
+        }
+
+        LocalDate dailyTaskStart = dailyTask.getDeadline();
+        try {
+            dailyTaskStart = LocalDate.parse(dailyTaskData.getString("deadline"));
+        }catch (DateTimeParseException e) {
+
+        }
+
+        dailyTask.setHeading(dailyTaskData.getString("heading"));
+        dailyTask.setDescription(dailyTaskData.getString("description"));
+        dailyTask.setComplexity(Complexity.valueOf(dailyTaskData.getString("complexity")));
+        dailyTask.setDeadline(dailyTaskStart);
+
+        return taskDao.update(dailyTask);
+    }
+
     public boolean deleteDailyTask(int dailyTaskId) {
         return taskDao.deleteById(dailyTaskId);
     }
