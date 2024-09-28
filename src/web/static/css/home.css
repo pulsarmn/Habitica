@@ -802,6 +802,7 @@ textarea, input {
     display: flex;
     justify-content: center;
     margin-top: 10px;
+    gap: 20px;
 }
 
 .delete-task {
@@ -909,4 +910,21 @@ textarea, input {
 
 #reward-title:focus-within, #reward-notes:focus-within {
     background-color: rgb(255, 255, 255);
+}
+
+.reset-habit {
+    background-color: #20c997;
+    box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.5);
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition-duration: 0.4s;
+}
+
+.reset-habit:hover {
+    background-color: #1eb487;
+    transform: translateY(-1px);
+    transition-duration: 0.4s;
 }
