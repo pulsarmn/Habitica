@@ -2,11 +2,18 @@ package com.pulsar.habitica.service;
 
 import com.pulsar.habitica.dao.task.TaskDao;
 import com.pulsar.habitica.dto.TaskDto;
+import com.pulsar.habitica.entity.task.Complexity;
 import com.pulsar.habitica.entity.task.DailyTask;
+import com.pulsar.habitica.exception.UnauthorizedException;
 import com.pulsar.habitica.mapper.DailyTaskDtoMapper;
 import com.pulsar.habitica.mapper.Mapper;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 public class DailyTaskService {
 
@@ -26,11 +33,8 @@ public class DailyTaskService {
         return taskDao.findAll();
     }
 
-    public DailyTask findById(int id) {
-        return taskDao.findById(id).orElse(
-                DailyTask.builder()
-                        .id(id)
-                        .build());
+    public DailyTask findById(int dailyTaskId) {
+        return taskDao.findById(dailyTaskId).orElseThrow(() -> new NoSuchElementException("The daily task with id " + dailyTaskId + " was not found!"));
     }
 
     public List<DailyTask> findAllByUserId(int userId) {
