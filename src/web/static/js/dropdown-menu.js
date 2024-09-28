@@ -1,5 +1,6 @@
 import {getTaskDataToEdit, saveTask, updateTasks} from "./taskService.js";
 import {showModal, hideModal, toggleSaveButton, putModal, deleteModal} from "./modalService.js";
+import {getRewardDataToEdit, saveReward, updateRewards} from "./rewardService.js";
 
 document.addEventListener('click', function(event) {
     const toggleButton = event.target.closest('.habitica-menu-dropdown-toggle');
@@ -182,20 +183,92 @@ document.getElementById(`rewards-container`).addEventListener(`click`, function(
 
         dropdownMenu.addEventListener(`click`, function(event) {
             if (event.target.closest(`.delete-task-item`)) {
-                fetch(`/rewards?rewardId=${rewardId}`, {
-                    method: `DELETE`
-                }).then(response => {
-                    if (response.ok) {
-                        console.log(`Награда с ID ${rewardId} удалена`);
-                        updateRewards();
-                    }
+                deleteItem(rewardId, `rewards`, updateRewards);
+            }else if (event.target.closest(`.edit-task-item`)) {
+                getRewardDataToEdit(rewardId).then(html => {
+                    const modalWindowWrapper = document.querySelector(`#modal-window-wrapper`);
+                    putModal(modalWindowWrapper, html);
+                    const modalWindow = modalWindowWrapper.querySelector(`#edit-reward-modal`);
+                    const saveButton = modalWindowWrapper.querySelector(`.save-reward`);
+                    const rewardTitleInput = modalWindowWrapper.querySelector(`#reward-title`);
+
+                    fillRewardModalWindow(modalWindowWrapper);
+                    showModal(modalWindow);
+                    toggleSaveButton(rewardTitleInput, saveButton);
+
+                    rewardTitleInput.addEventListener(`input`, function(event) {
+                        toggleSaveButton(rewardTitleInput, saveButton);
+                    });
+
+                    handleSaveReward(modalWindowWrapper, rewardId);
+                    handleDeleteReward(modalWindowWrapper, rewardId);
+
+                    document.getElementById('close-modal-btn').addEventListener('click', function() {
+                        hideModal(modalWindow);
+                        deleteModal(modalWindowWrapper);
+                    });
                 }).catch(error => {
-                    console.error(`Error: `, error);
+                    console.log(`Error while receiving task data`, error);
                 });
             }
         });
     }
 });
+
+function fillRewardModalWindow(modalWindowWrapper) {
+    const rewardTitle = modalWindowWrapper.querySelector(`#reward-title`);
+    const rewardDescription = modalWindowWrapper.querySelector(`#reward-notes`);
+    const rewardCost = modalWindowWrapper.querySelector(`#reward-cost`);
+
+    const rewardData = getJsonReward(modalWindowWrapper);
+
+    rewardTitle.value = rewardData.heading;
+    rewardDescription.innerHTML = (rewardData.description === undefined) ? `` : rewardData.description;
+    rewardCost.value = rewardData.cost;
+}
+
+function getJsonReward() {
+    const modalWindowWrapper = document.querySelector(`#modal-window-wrapper`);
+    const taskDataElement = modalWindowWrapper.querySelector(`#reward-data`);
+    return JSON.parse(taskDataElement.textContent);
+}
+
+
+function handleSaveReward(modalWindowWrapper, rewardId) {
+    const saveButton = modalWindowWrapper.querySelector(`.save-reward`);
+    saveButton.addEventListener(`click`, function() {
+        const rewardTitle = modalWindowWrapper.querySelector(`#reward-title`);
+        const rewardDescription = modalWindowWrapper.querySelector(`#reward-notes`);
+        const rewardCost = modalWindowWrapper.querySelector(`#reward-cost`);
+
+        const rewardData = {
+            id: rewardId,
+            heading: rewardTitle.value,
+            description: rewardDescription.value,
+            cost: rewardCost.value
+        };
+
+        saveReward(rewardId, rewardData).then(() => {
+            updateRewards();
+            hideModal(modalWindowWrapper.querySelector(`#edit-reward-modal`));
+            deleteModal(modalWindowWrapper);
+        });
+    });
+}
+
+function handleDeleteReward(modalWindowWrapper, rewardId) {
+    const modalWindow = modalWindowWrapper.querySelector(`#edit-reward-modal`);
+    const deleteButton = modalWindowWrapper.querySelector(`.delete-reward`);
+
+    deleteButton.addEventListener(`click`, function() {
+        deleteItem(rewardId, `rewards`, updateRewards).then(() => {
+            if (modalWindow != null) {
+                hideModal(modalWindow);
+                deleteModal(modalWindowWrapper);
+            }
+        });
+    });
+}
 
 function deleteItem(itemId, endpoint, updateFunction) {
     return fetch(`/${endpoint}?id=${itemId}`, {

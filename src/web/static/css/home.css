@@ -32,8 +32,10 @@ body {
     line-height: 1.43;
 }
 
-.navbar-wrapper {
-
+label {
+    font-size: 14px;
+    font-family: Roboto,sans-serif;
+    color: #343a40;
 }
 
 .navbar {
@@ -719,7 +721,8 @@ textarea, input {
 
 .modal-header h2 {
     margin: 0;
-    font-size: 24px;
+    font-size: 22px;
+    color: #343a40;
 }
 
 .modal-header-buttons {
@@ -848,4 +851,62 @@ textarea, input {
     filter: alpha(opacity=65);
     -webkit-box-shadow: none;
     box-shadow: none;
+}
+
+.save-reward {
+    color: #500fb8;
+    background-color: #f7ca37;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    box-shadow: 0px 2px 3px 0px rgba(0, 0, 0, 0.5);
+    font-weight: 600;
+    transition-duration: 0.4s;
+}
+
+.save-reward:hover {
+    color: #ffffff;
+    transition-duration: 0.3s;
+    transform: translateY(-1px);
+}
+
+.delete-reward {
+    background-color: #dc3545;
+    box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.5);
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition-duration: 0.4s;
+}
+
+.delete-reward:hover {
+    background-color: #b92c3a;
+    transform: translateY(-1px);
+    transition-duration: 0.4s;
+}
+
+#reward-title, #reward-notes {
+    border-radius: 2px;
+    background-color: rgba(41, 30, 30, 0.06);
+    width: 100%;
+    resize: vertical;
+    overflow: hidden;
+    color: #4e4a57;
+    border: 1px solid #c3c0c7;
+    font-weight: 600;
+    outline: none;
+    transition-duration: 0.4s;
+}
+
+#reward-title:hover, #reward-notes:hover {
+    border: 1px solid #e0e0e0;
+    background-color: rgba(128, 128, 128, 0.09);
+    transition-duration: 0.4s;
+}
+
+#reward-title:focus-within, #reward-notes:focus-within {
+    background-color: rgb(255, 255, 255);
 }
