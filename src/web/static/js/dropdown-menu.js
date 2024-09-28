@@ -1,6 +1,7 @@
 import {getTaskDataToEdit, saveTask, updateTasks} from "./taskService.js";
 import {showModal, hideModal, toggleSaveButton, putModal, deleteModal} from "./modalService.js";
 import {getRewardDataToEdit, saveReward, updateRewards} from "./rewardService.js";
+import {getDailyTaskDataToEdit, updateDailyTask, updateDailyTasks} from "./dailyTaskService.js";
 
 document.addEventListener('click', function(event) {
     const toggleButton = event.target.closest('.habitica-menu-dropdown-toggle');
@@ -104,12 +105,12 @@ function handleSaveTask(modalWindowWrapper, taskId) {
     });
 }
 
-function handleDeleteItem(modalWindowWrapper, taskId) {
+function handleDeleteItem(modalWindowWrapper, dailyTaskId) {
     const modalWindow = modalWindowWrapper.querySelector(`#edit-task-modal`);
     const deleteButton = modalWindowWrapper.querySelector(`.delete-task`);
 
     deleteButton.addEventListener(`click`, function() {
-        deleteItem(taskId, `tasks`, updateTasks).then(() => {
+        deleteItem(dailyTaskId, `tasks`, updateTasks).then(() => {
             if (modalWindow != null) {
                 hideModal(modalWindow);
                 deleteModal(modalWindowWrapper);
@@ -127,24 +128,75 @@ document.getElementById('daily-tasks-container').addEventListener('click', funct
 
         dropdownMenu.addEventListener('click', function(event) {
             if (event.target.closest('.delete-task-item')) {
-                fetch(`/daily-tasks?dailyTaskId=${dailyTaskId}`, {
-                    method: 'DELETE'
-                }).then(response => {
-                    if (response.ok) {
-                        console.log(`Задача с ID ${dailyTaskId} удалена`);
-                        updateDailyTasks();
-                    } else {
-                        console.error('Ошибка при удалении задачи');
-                    }
-                }).catch(error => {
-                    console.error('Ошибка сети:', error);
-                });
+                deleteItem(dailyTaskId, `daily-tasks`, updateDailyTasks);
             }else if (event.target.closest('.edit-task-item')) {
+                getDailyTaskDataToEdit(dailyTaskId).then(html => {
+                    const modalWindowWrapper = document.getElementById(`modal-window-wrapper`);
+                    putModal(modalWindowWrapper, html);
+                    const modalWindow = modalWindowWrapper.querySelector(`#edit-daily-task-modal`);
+                    const saveButton = modalWindowWrapper.querySelector(`.save-task`);
+                    const taskTitleInput = modalWindowWrapper.querySelector(`#task-title`);
 
+                    fillTaskModalWindow(modalWindowWrapper);
+                    showModal(modalWindow);
+                    toggleSaveButton(taskTitleInput, saveButton);
+
+                    taskTitleInput.addEventListener(`input`, function(event) {
+                        toggleSaveButton(taskTitleInput, saveButton);
+                    });
+
+                    handleSaveDailyTask(modalWindowWrapper, dailyTaskId);
+                    handleDeleteDailyTask(modalWindowWrapper, dailyTaskId);
+
+                    document.getElementById('close-modal-btn').addEventListener('click', function() {
+                        hideModal(modalWindow);
+                        deleteModal(modalWindowWrapper);
+                    });
+                }).catch(error => {
+                    console.log(`Error while receiving task data`, error);
+                });
             }
         });
     }
 });
+
+function handleSaveDailyTask(modalWindowWrapper, dailyTaskId) {
+    const saveButton = modalWindowWrapper.querySelector(`.save-task`);
+    saveButton.addEventListener(`click`, function() {
+        const taskTitle = modalWindowWrapper.querySelector(`#task-title`);
+        const taskDescription = modalWindowWrapper.querySelector(`#task-notes`);
+        const taskComplexity = modalWindowWrapper.querySelector(`#task-difficulty`);
+        const taskDeadline = modalWindowWrapper.querySelector(`#task-deadline`);
+
+        const taskData = {
+            id: dailyTaskId,
+            heading: taskTitle.value,
+            description: taskDescription.value,
+            complexity: taskComplexity.value,
+            deadline: taskDeadline.value
+        };
+
+        updateDailyTask(dailyTaskId, taskData).then(() => {
+            updateDailyTasks();
+            hideModal(modalWindowWrapper.querySelector(`#edit-daily-task-modal`));
+            deleteModal(modalWindowWrapper);
+        });
+    });
+}
+
+function handleDeleteDailyTask(modalWindowWrapper, dailyTaskId) {
+    const modalWindow = modalWindowWrapper.querySelector(`#edit-daily-task-modal`);
+    const deleteButton = modalWindowWrapper.querySelector(`.delete-task`);
+
+    deleteButton.addEventListener(`click`, function() {
+        deleteItem(dailyTaskId, `daily-tasks`, updateDailyTasks).then(() => {
+            if (modalWindow != null) {
+                hideModal(modalWindow);
+                deleteModal(modalWindowWrapper);
+            }
+        });
+    });
+}
 
 document.getElementById('habits-container').addEventListener('click', function(event) {
     if (event.target.closest('.habitica-menu-dropdown-toggle')) {

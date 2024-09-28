@@ -1,4 +1,4 @@
-// tracking daily task events
+import {updateDailyTasks, updateDailyTaskSeries} from "./dailyTaskService.js";
 
 updateDailyTasks();
 
@@ -22,13 +22,13 @@ document.addEventListener('DOMContentLoaded', function () {
                         if (response.ok) {
                             taskInput.value = '';
                             updateDailyTasks();
-                            console.assert('Задача отправлена успешно!');
+                            console.log('Задача отправлена успешно!');
                         } else {
-                            console.assert('Ошибка при отправке задачи');
+                            console.log('Ошибка при отправке задачи');
                         }
                     })
                     .catch(error => {
-                        console.assert('Ошибка сети: ' + error.message);
+                        console.log('Ошибка сети: ' + error.message);
                     });
             }
         }
@@ -58,22 +58,7 @@ document.getElementById('daily-tasks-container').addEventListener('click', funct
                 displayCheck.classList.remove('display-check-icon');
             }
 
-            fetch(`/daily-tasks?dailyTaskId=${dailyTaskId}`, {
-                method: 'PUT',
-                body: JSON.stringify({ action: 'decrement' }),
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            }).then(response => {
-                if (response.ok) {
-                    updateDailyTasks();
-                    console.log(`Задача с ID ${dailyTaskId} обновлена (уменьшение)`);
-                } else {
-                    console.error('Ошибка при уменьшении счётчика');
-                }
-            }).catch(error => {
-                console.error('Ошибка сети:', error);
-            });
+            updateDailyTaskSeries(dailyTaskId, `decrement`);
         } else {
             leftControl.classList.remove('task-neutral-bg-color');
             leftControl.classList.add('task-disabled');
@@ -82,42 +67,7 @@ document.getElementById('daily-tasks-container').addEventListener('click', funct
                 svgCheck.classList.remove('check');
             }
 
-            fetch(`/daily-tasks?dailyTaskId=${dailyTaskId}`, {
-                method: 'PUT',
-                body: JSON.stringify({ action: 'increment' }),
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            }).then(response => {
-                if (response.ok) {
-                    updateDailyTasks();
-                    console.log(`Задача с ID ${dailyTaskId} обновлена (увеличение)`);
-                } else {
-                    console.error('Ошибка при увеличении счётчика');
-                }
-            }).catch(error => {
-                console.error('Ошибка сети:', error);
-            });
+            updateDailyTaskSeries(dailyTaskId, `increment`);
         }
     }
 })
-
-function updateDailyTasks() {
-    fetch(`/daily-tasks`, {
-        method: `GET`,
-        headers: {
-            'Content-Type': 'text/html'
-        }
-    }).then(response => {
-        if (response.ok) {
-            return response.text();
-        }else {
-            throw new Error('Ошибка при получении списка ежедневных задач!');
-        }
-    }).then(html => {
-        const dailyTaskList = document.getElementById('daily-tasks-container');
-        dailyTaskList.innerHTML = html;
-    }).catch(error => {
-        console.error('Error', error);
-    });
-}

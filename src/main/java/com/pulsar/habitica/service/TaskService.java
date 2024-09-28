@@ -31,7 +31,7 @@ public class TaskService {
 
     public Task findById(int taskId) {
         return taskDao.findById(taskId)
-                .orElseThrow(() -> new NoSuchElementException("The task with id 3 was not found!"));
+                .orElseThrow(() -> new NoSuchElementException("The task with id " + taskId + " was not found!"));
     }
 
     public List<Task> findAllByUserId(int userId) {

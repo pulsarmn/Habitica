@@ -3,7 +3,6 @@ package com.pulsar.habitica.servlet;
 import com.pulsar.habitica.dao.task.TaskDao;
 import com.pulsar.habitica.dao.task.TaskDaoImpl;
 import com.pulsar.habitica.dto.TaskDto;
-import com.pulsar.habitica.dto.UserDto;
 import com.pulsar.habitica.entity.task.Task;
 import com.pulsar.habitica.filter.PrivatePaths;
 import com.pulsar.habitica.service.TaskService;
@@ -50,21 +49,23 @@ public class TaskServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         var taskHeading = request.getParameter("taskHeading");
-        var user = (UserDto) request.getSession().getAttribute(SessionAttribute.USER.getValue());
+        var user = ServletUtil.getAuthenticatedUser(request);
         var taskDto = TaskDto.builder()
                 .userId(user.getId())
                 .heading(taskHeading)
                 .build();
-        var task = taskService.createTask(taskDto);
+        taskService.createTask(taskDto);
     }
 
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        var user = (UserDto) request.getSession().getAttribute(SessionAttribute.USER.getValue());
-        var id = request.getParameter("id");
-        int taskId = id.matches("\\d+") ? Integer.parseInt(id) : 0;
-
-        var result = taskService.deleteTask(taskId);
+        try {
+            var taskId = request.getParameter("id");
+            int id = Integer.parseInt(taskId);
+            taskService.deleteTask(id);
+        }catch (Exception e) {
+            ServletUtil.handleException(response, e);
+        }
     }
 
     @Override
