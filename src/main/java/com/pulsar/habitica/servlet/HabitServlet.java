@@ -58,11 +58,25 @@ public class HabitServlet extends HttpServlet {
 
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        var action = getAction(request);
-        var id = request.getParameter("habitId");
-        int habitId = (id != null && id.matches("\\d+")) ? Integer.parseInt(id) : 0;
+        try {
+            var updateParameter = request.getParameter("update");
+            var habitId = request.getParameter("id");
+            int id = Integer.parseInt(habitId);
 
-        doAction(action, habitId);
+            if (updateParameter == null) {
+                var action = ServletUtil.getJson(request).getString("action");
+                doAction(action, id);
+            }else if (updateParameter.equals("update")) {
+                var user = ServletUtil.getAuthenticatedUser(request);
+                JSONObject habitData = ServletUtil.getJson(request);
+                habitService.updateHabit(user.getId(), habitData);
+            }else if (updateParameter.equals("reset")) {
+                var user = ServletUtil.getAuthenticatedUser(request);
+                habitService.resetHabit(user.getId(), id);
+            }
+        }catch (Exception e) {
+            ServletUtil.handleException(response, e);
+        }
     }
 
     @Override
