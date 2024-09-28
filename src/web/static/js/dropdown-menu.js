@@ -130,7 +130,31 @@ document.getElementById('daily-tasks-container').addEventListener('click', funct
             if (event.target.closest('.delete-task-item')) {
                 deleteItem(dailyTaskId, `daily-tasks`, updateDailyTasks);
             }else if (event.target.closest('.edit-task-item')) {
+                getDailyTaskDataToEdit(dailyTaskId).then(html => {
+                    const modalWindowWrapper = document.getElementById(`modal-window-wrapper`);
+                    putModal(modalWindowWrapper, html);
+                    const modalWindow = modalWindowWrapper.querySelector(`#edit-daily-task-modal`);
+                    const saveButton = modalWindowWrapper.querySelector(`.save-task`);
+                    const taskTitleInput = modalWindowWrapper.querySelector(`#task-title`);
 
+                    fillTaskModalWindow(modalWindowWrapper);
+                    showModal(modalWindow);
+                    toggleSaveButton(taskTitleInput, saveButton);
+
+                    taskTitleInput.addEventListener(`input`, function(event) {
+                        toggleSaveButton(taskTitleInput, saveButton);
+                    });
+
+                    handleSaveDailyTask(modalWindowWrapper, dailyTaskId);
+                    handleDeleteDailyTask(modalWindowWrapper, dailyTaskId);
+
+                    document.getElementById('close-modal-btn').addEventListener('click', function() {
+                        hideModal(modalWindow);
+                        deleteModal(modalWindowWrapper);
+                    });
+                }).catch(error => {
+                    console.log(`Error while receiving task data`, error);
+                });
             }
         });
     }
