@@ -210,20 +210,34 @@ document.getElementById('habits-container').addEventListener('click', function(e
 
         dropdownMenu.addEventListener('click', function(event) {
             if (event.target.closest('.delete-task-item')) {
-                fetch(`/habits?habitId=${habitId}`, {
-                    method: `DELETE`
-                }).then(response => {
-                    if (response.ok) {
-                        console.log(`Привычка с ID ${habitId} удалена`);
-                        updateHabits();
-                    }else {
-                        console.error(`Ошибка при удалении привычки`);
-                    }
-                }).catch(error => {
-                    console.error(`Error: `, error);
-                })
+                deleteItem(habitId, `habits`, updateHabits);
             }else if (event.target.closest('.edit-task-item')) {
+                getHabitDataToEdit(habitId).then(html => {
+                    const modalWindowWrapper = document.getElementById(`modal-window-wrapper`);
+                    putModal(modalWindowWrapper, html);
+                    const modalWindow = modalWindowWrapper.querySelector(`#edit-habit-modal`);
+                    const saveButton = modalWindowWrapper.querySelector(`.save-task`);
+                    const taskTitleInput = modalWindowWrapper.querySelector(`#task-title`);
 
+                    fillTaskModalWindow(modalWindowWrapper);
+                    showModal(modalWindow);
+                    toggleSaveButton(taskTitleInput, saveButton);
+
+                    taskTitleInput.addEventListener(`input`, function(event) {
+                        toggleSaveButton(taskTitleInput, saveButton);
+                    });
+
+                    handleSaveHabit(modalWindowWrapper, habitId);
+                    handleDeleteHabit(modalWindowWrapper, habitId);
+                    handleResetHabit(modalWindowWrapper, habitId);
+
+                    document.getElementById('close-modal-btn').addEventListener('click', function() {
+                        hideModal(modalWindow);
+                        deleteModal(modalWindowWrapper);
+                    });
+                }).catch(error => {
+                    console.log(`Error while receiving task data`, error);
+                });
             }
         });
     }
