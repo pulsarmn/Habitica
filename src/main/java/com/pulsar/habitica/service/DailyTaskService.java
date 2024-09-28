@@ -34,7 +34,8 @@ public class DailyTaskService {
     }
 
     public DailyTask findById(int dailyTaskId) {
-        return taskDao.findById(dailyTaskId).orElseThrow(() -> new NoSuchElementException("The daily task with id " + dailyTaskId + " was not found!"));
+        return taskDao.findById(dailyTaskId)
+                .orElseThrow(() -> new NoSuchElementException("The daily task with id " + dailyTaskId + " was not found!"));
     }
 
     public List<DailyTask> findAllByUserId(int userId) {

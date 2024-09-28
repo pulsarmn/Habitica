@@ -2,11 +2,11 @@ package com.pulsar.habitica.servlet;
 
 import com.pulsar.habitica.dao.task.HabitDaoImpl;
 import com.pulsar.habitica.dto.TaskDto;
-import com.pulsar.habitica.dto.UserDto;
 import com.pulsar.habitica.entity.task.Habit;
 import com.pulsar.habitica.filter.PrivatePaths;
 import com.pulsar.habitica.service.HabitService;
 import com.pulsar.habitica.util.JspHelper;
+import com.pulsar.habitica.util.ServletUtil;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -16,7 +16,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 @WebServlet("/habits")
@@ -32,83 +31,79 @@ public class HabitServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        var user = (UserDto) request.getSession().getAttribute(SessionAttribute.USER.getValue());
-        if (user == null) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            return;
-        }
-        List<Habit> habits = habitService.findAllByUserId(user.getId());
+        try {
+            var user = ServletUtil.getAuthenticatedUser(request);
+            var habitId = request.getParameter("id");
 
-        request.setAttribute(SessionAttribute.HABITS.getValue(), habits);
-        request.getRequestDispatcher(JspHelper.getPath(PrivatePaths.HABITS.getPath())).include(request, response);
+            if (habitId == null) {
+                processAllHabits(request, response, user.getId());
+            }else {
+                processSingleHabits(request, response, habitId);
+            }
+        }catch (Exception e) {
+            ServletUtil.handleException(response, e);
+        }
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         var habitHeading = request.getParameter("habitHeading");
-        var user = (UserDto) request.getSession().getAttribute(SessionAttribute.USER.getValue());
+        var user = ServletUtil.getAuthenticatedUser(request);
         var habitDto = TaskDto.builder()
                 .userId(user.getId())
                 .heading(habitHeading)
                 .build();
-        var habit = habitService.createHabit(habitDto);
+        habitService.createHabit(habitDto);
     }
 
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        var action = getAction(request);
-        var id = request.getParameter("habitId");
-        int habitId = (id != null && id.matches("\\d+")) ? Integer.parseInt(id) : 0;
+        try {
+            var updateParameter = request.getParameter("update");
+            var habitId = request.getParameter("id");
+            int id = Integer.parseInt(habitId);
 
-        doAction(action, habitId);
+            if (updateParameter == null) {
+                var action = ServletUtil.getJson(request).getString("action");
+                doAction(action, id);
+            }else if (updateParameter.equals("update")) {
+                var user = ServletUtil.getAuthenticatedUser(request);
+                JSONObject habitData = ServletUtil.getJson(request);
+                habitService.updateHabit(user.getId(), habitData);
+            }else if (updateParameter.equals("reset")) {
+                var user = ServletUtil.getAuthenticatedUser(request);
+                habitService.resetHabit(user.getId(), id);
+            }
+        }catch (Exception e) {
+            ServletUtil.handleException(response, e);
+        }
     }
 
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        var user = (UserDto) request.getSession().getAttribute(SessionAttribute.USER.getValue());
-        if (user == null) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            return;
-        }
-
-        var id = request.getParameter("habitId");
-        int habitId;
         try {
-            habitId = Integer.parseInt(id);
-        }catch (NumberFormatException e) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return;
+            var habitId = request.getParameter("id");
+            int id = Integer.parseInt(habitId);
+            habitService.deleteHabit(id);
+        }catch (Exception e) {
+            ServletUtil.handleException(response, e);
         }
-
-        habitService.deleteHabit(habitId);
     }
 
-    @Override
-    public void destroy() {
+    private void processAllHabits(HttpServletRequest request, HttpServletResponse response, int userId) throws ServletException, IOException {
+        List<Habit> habits = habitService.findAllByUserId(userId);
 
+        request.setAttribute(SessionAttribute.HABITS.getValue(), habits);
+        request.getRequestDispatcher(JspHelper.getPath(PrivatePaths.HABITS.getPath())).include(request, response);
     }
 
-    private List<Habit> getHabitList(HttpServletRequest request) {
-        var tempObject = request.getSession().getAttribute(SessionAttribute.HABITS.getValue());
-        List<Habit> habits = new ArrayList<>();
-        if (tempObject instanceof List<?> tempList) {
-            if (!tempList.isEmpty() && tempList.get(0) instanceof Habit) {
-                habits = (List<Habit>) tempList;
-            }
-        }
-        return habits;
-    }
+    private void processSingleHabits(HttpServletRequest request, HttpServletResponse response, String habitId) throws ServletException, IOException {
+        int id = Integer.parseInt(habitId);
+        var habit = habitService.findById(id);
 
-    private String getAction(HttpServletRequest request) throws IOException {
-        StringBuilder sb = new StringBuilder();
-        try (var bufferedReader = request.getReader()) {
-            String line;
-            while ((line = bufferedReader.readLine()) != null) {
-                sb.append(line);
-            }
-        }
-        JSONObject object = new JSONObject(sb.toString());
-        return object.getString("action");
+        request.setAttribute("habit", habit);
+        request.setAttribute("habitData", new JSONObject(habit));
+        request.getRequestDispatcher(JspHelper.getPath("/habit-modal-window")).include(request, response);
     }
 
     private void doAction(String action, int habitId) {
