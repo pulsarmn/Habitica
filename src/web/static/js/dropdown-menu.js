@@ -1,7 +1,8 @@
-import {getTaskDataToEdit, saveTask, updateTasks} from "./taskService.js";
-import {showModal, hideModal, toggleSaveButton, putModal, deleteModal} from "./modalService.js";
-import {getRewardDataToEdit, saveReward, updateRewards} from "./rewardService.js";
-import {getDailyTaskDataToEdit, updateDailyTask, updateDailyTasks} from "./dailyTaskService.js";
+import {getTaskDataToEdit, saveTask, updateTasks} from "./service/taskService.js";
+import {showModal, hideModal, toggleSaveButton, putModal, deleteModal} from "./service/modalService.js";
+import {getRewardDataToEdit, saveReward, updateRewards} from "./service/rewardService.js";
+import {getDailyTaskDataToEdit, updateDailyTask, updateDailyTasks} from "./service/dailyTaskService.js";
+import {getHabitDataToEdit, resetHabit, updateHabit, updateHabits} from "./service/habitService.js";
 
 document.addEventListener('click', function(event) {
     const toggleButton = event.target.closest('.habitica-menu-dropdown-toggle');
@@ -72,7 +73,9 @@ function fillTaskModalWindow(modalWindowWrapper) {
     taskTitle.value = taskData.heading;
     taskDescription.innerHTML = (taskData.description === undefined) ? `` : taskData.description;
     taskComplexity.value = taskData.complexity;
-    taskDeadline.value = taskData.deadline;
+    if (taskDeadline != null) {
+        taskDeadline.value = taskData.deadline;
+    }
 }
 
 function getJsonTask() {
@@ -225,6 +228,57 @@ document.getElementById('habits-container').addEventListener('click', function(e
         });
     }
 });
+
+function handleSaveHabit(modalWindowWrapper, habitId) {
+    const saveButton = modalWindowWrapper.querySelector(`.save-task`);
+    saveButton.addEventListener(`click`, function() {
+        const taskTitle = modalWindowWrapper.querySelector(`#task-title`);
+        const taskDescription = modalWindowWrapper.querySelector(`#task-notes`);
+        const taskComplexity = modalWindowWrapper.querySelector(`#task-difficulty`);
+
+        const taskData = {
+            id: habitId,
+            heading: taskTitle.value,
+            description: taskDescription.value,
+            complexity: taskComplexity.value,
+        };
+
+        updateHabit(habitId, taskData).then(() => {
+            updateHabits();
+            hideModal(modalWindowWrapper.querySelector(`#edit-habit-modal`));
+            deleteModal(modalWindowWrapper);
+        });
+    });
+}
+
+function handleDeleteHabit(modalWindowWrapper, habitId) {
+    const modalWindow = modalWindowWrapper.querySelector(`#edit-habit-modal`);
+    const deleteButton = modalWindowWrapper.querySelector(`.delete-task`);
+
+    deleteButton.addEventListener(`click`, function() {
+        deleteItem(habitId, `habits`, updateHabits).then(() => {
+            if (modalWindow != null) {
+                hideModal(modalWindow);
+                deleteModal(modalWindowWrapper);
+            }
+        });
+    });
+}
+
+function handleResetHabit(modalWindowWrapper, habitId) {
+    const modalWindow = modalWindowWrapper.querySelector(`#edit-habit-modal`);
+    const resetButton = modalWindowWrapper.querySelector(`.reset-habit`);
+
+    resetButton.addEventListener(`click`, function() {
+        resetHabit(habitId).then(() => {
+            updateHabits();
+            if (modalWindow != null) {
+                hideModal(modalWindow);
+                deleteModal(modalWindowWrapper);
+            }
+        });
+    });
+}
 
 document.getElementById(`rewards-container`).addEventListener(`click`, function(event) {
     if (event.target.closest(`.habitica-menu-dropdown-toggle`)) {
