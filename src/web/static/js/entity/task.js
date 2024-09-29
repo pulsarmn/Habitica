@@ -1,4 +1,4 @@
-import {deleteTask, updateTasks} from "./service/taskService.js";
+import {deleteTask, updateTasks} from "../service/taskService.js";
 
 updateTasks();
 

@@ -142,9 +142,9 @@
 <div id="modal-window-wrapper"></div>
 </body>
 <script src="../../static/js/home.js?v=${System.currentTimeMillis()}"></script>
-<script type="module" src="../../static/js/task.js?v=${System.currentTimeMillis()}"></script>
-<script type="module" src="../../static/js/daily-task.js?v=${System.currentTimeMillis()}"></script>
-<script type="module" src="../../static/js/habit.js?v=${System.currentTimeMillis()}"></script>
-<script type="module" src="../../static/js/reward.js?v=${System.currentTimeMillis()}"></script>
+<script type="module" src="../../static/js/entity/task.js?v=${System.currentTimeMillis()}"></script>
+<script type="module" src="../../static/js/entity/daily-task.js?v=${System.currentTimeMillis()}"></script>
+<script type="module" src="../../static/js/entity/habit.js?v=${System.currentTimeMillis()}"></script>
+<script type="module" src="../../static/js/entity/reward.js?v=${System.currentTimeMillis()}"></script>
 <script type="module" src="../../static/js/dropdown-menu.js?v=${System.currentTimeMillis()}"></script>
 </html>
