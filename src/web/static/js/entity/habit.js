@@ -1,4 +1,4 @@
-import {updateHabits, updateHabitSeries} from "../service/habitService.js";
+import {updateHabits, updateHabitSeries, withdrawReward} from "../service/habitService.js";
 
 updateHabits();
 
@@ -45,7 +45,47 @@ document.querySelector('#habits-container').addEventListener('click', function(e
 
     if (event.target.closest('.left-control')) {
         updateHabitSeries(habitId, `increment`);
+        withdrawReward(habitId, `habit`, `increment`).then(() => {
+             updateBalance();
+             updateHabits();
+        });
     }else if (event.target.closest('.right-control')) {
         updateHabitSeries(habitId, `decrement`);
+        withdrawReward(habitId, `habit`, `decrement`).then(() => {
+            updateBalance();
+            updateHabits();
+        });
     }
-})
+});
+
+function updateBalance() {
+    fetch('/balance', {
+        method: 'GET',
+    })
+        .then(response => response.json())
+        .then(balance => {
+            animateBalanceChange(balance.balance, 1000);
+        })
+        .catch(error => console.error('Ошибка обновления баланса: ', error));
+}
+
+function animateBalanceChange(targetBalance, duration) {
+    const balanceElement = document.querySelector(`#userBalance`);
+    const startTime = performance.now();
+    const initialBalance = Number(balanceElement.textContent);
+
+    function updateBalanceAnimation(currentTime) {
+        const elapsedTime = currentTime - startTime;
+        const progress = Math.min(elapsedTime / duration, 1);
+
+        const currentBalance = initialBalance + (targetBalance - initialBalance) * progress;
+
+        balanceElement.textContent = currentBalance.toFixed(2);
+
+        if (progress < 1) {
+            requestAnimationFrame(updateBalanceAnimation);
+        }
+    }
+
+    requestAnimationFrame(updateBalanceAnimation);
+}
