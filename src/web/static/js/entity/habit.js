@@ -1,4 +1,4 @@
-import {updateHabits, updateHabitSeries} from "./service/habitService.js";
+import {updateHabits, updateHabitSeries} from "../service/habitService.js";
 
 updateHabits();
 
