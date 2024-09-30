@@ -1,6 +1,7 @@
 package com.pulsar.habitica.util;
 
 import com.pulsar.habitica.dto.UserDto;
+import com.pulsar.habitica.exception.InsufficientBalanceException;
 import com.pulsar.habitica.exception.UnauthorizedException;
 import com.pulsar.habitica.servlet.SessionAttribute;
 import jakarta.servlet.http.HttpServletRequest;
@@ -38,6 +39,8 @@ public final class ServletUtil {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         }else if (e instanceof JSONException || e instanceof IllegalArgumentException) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        }else if (e instanceof InsufficientBalanceException) {
+            response.setStatus(HttpServletResponse.SC_PAYMENT_REQUIRED);
         }else {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
