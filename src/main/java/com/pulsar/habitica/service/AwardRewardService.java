@@ -31,6 +31,8 @@ public class AwardRewardService {
             dao = DailyTaskDaoImpl.getInstance();
         }else if (type.equals("habit")) {
             dao = HabitDaoImpl.getInstance();
+        }else {
+            throw new IllegalArgumentException("illegal type - " + type);
         }
     }
 }
