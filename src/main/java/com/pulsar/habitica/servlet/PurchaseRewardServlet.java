@@ -54,12 +54,20 @@ public class PurchaseRewardServlet extends HttpServlet {
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         var user = ServletUtil.getAuthenticatedUser(request);
+        var action = request.getParameter("action");
         var type = request.getParameter("type");
         var elementId = request.getParameter("id");
         int id = Integer.parseInt(elementId);
 
         BigDecimal balance = userBalanceService.findUserBalance(user.getId()).getBalance();
-        balance = awardRewardService.getRewardCost(type, id).add(balance);
-        userBalanceService.updateUserBalance(user.getId(), balance);
+        BigDecimal rewardCost = awardRewardService.getRewardCost(type, id);
+
+        if (action == null || action.equals("increment")) {
+            balance = balance.add(rewardCost);
+            userBalanceService.updateUserBalance(user.getId(), balance);
+        }else if (action.equals("decrement")) {
+            balance = balance.subtract(rewardCost);
+            userBalanceService.updateUserBalance(user.getId(), balance);
+        }
     }
 }

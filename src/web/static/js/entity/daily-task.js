@@ -1,4 +1,5 @@
-import {updateDailyTasks, updateDailyTaskSeries} from "../service/dailyTaskService.js";
+import {updateDailyTasks, updateDailyTaskSeries, withdrawReward} from "../service/dailyTaskService.js";
+import {awardReward} from "../service/taskService.js";
 
 updateDailyTasks();
 
@@ -59,6 +60,10 @@ document.getElementById('daily-tasks-container').addEventListener('click', funct
             }
 
             updateDailyTaskSeries(dailyTaskId, `decrement`);
+            withdrawReward(dailyTaskId, `daily-task`, `decrement`).then(() => {
+                updateBalance();
+                updateDailyTasks();
+            });
         } else {
             leftControl.classList.remove('task-neutral-bg-color');
             leftControl.classList.add('task-disabled');
@@ -68,6 +73,42 @@ document.getElementById('daily-tasks-container').addEventListener('click', funct
             }
 
             updateDailyTaskSeries(dailyTaskId, `increment`);
+            awardReward(dailyTaskId, `daily-task`).then(() => {
+                updateBalance();
+                updateDailyTasks();
+            });
         }
     }
-})
+});
+
+function updateBalance() {
+    fetch('/balance', {
+        method: 'GET',
+    })
+        .then(response => response.json())
+        .then(balance => {
+            animateBalanceChange(balance.balance, 1000);
+        })
+        .catch(error => console.error('Ошибка обновления баланса: ', error));
+}
+
+function animateBalanceChange(targetBalance, duration) {
+    const balanceElement = document.querySelector(`#userBalance`);
+    const startTime = performance.now();
+    const initialBalance = Number(balanceElement.textContent);
+
+    function updateBalanceAnimation(currentTime) {
+        const elapsedTime = currentTime - startTime;
+        const progress = Math.min(elapsedTime / duration, 1);
+
+        const currentBalance = initialBalance + (targetBalance - initialBalance) * progress;
+
+        balanceElement.textContent = currentBalance.toFixed(2);
+
+        if (progress < 1) {
+            requestAnimationFrame(updateBalanceAnimation);
+        }
+    }
+
+    requestAnimationFrame(updateBalanceAnimation);
+}
