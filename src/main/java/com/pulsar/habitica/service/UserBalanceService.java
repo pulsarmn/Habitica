@@ -2,6 +2,7 @@ package com.pulsar.habitica.service;
 
 import com.pulsar.habitica.dao.user.UserBalanceDao;
 import com.pulsar.habitica.entity.user.UserBalance;
+import com.pulsar.habitica.exception.InsufficientBalanceException;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
@@ -35,14 +36,14 @@ public class UserBalanceService {
 
     public boolean isPurchased(int userId, BigDecimal cost) {
         if (cost == null) {
-            return false;
+            throw new IllegalArgumentException("illegal cost - " + cost);
         }
 
         var userBalance = findUserBalance(userId);
 
         BigDecimal balance = userBalance.getBalance();
         if (balance.compareTo(cost) < 0) {
-            return false;
+            throw new InsufficientBalanceException("There are not enough funds to perform operation.");
         }
 
         BigDecimal newBalance = balance.subtract(cost);

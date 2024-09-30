@@ -11,6 +11,7 @@ import org.json.JSONObject;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 public class RewardService {
 
@@ -28,7 +29,7 @@ public class RewardService {
 
     public Reward findById(int rewardId) {
         return rewardDao.findById(rewardId)
-                .orElse(Reward.builder().build());
+                .orElseThrow(() -> new NoSuchElementException("The element with id " + rewardId + " was not found!"));
     }
 
     public List<Reward> findAllByUserId(int userId) {

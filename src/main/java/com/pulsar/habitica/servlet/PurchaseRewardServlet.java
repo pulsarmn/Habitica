@@ -2,9 +2,10 @@ package com.pulsar.habitica.servlet;
 
 import com.pulsar.habitica.dao.reward.RewardDaoImpl;
 import com.pulsar.habitica.dao.user.UserBalanceDaoImpl;
-import com.pulsar.habitica.dto.UserDto;
+import com.pulsar.habitica.service.AwardRewardService;
 import com.pulsar.habitica.service.RewardService;
 import com.pulsar.habitica.service.UserBalanceService;
+import com.pulsar.habitica.util.ServletUtil;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -20,6 +21,7 @@ public class PurchaseRewardServlet extends HttpServlet {
 
     private UserBalanceService userBalanceService;
     private RewardService rewardService;
+    private AwardRewardService awardRewardService;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -27,42 +29,37 @@ public class PurchaseRewardServlet extends HttpServlet {
         userBalanceService = new UserBalanceService(userBalanceDao);
         var rewardDao = RewardDaoImpl.getInstance();
         rewardService = new RewardService(rewardDao);
+        awardRewardService = new AwardRewardService();
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        var user = (UserDto) request.getSession().getAttribute(SessionAttribute.USER.getValue());
-        if (user == null) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            return;
-        }
-        var userRewards = rewardService.findAllByUserId(user.getId());
-        var id = request.getParameter("rewardId");
-
-        int rewardId;
         try {
-            rewardId = Integer.parseInt(id);
-        }catch (NumberFormatException e) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return;
+            var user = ServletUtil.getAuthenticatedUser(request);
+            var rewardId = request.getParameter("rewardId");
+            int id = Integer.parseInt(rewardId);
+            var reward = rewardService.findById(id);
+
+            BigDecimal cost = reward.getCost();
+            boolean isPurchased = userBalanceService.isPurchased(user.getId(), cost);
+
+            if (isPurchased) {
+                response.setStatus(HttpServletResponse.SC_OK);
+            }
+        }catch (Exception e) {
+            ServletUtil.handleException(response, e);
         }
+    }
 
-        var reward = userRewards.stream()
-                .filter(userReward -> userReward.getId().equals(rewardId))
-                .findFirst();
+    @Override
+    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        var user = ServletUtil.getAuthenticatedUser(request);
+        var type = request.getParameter("type");
+        var elementId = request.getParameter("id");
+        int id = Integer.parseInt(elementId);
 
-        if (reward.isEmpty()) {
-            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            return;
-        }
-
-        BigDecimal cost = reward.get().getCost();
-        boolean isPurchased = userBalanceService.isPurchased(user.getId(), cost);
-
-        if (isPurchased) {
-            response.setStatus(HttpServletResponse.SC_OK);
-        }else {
-            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-        }
+        BigDecimal balance = userBalanceService.findUserBalance(user.getId()).getBalance();
+        balance = awardRewardService.getRewardCost(type, id).add(balance);
+        userBalanceService.updateUserBalance(user.getId(), balance);
     }
 }
