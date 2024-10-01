@@ -1,4 +1,4 @@
-import {awardReward, deleteEntity, reloadEntities} from "../service/generalService.js";
+import {awardReward, deleteEntity, reloadEntities, updateBalance} from "../service/generalService.js";
 
 reloadEntities(`tasks`, `tasks-container`);
 
@@ -70,35 +70,3 @@ document.getElementById('tasks-container').addEventListener('click', function(ev
         }
     }
 });
-
-function updateBalance() {
-    fetch('/balance', {
-        method: 'GET',
-    })
-        .then(response => response.json())
-        .then(balance => {
-            animateBalanceChange(balance.balance, 1000);
-        })
-        .catch(error => console.error('Ошибка обновления баланса: ', error));
-}
-
-function animateBalanceChange(targetBalance, duration) {
-    const balanceElement = document.querySelector(`#userBalance`);
-    const startTime = performance.now();
-    const initialBalance = Number(balanceElement.textContent);
-
-    function updateBalanceAnimation(currentTime) {
-        const elapsedTime = currentTime - startTime;
-        const progress = Math.min(elapsedTime / duration, 1);
-
-        const currentBalance = initialBalance + (targetBalance - initialBalance) * progress;
-
-        balanceElement.textContent = currentBalance.toFixed(2);
-
-        if (progress < 1) {
-            requestAnimationFrame(updateBalanceAnimation);
-        }
-    }
-
-    requestAnimationFrame(updateBalanceAnimation);
-}

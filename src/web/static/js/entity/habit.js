@@ -1,5 +1,5 @@
-import {updateHabitSeries, withdrawReward} from "../service/habitService.js";
-import {reloadEntities, updateEntitySeries} from "../service/generalService.js";
+import {withdrawReward} from "../service/habitService.js";
+import {reloadEntities, updateBalance, updateEntitySeries} from "../service/generalService.js";
 
 reloadEntities(`habits`, `habits-container`);
 
@@ -47,7 +47,7 @@ document.querySelector('#habits-container').addEventListener('click', function(e
     if (event.target.closest('.left-control')) {
         updateEntitySeries(habitId, `habits`, `increment`);
         withdrawReward(habitId, `habit`, `increment`).then(() => {
-             updateBalance();
+            updateBalance();
             reloadEntities(`habits`, `habits-container`);
         });
     }else if (event.target.closest('.right-control')) {
@@ -58,35 +58,3 @@ document.querySelector('#habits-container').addEventListener('click', function(e
         });
     }
 });
-
-function updateBalance() {
-    fetch('/balance', {
-        method: 'GET',
-    })
-        .then(response => response.json())
-        .then(balance => {
-            animateBalanceChange(balance.balance, 1000);
-        })
-        .catch(error => console.error('Ошибка обновления баланса: ', error));
-}
-
-function animateBalanceChange(targetBalance, duration) {
-    const balanceElement = document.querySelector(`#userBalance`);
-    const startTime = performance.now();
-    const initialBalance = Number(balanceElement.textContent);
-
-    function updateBalanceAnimation(currentTime) {
-        const elapsedTime = currentTime - startTime;
-        const progress = Math.min(elapsedTime / duration, 1);
-
-        const currentBalance = initialBalance + (targetBalance - initialBalance) * progress;
-
-        balanceElement.textContent = currentBalance.toFixed(2);
-
-        if (progress < 1) {
-            requestAnimationFrame(updateBalanceAnimation);
-        }
-    }
-
-    requestAnimationFrame(updateBalanceAnimation);
-}

@@ -1,4 +1,4 @@
-import {reloadEntities} from "../service/generalService.js";
+import {reloadEntities, updateBalance} from "../service/generalService.js";
 
 reloadEntities(`rewards`, `rewards-container`);
 
@@ -64,36 +64,4 @@ document.getElementById('rewards-container').addEventListener('click', function(
             console.error('Ошибка сети: ', error);
         });
     }
-})
-
-function updateBalance() {
-    fetch('/balance', {
-        method: 'GET',
-    })
-        .then(response => response.json())
-        .then(balance => {
-            animateBalanceChange(balance.balance, 1000);
-        })
-        .catch(error => console.error('Ошибка обновления баланса: ', error));
-}
-
-function animateBalanceChange(targetBalance, duration) {
-    const balanceElement = document.getElementById('userBalance');
-    const startTime = performance.now();
-    const initialBalance = Number(balanceElement.textContent);
-
-        function updateBalanceAnimation(currentTime) {
-        const elapsedTime = currentTime - startTime;
-        const progress = Math.min(elapsedTime / duration, 1);
-
-        const currentBalance = initialBalance + (targetBalance - initialBalance) * progress;
-
-        balanceElement.textContent = currentBalance.toFixed(2);
-
-        if (progress < 1) {
-            requestAnimationFrame(updateBalanceAnimation);
-        }
-    }
-
-    requestAnimationFrame(updateBalanceAnimation);
-}
+});
