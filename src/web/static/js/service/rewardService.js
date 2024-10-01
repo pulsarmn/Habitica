@@ -1,13 +1,3 @@
-export function getRewardDataToEdit(rewardId) {
-    return fetch(`/rewards?id=${rewardId}`, {
-        method: 'GET',
-        headers: { 'Content-Type': 'text/html' }
-    }).then(response => {
-        if (response.ok) return response.text();
-        throw new Error('Ошибка при получении данных награды!');
-    });
-}
-
 export function saveReward(rewardId, rewardData) {
     return fetch(`/rewards?id=${rewardId}`, {
         method: 'PUT',

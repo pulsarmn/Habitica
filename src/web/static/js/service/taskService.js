@@ -1,13 +1,3 @@
-export function getTaskDataToEdit(taskId) {
-    return fetch(`/tasks?id=${taskId}`, {
-        method: 'GET',
-        headers: { 'Content-Type': 'text/html' }
-    }).then(response => {
-        if (response.ok) return response.text();
-        throw new Error('Ошибка при получении данных задачи!');
-    });
-}
-
 export function saveTask(taskId, taskData) {
     return fetch(`/tasks?id=${taskId}`, {
         method: 'PUT',

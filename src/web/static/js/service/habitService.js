@@ -1,13 +1,3 @@
-export function getHabitDataToEdit(habitId){
-    return fetch(`/habits?id=${habitId}`, {
-        method: 'GET',
-        headers: { 'Content-Type': 'text/html' }
-    }).then(response => {
-        if (response.ok) return response.text();
-        throw new Error('Ошибка при получении данных задачи!');
-    });
-}
-
 export function updateHabit(habitId, taskData) {
     return fetch(`/habits?id=${habitId}&update=update`, {
         method: 'PUT',

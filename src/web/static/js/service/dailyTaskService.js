@@ -1,13 +1,3 @@
-export function getDailyTaskDataToEdit(dailyTaskId){
-    return fetch(`/daily-tasks?id=${dailyTaskId}`, {
-        method: 'GET',
-        headers: { 'Content-Type': 'text/html' }
-    }).then(response => {
-        if (response.ok) return response.text();
-        throw new Error('Ошибка при получении данных задачи!');
-    });
-}
-
 export function updateDailyTask(taskId, taskData) {
     return fetch(`/daily-tasks?id=${taskId}&update=true`, {
         method: 'PUT',

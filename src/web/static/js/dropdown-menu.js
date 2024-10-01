@@ -1,8 +1,9 @@
-import {getTaskDataToEdit, saveTask, updateTasks} from "./service/taskService.js";
+import {saveTask, updateTasks} from "./service/taskService.js";
 import {showModal, hideModal, toggleSaveButton, putModal, deleteModal} from "./service/modalService.js";
-import {getRewardDataToEdit, saveReward, updateRewards} from "./service/rewardService.js";
-import {getDailyTaskDataToEdit, updateDailyTask, updateDailyTasks} from "./service/dailyTaskService.js";
-import {getHabitDataToEdit, resetHabit, updateHabit, updateHabits} from "./service/habitService.js";
+import {saveReward, updateRewards} from "./service/rewardService.js";
+import {updateDailyTask, updateDailyTasks} from "./service/dailyTaskService.js";
+import {resetHabit, updateHabit, updateHabits} from "./service/habitService.js";
+import {getEntityDataToEdit} from "./service/generalService.js";
 
 document.addEventListener('click', function(event) {
     const toggleButton = event.target.closest('.habitica-menu-dropdown-toggle');
@@ -32,7 +33,7 @@ document.getElementById('tasks-container').addEventListener('click', function(ev
             if (event.target.closest('.delete-task-item')) {
                 deleteItem(taskId, `tasks`, updateTasks);
             }else if (event.target.closest('.edit-task-item')) {
-                getTaskDataToEdit(taskId).then(html => {
+                getEntityDataToEdit(taskId, `tasks`).then(html => {
                     const modalWindowWrapper = document.getElementById(`modal-window-wrapper`);
                     putModal(modalWindowWrapper, html);
                     const modalWindow = modalWindowWrapper.querySelector(`#edit-task-modal`);
@@ -133,7 +134,7 @@ document.getElementById('daily-tasks-container').addEventListener('click', funct
             if (event.target.closest('.delete-task-item')) {
                 deleteItem(dailyTaskId, `daily-tasks`, updateDailyTasks);
             }else if (event.target.closest('.edit-task-item')) {
-                getDailyTaskDataToEdit(dailyTaskId).then(html => {
+                getEntityDataToEdit(dailyTaskId, `daily-tasks`).then(html => {
                     const modalWindowWrapper = document.getElementById(`modal-window-wrapper`);
                     putModal(modalWindowWrapper, html);
                     const modalWindow = modalWindowWrapper.querySelector(`#edit-daily-task-modal`);
@@ -212,7 +213,7 @@ document.getElementById('habits-container').addEventListener('click', function(e
             if (event.target.closest('.delete-task-item')) {
                 deleteItem(habitId, `habits`, updateHabits);
             }else if (event.target.closest('.edit-task-item')) {
-                getHabitDataToEdit(habitId).then(html => {
+                getEntityDataToEdit(habitId, `habits`).then(html => {
                     const modalWindowWrapper = document.getElementById(`modal-window-wrapper`);
                     putModal(modalWindowWrapper, html);
                     const modalWindow = modalWindowWrapper.querySelector(`#edit-habit-modal`);
@@ -305,7 +306,7 @@ document.getElementById(`rewards-container`).addEventListener(`click`, function(
             if (event.target.closest(`.delete-task-item`)) {
                 deleteItem(rewardId, `rewards`, updateRewards);
             }else if (event.target.closest(`.edit-task-item`)) {
-                getRewardDataToEdit(rewardId).then(html => {
+                getEntityDataToEdit(rewardId, `rewards`).then(html => {
                     const modalWindowWrapper = document.querySelector(`#modal-window-wrapper`);
                     putModal(modalWindowWrapper, html);
                     const modalWindow = modalWindowWrapper.querySelector(`#edit-reward-modal`);
