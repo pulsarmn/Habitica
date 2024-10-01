@@ -1,6 +1,6 @@
 import {
-    createEntity,
     reloadEntities,
+    setupEntityInput,
     updateBalance,
     updateEntitySeries,
     withdrawReward
@@ -9,22 +9,7 @@ import {
 reloadEntities(`habits`, `habits-container`);
 
 document.addEventListener('DOMContentLoaded', function () {
-    const taskInput = document.querySelector('#habitInput');
-    taskInput.addEventListener('keypress', function (e) {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            const taskValue = taskInput.value.trim();
-            if (taskValue) {
-                createEntity(`habits`, taskValue, taskInput);
-            }
-        }
-    });
-
-    taskInput.addEventListener('input', function () {
-        if (this.value.includes('\n')) {
-            this.value = this.value.replace(/\n/g, '');
-        }
-    });
+    setupEntityInput(`habitInput`, `habits`);
 });
 
 document.querySelector('#habits-container').addEventListener('click', function(event) {

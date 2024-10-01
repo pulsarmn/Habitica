@@ -231,3 +231,24 @@ export function createEntity(endpoint, entityValue, entityInput) {
         }
     }).catch(error => {console.log('Network error:', error);});
 }
+
+export function setupEntityInput(inputId, endpoint) {
+    const taskInput = document.querySelector(`#${inputId}`);
+
+    taskInput.addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+
+            const taskValue = taskInput.value.trim();
+            if (taskValue) {
+                createEntity(endpoint, taskValue, taskInput);
+            }
+        }
+    });
+
+    taskInput.addEventListener('input', function () {
+        if (this.value.includes('\n')) {
+            this.value = this.value.replace(/\n/g, '');
+        }
+    });
+}

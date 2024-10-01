@@ -1,24 +1,9 @@
-import {createEntity, reloadEntities, updateBalance} from "../service/generalService.js";
+import {reloadEntities, setupEntityInput, updateBalance} from "../service/generalService.js";
 
 reloadEntities(`rewards`, `rewards-container`);
 
 document.addEventListener('DOMContentLoaded', function () {
-    const taskInput = document.getElementById('rewardInput');
-    taskInput.addEventListener('keypress', function (e) {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            const taskValue = taskInput.value.trim();
-            if (taskValue) {
-                createEntity(`rewards`, taskValue, taskInput);
-            }
-        }
-    });
-
-    taskInput.addEventListener('input', function () {
-        if (this.value.includes('\n')) {
-            this.value = this.value.replace(/\n/g, '');
-        }
-    });
+    setupEntityInput(`rewardInput`, `rewards`);
 });
 
 document.getElementById('rewards-container').addEventListener('click', function(event) {

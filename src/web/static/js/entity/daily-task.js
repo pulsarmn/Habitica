@@ -1,6 +1,7 @@
 import {
-    awardReward, createEntity,
+    awardReward,
     reloadEntities,
+    setupEntityInput,
     updateBalance,
     updateEntitySeries,
     withdrawReward
@@ -9,24 +10,7 @@ import {
 reloadEntities(`daily-tasks`, `daily-tasks-container`);
 
 document.addEventListener('DOMContentLoaded', function () {
-    const taskInput = document.getElementById('dailyTaskInput');
-
-    taskInput.addEventListener('keypress', function (e) {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-
-            const taskValue = taskInput.value.trim();
-            if (taskValue) {
-                createEntity(`daily-tasks`, taskValue, taskInput);
-            }
-        }
-    });
-
-    taskInput.addEventListener('input', function () {
-        if (this.value.includes('\n')) {
-            this.value = this.value.replace(/\n/g, '');
-        }
-    });
+    setupEntityInput(`dailyTaskInput`, `daily-tasks`);
 });
 
 document.getElementById('daily-tasks-container').addEventListener('click', function(event) {
