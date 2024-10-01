@@ -64,3 +64,17 @@ export function deleteEntity(itemId, endpoint, container) {
         console.error(`Error`, error);
     });
 }
+
+export function awardReward(entityId, type) {
+    return fetch(`/purchase-reward?type=${type}&id=${entityId}`, {
+        method: `PUT`
+    }).then(response => {
+        if (response.ok) {
+            console.log(`The reward is accrued!`);
+        }else {
+            throw new Error(`Error when calculating remuneration!`)
+        }
+    }).catch(error => {
+        console.error(`Network error!`, error);
+    });
+}

@@ -1,7 +1,5 @@
-import {awardReward} from "../service/taskService.js";
-import {deleteEntity, reloadEntities} from "../service/generalService.js";
+import {awardReward, deleteEntity, reloadEntities} from "../service/generalService.js";
 
-// updateTasks();
 reloadEntities(`tasks`, `tasks-container`);
 
 document.addEventListener('DOMContentLoaded', function () {

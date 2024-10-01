@@ -1,6 +1,5 @@
 import {updateDailyTaskSeries, withdrawReward} from "../service/dailyTaskService.js";
-import {awardReward} from "../service/taskService.js";
-import {reloadEntities} from "../service/generalService.js";
+import {awardReward, reloadEntities} from "../service/generalService.js";
 
 reloadEntities(`daily-tasks`, `daily-tasks-container`);
 
@@ -110,6 +109,5 @@ function animateBalanceChange(targetBalance, duration) {
             requestAnimationFrame(updateBalanceAnimation);
         }
     }
-
     requestAnimationFrame(updateBalanceAnimation);
 }
