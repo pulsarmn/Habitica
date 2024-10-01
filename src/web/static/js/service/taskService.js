@@ -37,23 +37,3 @@ export function awardReward(elementId, type) {
         console.error(`Ошибка сети`);
     });
 }
-
-export function updateTasks() {
-    return fetch(`/tasks`, {
-        method: `GET`,
-        headers: {
-            'Content-Type': 'text/html'
-        }
-    }).then(response => {
-        if (response.ok) {
-            return response.text();
-        }else {
-            throw new Error('Ошибка при получении списка задач!');
-        }
-    }).then(html => {
-        const taskList = document.getElementById('tasks-container');
-        taskList.innerHTML = html;
-    }).catch(error => {
-        console.error("Error: ", error);
-    });
-}

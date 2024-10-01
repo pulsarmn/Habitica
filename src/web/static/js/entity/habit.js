@@ -1,6 +1,7 @@
-import {updateHabits, updateHabitSeries, withdrawReward} from "../service/habitService.js";
+import {updateHabitSeries, withdrawReward} from "../service/habitService.js";
+import {reloadEntities} from "../service/generalService.js";
 
-updateHabits();
+reloadEntities(`habits`, `habits-container`);
 
 document.addEventListener('DOMContentLoaded', function () {
     const taskInput = document.querySelector('#habitInput');
@@ -19,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     .then(response => {
                         if (response.ok) {
                             taskInput.value = '';
-                            updateHabits();
+                            reloadEntities(`habits`, `habits-container`);
                             console.log('Привычка отправлена успешно!');
                         } else {
                             console.log('Ошибка при отправке привычки!');
@@ -47,13 +48,13 @@ document.querySelector('#habits-container').addEventListener('click', function(e
         updateHabitSeries(habitId, `increment`);
         withdrawReward(habitId, `habit`, `increment`).then(() => {
              updateBalance();
-             updateHabits();
+            reloadEntities(`habits`, `habits-container`);
         });
     }else if (event.target.closest('.right-control')) {
         updateHabitSeries(habitId, `decrement`);
         withdrawReward(habitId, `habit`, `decrement`).then(() => {
             updateBalance();
-            updateHabits();
+            reloadEntities(`habits`, `habits-container`);
         });
     }
 });

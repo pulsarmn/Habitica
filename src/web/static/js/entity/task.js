@@ -1,6 +1,8 @@
-import {awardReward, deleteTask, updateTasks} from "../service/taskService.js";
+import {awardReward, deleteTask} from "../service/taskService.js";
+import {reloadEntities} from "../service/generalService.js";
 
-updateTasks();
+// updateTasks();
+reloadEntities(`tasks`, `tasks-container`);
 
 document.addEventListener('DOMContentLoaded', function () {
     const taskInput = document.getElementById('taskInput');
@@ -22,7 +24,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         if (response.ok) {
                             taskInput.value = '';
                             console.log('Задача отправлена успешно!');
-                            updateTasks();
+                            reloadEntities(`tasks`, `tasks-container`);
                         } else {
                             console.log('Ошибка при отправке задачи');
                         }
@@ -58,7 +60,7 @@ document.getElementById('tasks-container').addEventListener('click', function(ev
 
             awardReward(taskId, `task`).then(() => {
                 updateBalance();
-                deleteTask(taskId).then(() => updateTasks());
+                deleteTask(taskId).then(() => reloadEntities(`tasks`, `tasks-container`));
             })
         } else {
             leftControl.classList.remove('task-disabled');

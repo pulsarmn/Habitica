@@ -1,3 +1,5 @@
+import {reloadEntities} from "./generalService.js";
+
 export function updateDailyTask(taskId, taskData) {
     return fetch(`/daily-tasks?id=${taskId}&update=true`, {
         method: 'PUT',
@@ -18,33 +20,13 @@ export function updateDailyTaskSeries(dailyTaskId, action) {
         }
     }).then(response => {
         if (response.ok) {
-            updateDailyTasks();
+            reloadEntities(`daily-tasks`, `daily-tasks-container`);
             console.log(`Задача с ID ${dailyTaskId} обновлена (увеличение)`);
         } else {
             console.error('Ошибка при увеличении счётчика');
         }
     }).catch(error => {
         console.error('Ошибка сети:', error);
-    });
-}
-
-export function updateDailyTasks() {
-    return fetch(`/daily-tasks`, {
-        method: `GET`,
-        headers: {
-            'Content-Type': 'text/html'
-        }
-    }).then(response => {
-        if (response.ok) {
-            return response.text();
-        }else {
-            throw new Error('Ошибка при получении списка ежедневных задач!');
-        }
-    }).then(html => {
-        const dailyTaskList = document.getElementById('daily-tasks-container');
-        dailyTaskList.innerHTML = html;
-    }).catch(error => {
-        console.error('Error', error);
     });
 }
 

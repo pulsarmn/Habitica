@@ -1,7 +1,8 @@
-import {updateDailyTasks, updateDailyTaskSeries, withdrawReward} from "../service/dailyTaskService.js";
+import {updateDailyTaskSeries, withdrawReward} from "../service/dailyTaskService.js";
 import {awardReward} from "../service/taskService.js";
+import {reloadEntities} from "../service/generalService.js";
 
-updateDailyTasks();
+reloadEntities(`daily-tasks`, `daily-tasks-container`);
 
 document.addEventListener('DOMContentLoaded', function () {
     const taskInput = document.getElementById('dailyTaskInput');
@@ -22,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     .then(response => {
                         if (response.ok) {
                             taskInput.value = '';
-                            updateDailyTasks();
+                            reloadEntities(`daily-tasks`, `daily-tasks-container`);
                             console.log('Задача отправлена успешно!');
                         } else {
                             console.log('Ошибка при отправке задачи');
@@ -62,7 +63,7 @@ document.getElementById('daily-tasks-container').addEventListener('click', funct
             updateDailyTaskSeries(dailyTaskId, `decrement`);
             withdrawReward(dailyTaskId, `daily-task`, `decrement`).then(() => {
                 updateBalance();
-                updateDailyTasks();
+                reloadEntities(`daily-tasks`, `daily-tasks-container`);
             });
         } else {
             leftControl.classList.remove('task-neutral-bg-color');
@@ -75,7 +76,7 @@ document.getElementById('daily-tasks-container').addEventListener('click', funct
             updateDailyTaskSeries(dailyTaskId, `increment`);
             awardReward(dailyTaskId, `daily-task`).then(() => {
                 updateBalance();
-                updateDailyTasks();
+                reloadEntities(`daily-tasks`, `daily-tasks-container`);
             });
         }
     }

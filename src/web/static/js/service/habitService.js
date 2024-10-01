@@ -1,3 +1,5 @@
+import {reloadEntities} from "./generalService.js";
+
 export function updateHabit(habitId, taskData) {
     return fetch(`/habits?id=${habitId}&update=update`, {
         method: 'PUT',
@@ -18,33 +20,13 @@ export function updateHabitSeries(habitId, action) {
         }
     }).then(response => {
         if (response.ok) {
-            updateHabits();
+            reloadEntities(`habits`, `habits-container`);
             console.log(`Привычка с ID ${habitId} обновлена (уменьшение)`);
         } else {
             console.error('Ошибка при уменьшении привычки');
         }
     }).catch(error => {
         console.error('Ошибка сети:', error);
-    });
-}
-
-export function updateHabits() {
-    fetch(`/habits`, {
-        method: `GET`,
-        headers: {
-            'Content-Type': 'text/html'
-        }
-    }).then(response => {
-        if (response.ok) {
-            return response.text();
-        }else {
-            throw new Error('Ошибка при получении списка привычек!');
-        }
-    }).then(html => {
-        const habitList = document.querySelector('#habits-container');
-        habitList.innerHTML = html;
-    }).catch(error => {
-        console.log("Error: ", error);
     });
 }
 

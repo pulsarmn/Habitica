@@ -1,6 +1,6 @@
-import {updateRewards} from "../service/rewardService.js";
+import {reloadEntities} from "../service/generalService.js";
 
-updateRewards();
+reloadEntities(`rewards`, `rewards-container`);
 
 document.addEventListener('DOMContentLoaded', function () {
     const taskInput = document.getElementById('rewardInput');
@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     .then(response => {
                         if (response.ok) {
                             taskInput.value = '';
-                            updateRewards();
+                            reloadEntities(`rewards`, `rewards-container`);
                             console.log('Награда отправлена успешно!');
                         } else {
                             console.log('Ошибка при отправке награды!');
