@@ -9,13 +9,13 @@ a {
     cursor: pointer;
 }
 
-.underline:hover {
-    text-decoration: underline;
-}
-
 label {
     display: inline-block;
     margin-bottom: 0.6rem;
+}
+
+.underline:hover {
+    text-decoration: underline;
 }
 
 .btn {

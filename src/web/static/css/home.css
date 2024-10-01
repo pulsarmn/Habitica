@@ -154,6 +154,10 @@ label {
     display: none;
 }
 
+.tasks-wrapper {
+    padding-top: 40px;
+}
+
 .tasks-navigation {
     margin-bottom: 20px;
 }
@@ -264,10 +268,6 @@ h3.markdown {
     display: none;
 }
 
-.sortable-tasks {
-
-}
-
 .task-wrapper {
     cursor: grab;
     margin-bottom: 5px;
@@ -284,7 +284,6 @@ h3.markdown {
 
 .task:hover {
     border: 1px solid #5a379b;
-    /* transition-duration: 0.4s; */
 }
 
 .d-flex {
@@ -402,7 +401,7 @@ h3.markdown {
     flex-grow: 1;
     justify-content: end;
 }
-
+/* Dropdown menu */
 .habitica-menu-dropdown-toggle {
     padding: 0 8px;
     -webkit-transition: opacity .15s ease-in;
@@ -462,7 +461,6 @@ h3.markdown {
     margin: 0 16px 0 0;
     vertical-align: middle;
 }
-
 
 .dropdown-item {
     display: block;
@@ -652,7 +650,6 @@ h3.markdown {
 }
 
 /* Modal window styles */
-
 textarea, input {
     outline: none;
     resize: vertical;
