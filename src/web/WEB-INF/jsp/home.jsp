@@ -4,6 +4,7 @@
 <html>
 <head>
     <title>Задачи | Habitica</title>
+    <link rel="stylesheet" href="<c:url value="/static/css/variables.css"/>?v=${System.currentTimeMillis()}">
     <link rel="stylesheet" href="<c:url value="/static/css/index.css"/>?v=${System.currentTimeMillis()}">
     <link rel="stylesheet" href="<c:url value="/static/css/home.css"/>?v=${System.currentTimeMillis()}">
 </head>
