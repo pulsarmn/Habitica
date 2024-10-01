@@ -49,3 +49,18 @@ export function updateEntity(entityId, endpoint, entityData) {
         console.log(`Entity with id ${entityId} has been updated!`);
     });
 }
+
+export function deleteEntity(itemId, endpoint, container) {
+    return fetch(`/${endpoint}?id=${itemId}`, {
+        method: `DELETE`
+    }).then(response => {
+        if (response.ok) {
+            console.log(`Element with ID ${itemId} has been deleted`);
+            reloadEntities(endpoint, container);
+        }else {
+            console.error(`Error deleting ${endpoint} element`);
+        }
+    }).catch(error => {
+        console.error(`Error`, error);
+    });
+}

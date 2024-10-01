@@ -1,5 +1,5 @@
-import {awardReward, deleteTask} from "../service/taskService.js";
-import {reloadEntities} from "../service/generalService.js";
+import {awardReward} from "../service/taskService.js";
+import {deleteEntity, reloadEntities} from "../service/generalService.js";
 
 // updateTasks();
 reloadEntities(`tasks`, `tasks-container`);
@@ -60,7 +60,7 @@ document.getElementById('tasks-container').addEventListener('click', function(ev
 
             awardReward(taskId, `task`).then(() => {
                 updateBalance();
-                deleteTask(taskId).then(() => reloadEntities(`tasks`, `tasks-container`));
+                deleteEntity(taskId, `tasks`, `tasks-container`);
             })
         } else {
             leftControl.classList.remove('task-disabled');
