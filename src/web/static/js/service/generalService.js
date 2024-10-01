@@ -1,4 +1,4 @@
-import {deleteModal, hideModal} from "./modalService";
+import {deleteModal, hideModal} from "./modalService.js";
 
 export function getEntityDataToEdit(entityId, endpoint) {
     return fetch(`/${endpoint}?id=${entityId}`, {
@@ -259,4 +259,74 @@ export function getJsonEntity(entityDataId) {
     const modalWindowWrapper = document.querySelector(`#modal-window-wrapper`);
     const taskDataElement = modalWindowWrapper.querySelector(`#${entityDataId}`);
     return JSON.parse(taskDataElement.textContent);
+}
+
+function handleDeleteItem(modalWindowWrapper, dailyTaskId) {
+    const modalWindow = modalWindowWrapper.querySelector(`#edit-task-modal`);
+    const deleteButton = modalWindowWrapper.querySelector(`.delete-task`);
+
+    deleteButton.addEventListener(`click`, function() {
+        deleteEntity(dailyTaskId, `tasks`, `tasks-container`).then(() => {
+            if (modalWindow != null) {
+                hideModal(modalWindow);
+                deleteModal(modalWindowWrapper);
+            }
+        });
+    });
+}
+
+function handleDeleteDailyTask(modalWindowWrapper, dailyTaskId) {
+    const modalWindow = modalWindowWrapper.querySelector(`#edit-daily-task-modal`);
+    const deleteButton = modalWindowWrapper.querySelector(`.delete-task`);
+
+    deleteButton.addEventListener(`click`, function() {
+        deleteEntity(dailyTaskId, `daily-tasks`, `daily-tasks-container`).then(() => {
+            if (modalWindow != null) {
+                hideModal(modalWindow);
+                deleteModal(modalWindowWrapper);
+            }
+        });
+    });
+}
+
+function handleDeleteHabit(modalWindowWrapper, habitId) {
+    const modalWindow = modalWindowWrapper.querySelector(`#edit-habit-modal`);
+    const deleteButton = modalWindowWrapper.querySelector(`.delete-task`);
+
+    deleteButton.addEventListener(`click`, function() {
+        deleteEntity(habitId, `habits`, `habits-container`).then(() => {
+            if (modalWindow != null) {
+                hideModal(modalWindow);
+                deleteModal(modalWindowWrapper);
+            }
+        });
+    });
+}
+
+function handleDeleteReward(modalWindowWrapper, rewardId) {
+    const modalWindow = modalWindowWrapper.querySelector(`#edit-reward-modal`);
+    const deleteButton = modalWindowWrapper.querySelector(`.delete-reward`);
+
+    deleteButton.addEventListener(`click`, function() {
+        deleteEntity(rewardId, `rewards`, `rewards-container`).then(() => {
+            if (modalWindow != null) {
+                hideModal(modalWindow);
+                deleteModal(modalWindowWrapper);
+            }
+        });
+    });
+}
+
+export function handleDeleteEntity(modalWindowWrapper, entityId, endpoint) {
+    const modalWindow = modalWindowWrapper.querySelector(`#edit-entity-modal`);
+    const deleteButton = modalWindowWrapper.querySelector(`.delete-entity`);
+
+    deleteButton.addEventListener(`click`, function() {
+        deleteEntity(entityId, endpoint, `${endpoint}-container`).then(() => {
+            if (modalWindow != null) {
+                hideModal(modalWindow);
+                deleteModal(modalWindowWrapper);
+            }
+        });
+    });
 }

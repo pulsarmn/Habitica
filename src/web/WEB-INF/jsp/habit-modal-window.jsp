@@ -1,6 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
-<div class="modal-overlay active" id="edit-habit-modal">
+<div class="modal-overlay active" id="edit-entity-modal">
     <div class="modal-content">
         <div class="modal-header">
             <h2>Изменить привычку</h2>
@@ -25,7 +25,7 @@
             </select>
         </div>
         <div class="modal-footer">
-            <button class="delete-task">Удалить привычку</button>
+            <button class="delete-entity">Удалить привычку</button>
             <button class="reset-habit">Сбросить привычку</button>
         </div>
     </div>

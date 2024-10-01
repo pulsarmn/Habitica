@@ -1,6 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
-<div class="modal-overlay" id="edit-reward-modal">
+<div class="modal-overlay" id="edit-entity-modal">
     <div class="modal-content">
         <div class="modal-header">
             <h2>Изменить награду</h2>
@@ -21,7 +21,7 @@
             <input type="number" id="reward-cost" min="0" step="0.01" />
         </div>
         <div class="modal-footer">
-            <button class="delete-reward">Удалить награду</button>
+            <button class="delete-entity">Удалить награду</button>
         </div>
     </div>
 </div>

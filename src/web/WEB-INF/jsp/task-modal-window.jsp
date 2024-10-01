@@ -1,6 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
-<div class="modal-overlay" id="edit-task-modal">
+<div class="modal-overlay" id="edit-entity-modal">
     <div class="modal-content">
         <div class="modal-header">
             <h2>Изменить задачу</h2>
@@ -28,7 +28,7 @@
             <input type="date" id="task-deadline" />
         </div>
         <div class="modal-footer">
-            <button class="delete-task">Удалить задачу</button>
+            <button class="delete-entity">Удалить задачу</button>
         </div>
     </div>
 </div>
