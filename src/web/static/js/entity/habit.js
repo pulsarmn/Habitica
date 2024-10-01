@@ -1,5 +1,5 @@
 import {updateHabitSeries, withdrawReward} from "../service/habitService.js";
-import {reloadEntities} from "../service/generalService.js";
+import {reloadEntities, updateEntitySeries} from "../service/generalService.js";
 
 reloadEntities(`habits`, `habits-container`);
 
@@ -45,13 +45,13 @@ document.querySelector('#habits-container').addEventListener('click', function(e
     const habitId = habitWrapper.querySelector('.habit-id').textContent.trim();
 
     if (event.target.closest('.left-control')) {
-        updateHabitSeries(habitId, `increment`);
+        updateEntitySeries(habitId, `habits`, `increment`);
         withdrawReward(habitId, `habit`, `increment`).then(() => {
              updateBalance();
             reloadEntities(`habits`, `habits-container`);
         });
     }else if (event.target.closest('.right-control')) {
-        updateHabitSeries(habitId, `decrement`);
+        updateEntitySeries(habitId, `habits`, `decrement`);
         withdrawReward(habitId, `habit`, `decrement`).then(() => {
             updateBalance();
             reloadEntities(`habits`, `habits-container`);

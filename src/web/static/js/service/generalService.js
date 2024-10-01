@@ -78,3 +78,22 @@ export function awardReward(entityId, type) {
         console.error(`Network error!`, error);
     });
 }
+
+export function updateEntitySeries(entityId, endpoint, action) {
+    fetch(`/${endpoint}?id=${entityId}`, {
+        method: 'PUT',
+        body: JSON.stringify({ action: `${action}` }),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).then(response => {
+        if (response.ok) {
+            reloadEntities(endpoint, `${endpoint}-container`);
+            console.log(`Entity with id ${entityId} has been updated!`);
+        } else {
+            console.error(`Error when changing the counter: ${response.statusText}`);
+        }
+    }).catch(error => {
+        console.error('Network error:', error);
+    });
+}

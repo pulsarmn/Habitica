@@ -1,5 +1,5 @@
-import {updateDailyTaskSeries, withdrawReward} from "../service/dailyTaskService.js";
-import {awardReward, reloadEntities} from "../service/generalService.js";
+import {withdrawReward} from "../service/dailyTaskService.js";
+import {awardReward, reloadEntities, updateEntitySeries} from "../service/generalService.js";
 
 reloadEntities(`daily-tasks`, `daily-tasks-container`);
 
@@ -59,7 +59,7 @@ document.getElementById('daily-tasks-container').addEventListener('click', funct
                 displayCheck.classList.remove('display-check-icon');
             }
 
-            updateDailyTaskSeries(dailyTaskId, `decrement`);
+            updateEntitySeries(dailyTaskId, `daily-tasks`, `decrement`);
             withdrawReward(dailyTaskId, `daily-task`, `decrement`).then(() => {
                 updateBalance();
                 reloadEntities(`daily-tasks`, `daily-tasks-container`);
@@ -72,7 +72,7 @@ document.getElementById('daily-tasks-container').addEventListener('click', funct
                 svgCheck.classList.remove('check');
             }
 
-            updateDailyTaskSeries(dailyTaskId, `increment`);
+            updateEntitySeries(dailyTaskId, `daily-tasks`, `increment`);
             awardReward(dailyTaskId, `daily-task`).then(() => {
                 updateBalance();
                 reloadEntities(`daily-tasks`, `daily-tasks-container`);
