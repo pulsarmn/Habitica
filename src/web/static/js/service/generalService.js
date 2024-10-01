@@ -1,3 +1,5 @@
+import {deleteModal, hideModal} from "./modalService";
+
 export function getEntityDataToEdit(entityId, endpoint) {
     return fetch(`/${endpoint}?id=${entityId}`, {
         method: `GET`,
@@ -251,4 +253,10 @@ export function setupEntityInput(inputId, endpoint) {
             this.value = this.value.replace(/\n/g, '');
         }
     });
+}
+
+export function getJsonEntity(entityDataId) {
+    const modalWindowWrapper = document.querySelector(`#modal-window-wrapper`);
+    const taskDataElement = modalWindowWrapper.querySelector(`#${entityDataId}`);
+    return JSON.parse(taskDataElement.textContent);
 }

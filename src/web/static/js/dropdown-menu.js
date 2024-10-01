@@ -1,6 +1,12 @@
 import {showModal, hideModal, toggleSaveButton, putModal, deleteModal} from "./service/modalService.js";
 import {resetHabit} from "./service/habitService.js";
-import {deleteEntity, getEntityDataToEdit, reloadEntities, updateEntity} from "./service/generalService.js";
+import {
+    deleteEntity,
+    getEntityDataToEdit,
+    getJsonEntity,
+    reloadEntities,
+    updateEntity
+} from "./service/generalService.js";
 
 document.addEventListener('click', function(event) {
     const toggleButton = event.target.closest('.habitica-menu-dropdown-toggle');
@@ -66,7 +72,7 @@ function fillTaskModalWindow(modalWindowWrapper) {
     const taskComplexity = modalWindowWrapper.querySelector(`#task-difficulty`);
     const taskDeadline = modalWindowWrapper.querySelector(`#task-deadline`);
 
-    const taskData = getJsonTask(modalWindowWrapper);
+    const taskData = getJsonEntity(`task-data`);
 
     taskTitle.value = taskData.heading;
     taskDescription.innerHTML = (taskData.description === undefined) ? `` : taskData.description;
@@ -74,12 +80,6 @@ function fillTaskModalWindow(modalWindowWrapper) {
     if (taskDeadline != null) {
         taskDeadline.value = taskData.deadline;
     }
-}
-
-function getJsonTask() {
-    const modalWindowWrapper = document.getElementById(`modal-window-wrapper`);
-    const taskDataElement = modalWindowWrapper.querySelector(`#task-data`);
-    return JSON.parse(taskDataElement.textContent);
 }
 
 function handleSaveTask(modalWindowWrapper, taskId) {
@@ -338,19 +338,12 @@ function fillRewardModalWindow(modalWindowWrapper) {
     const rewardDescription = modalWindowWrapper.querySelector(`#reward-notes`);
     const rewardCost = modalWindowWrapper.querySelector(`#reward-cost`);
 
-    const rewardData = getJsonReward(modalWindowWrapper);
+    const rewardData = getJsonEntity(`reward-data`);
 
     rewardTitle.value = rewardData.heading;
     rewardDescription.innerHTML = (rewardData.description === undefined) ? `` : rewardData.description;
     rewardCost.value = rewardData.cost;
 }
-
-function getJsonReward() {
-    const modalWindowWrapper = document.querySelector(`#modal-window-wrapper`);
-    const taskDataElement = modalWindowWrapper.querySelector(`#reward-data`);
-    return JSON.parse(taskDataElement.textContent);
-}
-
 
 function handleSaveReward(modalWindowWrapper, rewardId) {
     const saveButton = modalWindowWrapper.querySelector(`.save-reward`);
