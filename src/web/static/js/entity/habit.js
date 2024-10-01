@@ -1,4 +1,10 @@
-import {reloadEntities, updateBalance, updateEntitySeries, withdrawReward} from "../service/generalService.js";
+import {
+    createEntity,
+    reloadEntities,
+    updateBalance,
+    updateEntitySeries,
+    withdrawReward
+} from "../service/generalService.js";
 
 reloadEntities(`habits`, `habits-container`);
 
@@ -9,25 +15,7 @@ document.addEventListener('DOMContentLoaded', function () {
             e.preventDefault();
             const taskValue = taskInput.value.trim();
             if (taskValue) {
-                fetch('/habits', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: `habitHeading=${encodeURIComponent(taskValue)}`
-                })
-                    .then(response => {
-                        if (response.ok) {
-                            taskInput.value = '';
-                            reloadEntities(`habits`, `habits-container`);
-                            console.log('Привычка отправлена успешно!');
-                        } else {
-                            console.log('Ошибка при отправке привычки!');
-                        }
-                    })
-                    .catch(error => {
-                        console.log('Ошибка сети: ' + error.message);
-                    });
+                createEntity(`habits`, taskValue, taskInput);
             }
         }
     });

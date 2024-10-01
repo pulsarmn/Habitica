@@ -141,3 +141,93 @@ export function withdrawReward(elementId, type, action) {
         console.error(`Network error:`, error);
     });
 }
+
+export function test() {
+    fetch('/tasks', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `taskHeading=${encodeURIComponent(taskValue)}`
+    }).then(response => {
+        if (response.ok) {
+            taskInput.value = '';
+            console.log('Задача отправлена успешно!');
+            reloadEntities(`tasks`, `tasks-container`);
+        } else {
+            console.log('Ошибка при отправке задачи');
+        }
+    }).catch(error => {console.assert('Ошибка сети: ' + error.message);});
+}
+
+export function test1() {
+    fetch('/rewards', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `rewardHeading=${encodeURIComponent(taskValue)}`
+    }).then(response => {
+        if (response.ok) {
+            taskInput.value = '';
+            reloadEntities(`rewards`, `rewards-container`);
+            console.log('Награда отправлена успешно!');
+        } else {
+            console.log('Ошибка при отправке награды!');
+        }
+    }).catch(error => {console.log('Ошибка сети: ' + error.message);});
+}
+
+export function test2() {
+    fetch('/habits', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `habitHeading=${encodeURIComponent(taskValue)}`
+    }).then(response => {
+        if (response.ok) {
+            taskInput.value = '';
+            reloadEntities(`habits`, `habits-container`);
+            console.log('Привычка отправлена успешно!');
+        } else {
+            console.log('Ошибка при отправке привычки!');
+        }
+    }).catch(error => {console.log('Ошибка сети: ' + error.message);});
+}
+
+export function test3() {
+    fetch('/daily-tasks', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `dailyTaskHeading=${encodeURIComponent(taskValue)}`
+    }).then(response => {
+        if (response.ok) {
+            taskInput.value = '';
+            reloadEntities(`daily-tasks`, `daily-tasks-container`);
+            console.log('Задача отправлена успешно!');
+        } else {
+            console.log('Ошибка при отправке задачи');
+        }
+    }).catch(error => {console.log('Ошибка сети: ' + error.message);});
+}
+
+export function createEntity(endpoint, entityValue, entityInput) {
+    fetch(`/${endpoint}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `entityHeading=${encodeURIComponent(entityValue)}`
+    }).then(response => {
+        if (response.ok) {
+            entityInput.value = '';
+            reloadEntities(endpoint, `${endpoint}-container`);
+            console.log('The entity was sent successfully!');
+        } else {
+            throw new Error(`Error sending the entity: ${response.statusText}`)
+        }
+    }).catch(error => {console.log('Network error:', error);});
+}

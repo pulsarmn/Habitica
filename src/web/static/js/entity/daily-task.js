@@ -1,5 +1,5 @@
 import {
-    awardReward,
+    awardReward, createEntity,
     reloadEntities,
     updateBalance,
     updateEntitySeries,
@@ -17,25 +17,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const taskValue = taskInput.value.trim();
             if (taskValue) {
-                fetch('/daily-tasks', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: `dailyTaskHeading=${encodeURIComponent(taskValue)}`
-                })
-                    .then(response => {
-                        if (response.ok) {
-                            taskInput.value = '';
-                            reloadEntities(`daily-tasks`, `daily-tasks-container`);
-                            console.log('Задача отправлена успешно!');
-                        } else {
-                            console.log('Ошибка при отправке задачи');
-                        }
-                    })
-                    .catch(error => {
-                        console.log('Ошибка сети: ' + error.message);
-                    });
+                createEntity(`daily-tasks`, taskValue, taskInput);
             }
         }
     });

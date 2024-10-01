@@ -1,4 +1,4 @@
-import {awardReward, deleteEntity, reloadEntities, updateBalance} from "../service/generalService.js";
+import {awardReward, createEntity, deleteEntity, reloadEntities, updateBalance} from "../service/generalService.js";
 
 reloadEntities(`tasks`, `tasks-container`);
 
@@ -11,25 +11,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const taskValue = taskInput.value.trim();
             if (taskValue) {
-                fetch('/tasks', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: `taskHeading=${encodeURIComponent(taskValue)}`
-                })
-                    .then(response => {
-                        if (response.ok) {
-                            taskInput.value = '';
-                            console.log('Задача отправлена успешно!');
-                            reloadEntities(`tasks`, `tasks-container`);
-                        } else {
-                            console.log('Ошибка при отправке задачи');
-                        }
-                    })
-                    .catch(error => {
-                        console.assert('Ошибка сети: ' + error.message);
-                    });
+                createEntity(`tasks`, taskValue, taskInput);
             }
         }
     });

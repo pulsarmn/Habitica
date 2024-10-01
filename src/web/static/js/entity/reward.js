@@ -1,4 +1,4 @@
-import {reloadEntities, updateBalance} from "../service/generalService.js";
+import {createEntity, reloadEntities, updateBalance} from "../service/generalService.js";
 
 reloadEntities(`rewards`, `rewards-container`);
 
@@ -9,25 +9,7 @@ document.addEventListener('DOMContentLoaded', function () {
             e.preventDefault();
             const taskValue = taskInput.value.trim();
             if (taskValue) {
-                fetch('/rewards', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: `rewardHeading=${encodeURIComponent(taskValue)}`
-                })
-                    .then(response => {
-                        if (response.ok) {
-                            taskInput.value = '';
-                            reloadEntities(`rewards`, `rewards-container`);
-                            console.log('Награда отправлена успешно!');
-                        } else {
-                            console.log('Ошибка при отправке награды!');
-                        }
-                    })
-                    .catch(error => {
-                        console.log('Ошибка сети: ' + error.message);
-                    });
+                createEntity(`rewards`, taskValue, taskInput);
             }
         }
     });
