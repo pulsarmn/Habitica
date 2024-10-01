@@ -9,11 +9,11 @@ import {
 
 reloadEntities(`daily-tasks`, `daily-tasks-container`);
 
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener(`DOMContentLoaded`, function () {
     setupEntityInput(`dailyTaskInput`, `daily-tasks`);
 });
 
-document.getElementById('daily-tasks-container').addEventListener('click', function(event) {
+document.querySelector(`#daily-tasks-container`).addEventListener('click', function(event) {
     if (event.target.closest('.daily-task-control')) {
         const taskWrapper = event.target.closest('.daily-task-wrapper');
         const leftControl = taskWrapper.querySelector('.left-control');
@@ -36,11 +36,11 @@ document.getElementById('daily-tasks-container').addEventListener('click', funct
                 reloadEntities(`daily-tasks`, `daily-tasks-container`);
             });
         } else {
-            leftControl.classList.remove('task-neutral-bg-color');
-            leftControl.classList.add('task-disabled');
+            leftControl.classList.remove(`task-neutral-bg-color`);
+            leftControl.classList.add(`task-disabled`);
             if (svgCheck) {
-                svgCheck.classList.add('display-check-icon');
-                svgCheck.classList.remove('check');
+                svgCheck.classList.add(`display-check-icon`);
+                svgCheck.classList.remove(`check`);
             }
 
             updateEntitySeries(dailyTaskId, `daily-tasks`, `increment`);

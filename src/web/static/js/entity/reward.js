@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function () {
     setupEntityInput(`rewardInput`, `rewards`);
 });
 
-document.getElementById('rewards-container').addEventListener('click', function(event) {
+document.querySelector('#rewards-container').addEventListener('click', function(event) {
     if (event.target.closest('.reward-control')) {
         const rewardControl = event.target.closest('.reward-control');
         const rewardWrapper = rewardControl.closest('.reward-wrapper');
@@ -20,15 +20,15 @@ document.getElementById('rewards-container').addEventListener('click', function(
             body: `rewardId=${encodeURIComponent(rewardId)}`
         }).then(response => {
             if (response.ok) {
-                console.log(`Вознаграждение с ID ${rewardId} успешно куплено!`);
+                console.log(`The reward with id 3 has been successfully purchased!`);
                 updateBalance();
             }else if (response.status === 400) {
-                console.error("Недостаточно средств!");
+                console.error(`Insufficient funds: ${response.statusText}`);
             }else {
-                console.error("Ошибка при покупке вознаграждения!");
+                throw new Error(`Error when buying a reward: ${response.statusText}`)
             }
         }).catch(error => {
-            console.error('Ошибка сети: ', error);
+            console.error(`Network error: `, error);
         });
     }
 });

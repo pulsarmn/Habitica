@@ -8,7 +8,7 @@ import {
 
 reloadEntities(`habits`, `habits-container`);
 
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener(`DOMContentLoaded`, function () {
     setupEntityInput(`habitInput`, `habits`);
 });
 
