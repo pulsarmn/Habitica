@@ -4,8 +4,9 @@
 <html>
 <head>
     <title>Вход | Habitica</title>
-    <link rel="stylesheet" href="<c:url value="/static/css/index.css"/>">
-    <link rel="stylesheet" href="<c:url value="/static/css/login.css"/>">
+    <link rel="stylesheet" href="<c:url value="/static/css/variables.css"/>?v=${System.currentTimeMillis()}">
+    <link rel="stylesheet" href="<c:url value="/static/css/index.css"/>?v=${System.currentTimeMillis()}">
+    <link rel="stylesheet" href="<c:url value="/static/css/login.css"/>?v=${System.currentTimeMillis()}">
     <%@include file="bundles.jsp"%>
 </head>
 <body>
