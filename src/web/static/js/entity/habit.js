@@ -1,5 +1,4 @@
-import {withdrawReward} from "../service/habitService.js";
-import {reloadEntities, updateBalance, updateEntitySeries} from "../service/generalService.js";
+import {reloadEntities, updateBalance, updateEntitySeries, withdrawReward} from "../service/generalService.js";
 
 reloadEntities(`habits`, `habits-container`);
 

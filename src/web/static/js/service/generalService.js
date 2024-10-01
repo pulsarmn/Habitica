@@ -127,3 +127,17 @@ function animateBalanceChange(targetBalance, duration) {
     }
     requestAnimationFrame(updateBalanceAnimation);
 }
+
+export function withdrawReward(elementId, type, action) {
+    return fetch(`/purchase-reward?type=${type}&id=${elementId}&action=${action}`, {
+        method: `PUT`
+    }).then(response => {
+        if (response.ok) {
+            console.log(`The reward is accrued!`);
+        }else {
+            throw new Error(`An error occurred when calculating the reward: ${response.statusText}`)
+        }
+    }).catch(error => {
+        console.error(`Network error:`, error);
+    });
+}

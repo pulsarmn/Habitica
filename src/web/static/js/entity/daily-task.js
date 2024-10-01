@@ -1,5 +1,10 @@
-import {withdrawReward} from "../service/dailyTaskService.js";
-import {awardReward, reloadEntities, updateBalance, updateEntitySeries} from "../service/generalService.js";
+import {
+    awardReward,
+    reloadEntities,
+    updateBalance,
+    updateEntitySeries,
+    withdrawReward
+} from "../service/generalService.js";
 
 reloadEntities(`daily-tasks`, `daily-tasks-container`);
 
