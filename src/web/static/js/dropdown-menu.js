@@ -1,9 +1,6 @@
-import {saveTask} from "./service/taskService.js";
 import {showModal, hideModal, toggleSaveButton, putModal, deleteModal} from "./service/modalService.js";
-import {saveReward} from "./service/rewardService.js";
-import {updateDailyTask} from "./service/dailyTaskService.js";
-import {resetHabit, updateHabit} from "./service/habitService.js";
-import {getEntityDataToEdit, reloadEntities} from "./service/generalService.js";
+import {resetHabit} from "./service/habitService.js";
+import {getEntityDataToEdit, reloadEntities, updateEntity} from "./service/generalService.js";
 
 document.addEventListener('click', function(event) {
     const toggleButton = event.target.closest('.habitica-menu-dropdown-toggle');
@@ -101,7 +98,7 @@ function handleSaveTask(modalWindowWrapper, taskId) {
             deadline: taskDeadline.value
         };
 
-        saveTask(taskId, taskData).then(() => {
+        updateEntity(taskId, `tasks`, taskData).then(() => {
             reloadEntities(`tasks`, `tasks-container`)
             hideModal(modalWindowWrapper.querySelector(`#edit-task-modal`));
             deleteModal(modalWindowWrapper);
@@ -180,7 +177,7 @@ function handleSaveDailyTask(modalWindowWrapper, dailyTaskId) {
             deadline: taskDeadline.value
         };
 
-        updateDailyTask(dailyTaskId, taskData).then(() => {
+        updateEntity(dailyTaskId, `daily-tasks`, taskData).then(() => {
             reloadEntities(`daily-tasks`, `daily-tasks-container`);
             hideModal(modalWindowWrapper.querySelector(`#edit-daily-task-modal`));
             deleteModal(modalWindowWrapper);
@@ -258,7 +255,7 @@ function handleSaveHabit(modalWindowWrapper, habitId) {
             complexity: taskComplexity.value,
         };
 
-        updateHabit(habitId, taskData).then(() => {
+        updateEntity(habitId, `habits`, taskData).then(() => {
             reloadEntities(`habits`, `habits-container`);
             hideModal(modalWindowWrapper.querySelector(`#edit-habit-modal`));
             deleteModal(modalWindowWrapper);
@@ -369,7 +366,7 @@ function handleSaveReward(modalWindowWrapper, rewardId) {
             cost: rewardCost.value
         };
 
-        saveReward(rewardId, rewardData).then(() => {
+        updateEntity(rewardId, `rewards`, rewardData).then(() => {
             reloadEntities(`rewards`, `rewards-container`);
             hideModal(modalWindowWrapper.querySelector(`#edit-reward-modal`));
             deleteModal(modalWindowWrapper);

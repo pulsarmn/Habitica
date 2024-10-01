@@ -1,14 +1,3 @@
-export function saveTask(taskId, taskData) {
-    return fetch(`/tasks?id=${taskId}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(taskData)
-    }).then(response => {
-        if (!response.ok) throw new Error('Ошибка при сохранении задачи');
-        console.log(`Задача с ID ${taskId} обновлена`);
-    });
-}
-
 // Удаление задачи
 export function deleteTask(taskId) {
     return fetch(`/tasks?id=${taskId}`, {

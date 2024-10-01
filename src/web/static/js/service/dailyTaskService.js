@@ -1,16 +1,5 @@
 import {reloadEntities} from "./generalService.js";
 
-export function updateDailyTask(taskId, taskData) {
-    return fetch(`/daily-tasks?id=${taskId}&update=true`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(taskData)
-    }).then(response => {
-        if (!response.ok) throw new Error('Ошибка при сохранении задачи');
-        console.log(`Задача с ID ${taskId} обновлена`);
-    });
-}
-
 export function updateDailyTaskSeries(dailyTaskId, action) {
     fetch(`/daily-tasks?id=${dailyTaskId}`, {
         method: 'PUT',

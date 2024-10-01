@@ -1,16 +1,5 @@
 import {reloadEntities} from "./generalService.js";
 
-export function updateHabit(habitId, taskData) {
-    return fetch(`/habits?id=${habitId}&update=update`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(taskData)
-    }).then(response => {
-        if (!response.ok) throw new Error('Ошибка при сохранении задачи');
-        console.log(`Задача с ID ${habitId} обновлена`);
-    });
-}
-
 export function updateHabitSeries(habitId, action) {
     fetch(`/habits?id=${habitId}`, {
         method: 'PUT',

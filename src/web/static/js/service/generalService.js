@@ -27,3 +27,25 @@ export function reloadEntities(endpoint, container) {
         console.log(`Error: `, error);
     });
 }
+
+export function updateEntity(entityId, endpoint, entityData) {
+    const baseQuery = `/${endpoint}`;
+    const params = new URLSearchParams({ id: entityId });
+
+    if (endpoint === 'daily-tasks') {
+        params.append('update', 'true');
+    } else if (endpoint === 'habits') {
+        params.append('update', 'update');
+    }
+
+    const query = `${baseQuery}?${params.toString()}`;
+
+    return fetch(query, {
+        method: `PUT`,
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(entityData)
+    }).then(response => {
+        if (!response.ok) throw new Error(`Error saving an entity: ${response.statusText}`);
+        console.log(`Entity with id ${entityId} has been updated!`);
+    });
+}
