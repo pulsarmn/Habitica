@@ -66,8 +66,7 @@ public class PurchaseRewardServlet extends HttpServlet {
             balance = balance.add(rewardCost);
             userBalanceService.updateUserBalance(user.getId(), balance);
         }else if (action.equals("decrement")) {
-            balance = balance.subtract(rewardCost);
-            userBalanceService.updateUserBalance(user.getId(), balance);
+            boolean isPurchased = userBalanceService.isPurchased(user.getId(), rewardCost);
         }
     }
 }
