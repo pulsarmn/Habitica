@@ -49,12 +49,12 @@ public class RewardServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         var user = (UserDto) request.getSession().getAttribute(SessionAttribute.USER.getValue());
-        var rewardHeading = request.getParameter("rewardHeading");
+        var rewardHeading = request.getParameter("entityHeading");
         var rewardDto = RewardDto.builder()
                 .heading(rewardHeading)
                 .userId(user.getId())
                 .build();
-        var reward = rewardService.createReward(rewardDto);
+        rewardService.createReward(rewardDto);
     }
 
     @Override

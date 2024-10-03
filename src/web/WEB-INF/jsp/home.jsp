@@ -4,6 +4,7 @@
 <html>
 <head>
     <title>Задачи | Habitica</title>
+    <link rel="stylesheet" href="<c:url value="/static/css/variables.css"/>?v=${System.currentTimeMillis()}">
     <link rel="stylesheet" href="<c:url value="/static/css/index.css"/>?v=${System.currentTimeMillis()}">
     <link rel="stylesheet" href="<c:url value="/static/css/home.css"/>?v=${System.currentTimeMillis()}">
 </head>
@@ -74,8 +75,6 @@
                                 <h3 class="character-name">${sessionScope.user.getNickname()}</h3>
                                 <div class="character-level">
                                     <span>@${sessionScope.user.getNickname()}</span>
-                                    <!-- <span>•</span>
-                                    <span>Уровень 4 воин</span> -->
                                 </div>
                             </div>
                         </div>
@@ -85,16 +84,6 @@
             <div class="tasks-wrapper">
                 <div class="user-tasks-page">
                     <div class="tasks-grid">
-                        <div class="tasks-navigation">
-                            <div class="create-task-area">
-                                <div id="create-task-btn" class="create-btn">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10">
-                                        <path fill-rule="evenodd" d="M6 4V0H4v4H0v2h4v4h2V6h4V4H6z"></path>
-                                    </svg>
-                                    <div>Добавить задачу</div>
-                                </div>
-                            </div>
-                        </div>
                         <div class="tasks-columns">
                             <div class="tasks-column habit">
                                 <div class="column-title">

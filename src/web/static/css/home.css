@@ -1,27 +1,3 @@
-:root {
-    --blue: #007bff;
-    --indigo: #6610f2;
-    --purple: #6f42c1;
-    --pink: #e83e8c;
-    --red: #dc3545;
-    --orange: #fd7e14;
-    --yellow: #ffc107;
-    --green: #28a745;
-    --teal: #20c997;
-    --cyan: #17a2b8;
-    --white: #fff;
-    --gray: #6c757d;
-    --gray-dark: #343a40;
-    --primary: #007bff;
-    --secondary: #6c757d;
-    --success: #28a745;
-    --info: #17a2b8;
-    --warning: #ffc107;
-    --danger: #dc3545;
-    --light: #f8f9fa;
-    --dark: #343a40;
-}
-
 body {
     font-family: Roboto,sans-serif;
     color: #4e4a57;
@@ -178,6 +154,10 @@ label {
     display: none;
 }
 
+.tasks-wrapper {
+    padding-top: 40px;
+}
+
 .tasks-navigation {
     margin-bottom: 20px;
 }
@@ -288,10 +268,6 @@ h3.markdown {
     display: none;
 }
 
-.sortable-tasks {
-
-}
-
 .task-wrapper {
     cursor: grab;
     margin-bottom: 5px;
@@ -308,7 +284,6 @@ h3.markdown {
 
 .task:hover {
     border: 1px solid #5a379b;
-    /* transition-duration: 0.4s; */
 }
 
 .d-flex {
@@ -426,7 +401,7 @@ h3.markdown {
     flex-grow: 1;
     justify-content: end;
 }
-
+/* Dropdown menu */
 .habitica-menu-dropdown-toggle {
     padding: 0 8px;
     -webkit-transition: opacity .15s ease-in;
@@ -486,7 +461,6 @@ h3.markdown {
     margin: 0 16px 0 0;
     vertical-align: middle;
 }
-
 
 .dropdown-item {
     display: block;
@@ -676,7 +650,6 @@ h3.markdown {
 }
 
 /* Modal window styles */
-
 textarea, input {
     outline: none;
     resize: vertical;
@@ -747,7 +720,7 @@ textarea, input {
     text-decoration: underline;
 }
 
-.save-task {
+.save-entity {
     color: #500fb8;
     background-color: #f7ca37;
     border: none;
@@ -759,7 +732,7 @@ textarea, input {
     transition-duration: 0.4s;
 }
 
-.save-task:hover {
+.save-entity:hover {
     color: #ffffff;
     transition-duration: 0.3s;
     transform: translateY(-1px);
@@ -786,14 +759,14 @@ textarea, input {
     margin-bottom: 15px;
 }
 
-#task-difficulty {
+#entity-difficulty {
     outline: none;
     box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
     font-size: 13px;
     font-weight: 600;
 }
 
-#task-difficulty>option {
+#entity-difficulty>option {
     font-size: 13px;
     font-weight: 500;
 }
@@ -805,7 +778,7 @@ textarea, input {
     gap: 20px;
 }
 
-.delete-task {
+.delete-entity {
     background-color: #dc3545;
     box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.5);
     color: #fff;
@@ -816,13 +789,13 @@ textarea, input {
     transition-duration: 0.4s;
 }
 
-.delete-task:hover {
+.delete-entity:hover {
     background-color: #b92c3a;
     transform: translateY(-1px);
     transition-duration: 0.4s;
 }
 
-#task-title, #task-notes {
+#entity-title, #entity-notes {
     border-radius: 2px;
     background-color: rgba(41, 30, 30, 0.06);
     width: 100%;
@@ -835,13 +808,13 @@ textarea, input {
     transition-duration: 0.4s;
 }
 
-#task-title:hover, #task-notes:hover {
+#entity-title:hover, #entity-notes:hover {
     border: 1px solid #e0e0e0;
     background-color: rgba(128, 128, 128, 0.09);
     transition-duration: 0.4s;
 }
 
-#task-title:focus-within, #task-notes:focus-within {
+#entity-title:focus-within, #entity-notes:focus-within {
     background-color: rgb(255, 255, 255);
 }
 
@@ -854,7 +827,7 @@ textarea, input {
     box-shadow: none;
 }
 
-.save-reward {
+.save-entity {
     color: #500fb8;
     background-color: #f7ca37;
     border: none;
@@ -866,13 +839,13 @@ textarea, input {
     transition-duration: 0.4s;
 }
 
-.save-reward:hover {
+.save-entity:hover {
     color: #ffffff;
     transition-duration: 0.3s;
     transform: translateY(-1px);
 }
 
-.delete-reward {
+.delete-entity {
     background-color: #dc3545;
     box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.5);
     color: #fff;
@@ -883,13 +856,13 @@ textarea, input {
     transition-duration: 0.4s;
 }
 
-.delete-reward:hover {
+.delete-entity:hover {
     background-color: #b92c3a;
     transform: translateY(-1px);
     transition-duration: 0.4s;
 }
 
-#reward-title, #reward-notes {
+#entity-title, #entity-notes {
     border-radius: 2px;
     background-color: rgba(41, 30, 30, 0.06);
     width: 100%;
@@ -902,13 +875,13 @@ textarea, input {
     transition-duration: 0.4s;
 }
 
-#reward-title:hover, #reward-notes:hover {
+#entity-title:hover, #entit-notes:hover {
     border: 1px solid #e0e0e0;
     background-color: rgba(128, 128, 128, 0.09);
     transition-duration: 0.4s;
 }
 
-#reward-title:focus-within, #reward-notes:focus-within {
+#entity-title:focus-within, #entity-notes:focus-within {
     background-color: rgb(255, 255, 255);
 }
 
