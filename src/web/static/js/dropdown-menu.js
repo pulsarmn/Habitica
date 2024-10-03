@@ -1,10 +1,7 @@
-import {showModal, hideModal, toggleSaveButton, putModal, deleteModal} from "./service/modalService.js";
-import {resetHabit} from "./service/habitService.js";
+import {hideModal, deleteModal} from "./service/modalService.js";
 import {
-    deleteEntity,
-    getEntityDataToEdit,
-    getJsonEntity, handleDeleteEntity,
-    reloadEntities,
+    getJsonEntity, handleEntityClick,
+    reloadEntities, resetHabit,
     updateEntity
 } from "./service/generalService.js";
 
@@ -25,52 +22,11 @@ document.addEventListener('click', function(event) {
     }
 });
 
-document.querySelector(`#tasks-container`).addEventListener(`click`, function(event) {
-    if (event.target.closest('.habitica-menu-dropdown-toggle')) {
-        const dropdownToggle = event.target.closest('.habitica-menu-dropdown-toggle');
-        const taskWrapper = dropdownToggle.closest('.task-wrapper');
-        const dropdownMenu = taskWrapper.querySelector('.dropdown-menu');
-        const taskId = taskWrapper.querySelector('.task-id').textContent;
-
-        dropdownMenu.addEventListener('click', function(event) {
-            if (event.target.closest('.delete-task-item')) {
-                deleteEntity(taskId, `tasks`, `tasks-container`);
-            }else if (event.target.closest('.edit-task-item')) {
-                getEntityDataToEdit(taskId, `tasks`).then(html => {
-                    const modalWindowWrapper = document.querySelector(`#modal-window-wrapper`);
-                    putModal(modalWindowWrapper, html);
-                    const modalWindow = modalWindowWrapper.querySelector(`#edit-entity-modal`);
-                    const saveButton = modalWindowWrapper.querySelector(`.save-task`);
-                    const taskTitleInput = modalWindowWrapper.querySelector(`#task-title`);
-
-                    fillTaskModalWindow(modalWindowWrapper);
-                    showModal(modalWindow);
-                    toggleSaveButton(taskTitleInput, saveButton);
-
-                    taskTitleInput.addEventListener(`input`, function(event) {
-                        toggleSaveButton(taskTitleInput, saveButton);
-                    });
-
-                    handleSaveTask(modalWindowWrapper, taskId);
-                    handleDeleteEntity(modalWindowWrapper, taskId, `tasks`);
-
-                    document.querySelector('#close-modal-btn').addEventListener('click', function() {
-                        hideModal(modalWindow);
-                        deleteModal(modalWindowWrapper);
-                    });
-                }).catch(error => {
-                    console.log(`Error while receiving task data`, error);
-                });
-            }
-        });
-    }
-});
-
 function fillTaskModalWindow(modalWindowWrapper) {
-    const taskTitle = modalWindowWrapper.querySelector(`#task-title`);
-    const taskDescription = modalWindowWrapper.querySelector(`#task-notes`);
-    const taskComplexity = modalWindowWrapper.querySelector(`#task-difficulty`);
-    const taskDeadline = modalWindowWrapper.querySelector(`#task-deadline`);
+    const taskTitle = modalWindowWrapper.querySelector(`#entity-title`);
+    const taskDescription = modalWindowWrapper.querySelector(`#entity-notes`);
+    const taskComplexity = modalWindowWrapper.querySelector(`#entity-difficulty`);
+    const taskDeadline = modalWindowWrapper.querySelector(`#entity-deadline`);
 
     const taskData = getJsonEntity(`task-data`);
 
@@ -83,12 +39,12 @@ function fillTaskModalWindow(modalWindowWrapper) {
 }
 
 function handleSaveTask(modalWindowWrapper, taskId) {
-    const saveButton = modalWindowWrapper.querySelector(`.save-task`);
+    const saveButton = modalWindowWrapper.querySelector(`.save-entity`);
     saveButton.addEventListener(`click`, function() {
-        const taskTitle = modalWindowWrapper.querySelector(`#task-title`);
-        const taskDescription = modalWindowWrapper.querySelector(`#task-notes`);
-        const taskComplexity = modalWindowWrapper.querySelector(`#task-difficulty`);
-        const taskDeadline = modalWindowWrapper.querySelector(`#task-deadline`);
+        const taskTitle = modalWindowWrapper.querySelector(`#entity-title`);
+        const taskDescription = modalWindowWrapper.querySelector(`#entity-notes`);
+        const taskComplexity = modalWindowWrapper.querySelector(`#entity-difficulty`);
+        const taskDeadline = modalWindowWrapper.querySelector(`#entity-deadline`);
 
         const taskData = {
             id: taskId,
@@ -106,54 +62,13 @@ function handleSaveTask(modalWindowWrapper, taskId) {
     });
 }
 
-document.querySelector('#daily-tasks-container').addEventListener('click', function(event) {
-    if (event.target.closest('.habitica-menu-dropdown-toggle')) {
-        const dropdownToggle = event.target.closest('.habitica-menu-dropdown-toggle');
-        const taskWrapper = dropdownToggle.closest('.daily-task-wrapper');
-        const dropdownMenu = taskWrapper.querySelector('.dropdown-menu');
-        const dailyTaskId = taskWrapper.querySelector('.daily-task-id').textContent;
-
-        dropdownMenu.addEventListener('click', function(event) {
-            if (event.target.closest('.delete-task-item')) {
-                deleteEntity(dailyTaskId, `daily-tasks`, `daily-tasks-container`);
-            }else if (event.target.closest('.edit-task-item')) {
-                getEntityDataToEdit(dailyTaskId, `daily-tasks`).then(html => {
-                    const modalWindowWrapper = document.querySelector(`#modal-window-wrapper`);
-                    putModal(modalWindowWrapper, html);
-                    const modalWindow = modalWindowWrapper.querySelector(`#edit-entity-modal`);
-                    const saveButton = modalWindowWrapper.querySelector(`.save-task`);
-                    const taskTitleInput = modalWindowWrapper.querySelector(`#task-title`);
-
-                    fillTaskModalWindow(modalWindowWrapper);
-                    showModal(modalWindow);
-                    toggleSaveButton(taskTitleInput, saveButton);
-
-                    taskTitleInput.addEventListener(`input`, function(event) {
-                        toggleSaveButton(taskTitleInput, saveButton);
-                    });
-
-                    handleSaveDailyTask(modalWindowWrapper, dailyTaskId);
-                    handleDeleteEntity(modalWindowWrapper, dailyTaskId, `daily-tasks`);
-
-                    document.querySelector('#close-modal-btn').addEventListener('click', function() {
-                        hideModal(modalWindow);
-                        deleteModal(modalWindowWrapper);
-                    });
-                }).catch(error => {
-                    console.log(`Error while receiving task data`, error);
-                });
-            }
-        });
-    }
-});
-
 function handleSaveDailyTask(modalWindowWrapper, dailyTaskId) {
-    const saveButton = modalWindowWrapper.querySelector(`.save-task`);
+    const saveButton = modalWindowWrapper.querySelector(`.save-entity`);
     saveButton.addEventListener(`click`, function() {
-        const taskTitle = modalWindowWrapper.querySelector(`#task-title`);
-        const taskDescription = modalWindowWrapper.querySelector(`#task-notes`);
-        const taskComplexity = modalWindowWrapper.querySelector(`#task-difficulty`);
-        const taskDeadline = modalWindowWrapper.querySelector(`#task-deadline`);
+        const taskTitle = modalWindowWrapper.querySelector(`#entity-title`);
+        const taskDescription = modalWindowWrapper.querySelector(`#entity-notes`);
+        const taskComplexity = modalWindowWrapper.querySelector(`#entity-difficulty`);
+        const taskDeadline = modalWindowWrapper.querySelector(`#entity-deadline`);
 
         const taskData = {
             id: dailyTaskId,
@@ -171,54 +86,12 @@ function handleSaveDailyTask(modalWindowWrapper, dailyTaskId) {
     });
 }
 
-document.querySelector('#habits-container').addEventListener('click', function(event) {
-    if (event.target.closest('.habitica-menu-dropdown-toggle')) {
-        const dropdownToggle = event.target.closest('.habitica-menu-dropdown-toggle');
-        const habitWrapper = dropdownToggle.closest('.habit-wrapper');
-        const dropdownMenu = habitWrapper.querySelector('.dropdown-menu');
-        const habitId = habitWrapper.querySelector('.habit-id').textContent;
-
-        dropdownMenu.addEventListener('click', function(event) {
-            if (event.target.closest('.delete-task-item')) {
-                deleteEntity(habitId, `habits`, `habits-container`);
-            }else if (event.target.closest('.edit-task-item')) {
-                getEntityDataToEdit(habitId, `habits`).then(html => {
-                    const modalWindowWrapper = document.querySelector(`#modal-window-wrapper`);
-                    putModal(modalWindowWrapper, html);
-                    const modalWindow = modalWindowWrapper.querySelector(`#edit-entity-modal`);
-                    const saveButton = modalWindowWrapper.querySelector(`.save-task`);
-                    const taskTitleInput = modalWindowWrapper.querySelector(`#task-title`);
-
-                    fillTaskModalWindow(modalWindowWrapper);
-                    showModal(modalWindow);
-                    toggleSaveButton(taskTitleInput, saveButton);
-
-                    taskTitleInput.addEventListener(`input`, function(event) {
-                        toggleSaveButton(taskTitleInput, saveButton);
-                    });
-
-                    handleSaveHabit(modalWindowWrapper, habitId);
-                    handleDeleteEntity(modalWindowWrapper, habitId, `habits`);
-                    handleResetHabit(modalWindowWrapper, habitId);
-
-                    document.querySelector('#close-modal-btn').addEventListener('click', function() {
-                        hideModal(modalWindow);
-                        deleteModal(modalWindowWrapper);
-                    });
-                }).catch(error => {
-                    console.log(`Error while receiving task data`, error);
-                });
-            }
-        });
-    }
-});
-
 function handleSaveHabit(modalWindowWrapper, habitId) {
-    const saveButton = modalWindowWrapper.querySelector(`.save-task`);
+    const saveButton = modalWindowWrapper.querySelector(`.save-entity`);
     saveButton.addEventListener(`click`, function() {
-        const taskTitle = modalWindowWrapper.querySelector(`#task-title`);
-        const taskDescription = modalWindowWrapper.querySelector(`#task-notes`);
-        const taskComplexity = modalWindowWrapper.querySelector(`#task-difficulty`);
+        const taskTitle = modalWindowWrapper.querySelector(`#entity-title`);
+        const taskDescription = modalWindowWrapper.querySelector(`#entity-notes`);
+        const taskComplexity = modalWindowWrapper.querySelector(`#entity-difficulty`);
 
         const taskData = {
             id: habitId,
@@ -250,51 +123,10 @@ function handleResetHabit(modalWindowWrapper, habitId) {
     });
 }
 
-document.querySelector(`#rewards-container`).addEventListener(`click`, function(event) {
-    if (event.target.closest(`.habitica-menu-dropdown-toggle`)) {
-        const dropdownToggle = event.target.closest('.habitica-menu-dropdown-toggle');
-        const rewardWrapper = dropdownToggle.closest('.reward-wrapper');
-        const dropdownMenu = rewardWrapper.querySelector('.dropdown-menu');
-        const rewardId = rewardWrapper.querySelector('.reward-id').textContent;
-
-        dropdownMenu.addEventListener(`click`, function(event) {
-            if (event.target.closest(`.delete-task-item`)) {
-                deleteEntity(rewardId, `rewards`, `rewards-container`);
-            }else if (event.target.closest(`.edit-task-item`)) {
-                getEntityDataToEdit(rewardId, `rewards`).then(html => {
-                    const modalWindowWrapper = document.querySelector(`#modal-window-wrapper`);
-                    putModal(modalWindowWrapper, html);
-                    const modalWindow = modalWindowWrapper.querySelector(`#edit-entity-modal`);
-                    const saveButton = modalWindowWrapper.querySelector(`.save-reward`);
-                    const rewardTitleInput = modalWindowWrapper.querySelector(`#reward-title`);
-
-                    fillRewardModalWindow(modalWindowWrapper);
-                    showModal(modalWindow);
-                    toggleSaveButton(rewardTitleInput, saveButton);
-
-                    rewardTitleInput.addEventListener(`input`, function(event) {
-                        toggleSaveButton(rewardTitleInput, saveButton);
-                    });
-
-                    handleSaveReward(modalWindowWrapper, rewardId);
-                    handleDeleteEntity(modalWindowWrapper, rewardId, `rewards`);
-
-                    document.querySelector('#close-modal-btn').addEventListener('click', function() {
-                        hideModal(modalWindow);
-                        deleteModal(modalWindowWrapper);
-                    });
-                }).catch(error => {
-                    console.log(`Error while receiving task data`, error);
-                });
-            }
-        });
-    }
-});
-
 function fillRewardModalWindow(modalWindowWrapper) {
-    const rewardTitle = modalWindowWrapper.querySelector(`#reward-title`);
-    const rewardDescription = modalWindowWrapper.querySelector(`#reward-notes`);
-    const rewardCost = modalWindowWrapper.querySelector(`#reward-cost`);
+    const rewardTitle = modalWindowWrapper.querySelector(`#entity-title`);
+    const rewardDescription = modalWindowWrapper.querySelector(`#entity-notes`);
+    const rewardCost = modalWindowWrapper.querySelector(`#entity-cost`);
 
     const rewardData = getJsonEntity(`reward-data`);
 
@@ -304,11 +136,11 @@ function fillRewardModalWindow(modalWindowWrapper) {
 }
 
 function handleSaveReward(modalWindowWrapper, rewardId) {
-    const saveButton = modalWindowWrapper.querySelector(`.save-reward`);
+    const saveButton = modalWindowWrapper.querySelector(`.save-entity`);
     saveButton.addEventListener(`click`, function() {
-        const rewardTitle = modalWindowWrapper.querySelector(`#reward-title`);
-        const rewardDescription = modalWindowWrapper.querySelector(`#reward-notes`);
-        const rewardCost = modalWindowWrapper.querySelector(`#reward-cost`);
+        const rewardTitle = modalWindowWrapper.querySelector(`#entity-title`);
+        const rewardDescription = modalWindowWrapper.querySelector(`#entity-notes`);
+        const rewardCost = modalWindowWrapper.querySelector(`#entity-cost`);
 
         const rewardData = {
             id: rewardId,
@@ -324,3 +156,40 @@ function handleSaveReward(modalWindowWrapper, rewardId) {
         });
     });
 }
+
+handleEntityClick(
+    `tasks-container`,
+    `.task-wrapper`,
+    `.task-id`,
+    `tasks`,
+    fillTaskModalWindow,
+    handleSaveTask
+);
+
+handleEntityClick(
+    `daily-tasks-container`,
+    `.daily-task-wrapper`,
+    `.daily-task-id`,
+    `daily-tasks`,
+    fillTaskModalWindow,
+    handleSaveDailyTask
+);
+
+handleEntityClick(
+    'rewards-container',
+    '.reward-wrapper',
+    '.reward-id',
+    'rewards',
+    fillRewardModalWindow,
+    handleSaveReward
+);
+
+handleEntityClick(
+    'habits-container',
+    '.habit-wrapper',
+    '.habit-id',
+    'habits',
+    fillTaskModalWindow,
+    handleSaveHabit,
+    handleResetHabit
+);

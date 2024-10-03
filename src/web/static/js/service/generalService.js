@@ -1,4 +1,4 @@
-import {deleteModal, hideModal} from "./modalService.js";
+import {deleteModal, hideModal, putModal, showModal, toggleSaveButton} from "./modalService.js";
 
 export function getEntityDataToEdit(entityId, endpoint) {
     return fetch(`/${endpoint}?id=${entityId}`, {
@@ -144,78 +144,6 @@ export function withdrawReward(elementId, type, action) {
     });
 }
 
-export function test() {
-    fetch('/tasks', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: `taskHeading=${encodeURIComponent(taskValue)}`
-    }).then(response => {
-        if (response.ok) {
-            taskInput.value = '';
-            console.log('Задача отправлена успешно!');
-            reloadEntities(`tasks`, `tasks-container`);
-        } else {
-            console.log('Ошибка при отправке задачи');
-        }
-    }).catch(error => {console.assert('Ошибка сети: ' + error.message);});
-}
-
-export function test1() {
-    fetch('/rewards', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: `rewardHeading=${encodeURIComponent(taskValue)}`
-    }).then(response => {
-        if (response.ok) {
-            taskInput.value = '';
-            reloadEntities(`rewards`, `rewards-container`);
-            console.log('Награда отправлена успешно!');
-        } else {
-            console.log('Ошибка при отправке награды!');
-        }
-    }).catch(error => {console.log('Ошибка сети: ' + error.message);});
-}
-
-export function test2() {
-    fetch('/habits', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: `habitHeading=${encodeURIComponent(taskValue)}`
-    }).then(response => {
-        if (response.ok) {
-            taskInput.value = '';
-            reloadEntities(`habits`, `habits-container`);
-            console.log('Привычка отправлена успешно!');
-        } else {
-            console.log('Ошибка при отправке привычки!');
-        }
-    }).catch(error => {console.log('Ошибка сети: ' + error.message);});
-}
-
-export function test3() {
-    fetch('/daily-tasks', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: `dailyTaskHeading=${encodeURIComponent(taskValue)}`
-    }).then(response => {
-        if (response.ok) {
-            taskInput.value = '';
-            reloadEntities(`daily-tasks`, `daily-tasks-container`);
-            console.log('Задача отправлена успешно!');
-        } else {
-            console.log('Ошибка при отправке задачи');
-        }
-    }).catch(error => {console.log('Ошибка сети: ' + error.message);});
-}
-
 export function createEntity(endpoint, entityValue, entityInput) {
     fetch(`/${endpoint}`, {
         method: 'POST',
@@ -261,62 +189,6 @@ export function getJsonEntity(entityDataId) {
     return JSON.parse(taskDataElement.textContent);
 }
 
-function handleDeleteItem(modalWindowWrapper, dailyTaskId) {
-    const modalWindow = modalWindowWrapper.querySelector(`#edit-task-modal`);
-    const deleteButton = modalWindowWrapper.querySelector(`.delete-task`);
-
-    deleteButton.addEventListener(`click`, function() {
-        deleteEntity(dailyTaskId, `tasks`, `tasks-container`).then(() => {
-            if (modalWindow != null) {
-                hideModal(modalWindow);
-                deleteModal(modalWindowWrapper);
-            }
-        });
-    });
-}
-
-function handleDeleteDailyTask(modalWindowWrapper, dailyTaskId) {
-    const modalWindow = modalWindowWrapper.querySelector(`#edit-daily-task-modal`);
-    const deleteButton = modalWindowWrapper.querySelector(`.delete-task`);
-
-    deleteButton.addEventListener(`click`, function() {
-        deleteEntity(dailyTaskId, `daily-tasks`, `daily-tasks-container`).then(() => {
-            if (modalWindow != null) {
-                hideModal(modalWindow);
-                deleteModal(modalWindowWrapper);
-            }
-        });
-    });
-}
-
-function handleDeleteHabit(modalWindowWrapper, habitId) {
-    const modalWindow = modalWindowWrapper.querySelector(`#edit-habit-modal`);
-    const deleteButton = modalWindowWrapper.querySelector(`.delete-task`);
-
-    deleteButton.addEventListener(`click`, function() {
-        deleteEntity(habitId, `habits`, `habits-container`).then(() => {
-            if (modalWindow != null) {
-                hideModal(modalWindow);
-                deleteModal(modalWindowWrapper);
-            }
-        });
-    });
-}
-
-function handleDeleteReward(modalWindowWrapper, rewardId) {
-    const modalWindow = modalWindowWrapper.querySelector(`#edit-reward-modal`);
-    const deleteButton = modalWindowWrapper.querySelector(`.delete-reward`);
-
-    deleteButton.addEventListener(`click`, function() {
-        deleteEntity(rewardId, `rewards`, `rewards-container`).then(() => {
-            if (modalWindow != null) {
-                hideModal(modalWindow);
-                deleteModal(modalWindowWrapper);
-            }
-        });
-    });
-}
-
 export function handleDeleteEntity(modalWindowWrapper, entityId, endpoint) {
     const modalWindow = modalWindowWrapper.querySelector(`#edit-entity-modal`);
     const deleteButton = modalWindowWrapper.querySelector(`.delete-entity`);
@@ -328,5 +200,67 @@ export function handleDeleteEntity(modalWindowWrapper, entityId, endpoint) {
                 deleteModal(modalWindowWrapper);
             }
         });
+    });
+}
+
+export function handleEntityClick(containerId, entityWrapperClass, entityIdClass, endpoint, modalFiller, saveHandler, resetHandler = null) {
+    document.querySelector(`#${containerId}`).addEventListener('click', function(event) {
+        if (event.target.closest('.habitica-menu-dropdown-toggle')) {
+            const dropdownToggle = event.target.closest('.habitica-menu-dropdown-toggle');
+            const entityWrapper = dropdownToggle.closest(entityWrapperClass);
+            const dropdownMenu = entityWrapper.querySelector('.dropdown-menu');
+            const entityId = entityWrapper.querySelector(entityIdClass).textContent;
+
+            dropdownMenu.addEventListener('click', function(event) {
+                if (event.target.closest('.delete-task-item')) {
+                    deleteEntity(entityId, endpoint, containerId);
+                } else if (event.target.closest('.edit-task-item')) {
+                    editEntity(entityId, endpoint, modalFiller, saveHandler, resetHandler);
+                }
+            });
+        }
+    });
+}
+
+function editEntity(entityId, endpoint, modalFiller, saveHandler, resetHandler) {
+    getEntityDataToEdit(entityId, endpoint).then(html => {
+        const modalWindowWrapper = document.querySelector(`#modal-window-wrapper`);
+        putModal(modalWindowWrapper, html);
+
+        const modalWindow = modalWindowWrapper.querySelector(`#edit-entity-modal`);
+        const saveButton = modalWindowWrapper.querySelector(`.save-entity`);
+        const titleInput = modalWindowWrapper.querySelector(`#entity-title`);
+
+        modalFiller(modalWindowWrapper);
+        showModal(modalWindow);
+        toggleSaveButton(titleInput, saveButton);
+
+        titleInput.addEventListener(`input`, function() {
+            toggleSaveButton(titleInput, saveButton);
+        });
+
+        saveHandler(modalWindowWrapper, entityId);
+
+        if (resetHandler) {
+            resetHandler(modalWindowWrapper, entityId);
+        }
+
+        handleDeleteEntity(modalWindowWrapper, entityId, endpoint);
+
+        document.querySelector('#close-modal-btn').addEventListener('click', function() {
+            hideModal(modalWindow);
+            deleteModal(modalWindowWrapper);
+        });
+    }).catch(error => {
+        console.log(`Error while receiving entity data`, error);
+    });
+}
+
+export function resetHabit(habitId) {
+    return fetch(`/habits?id=${habitId}&update=reset`, {
+        method: 'PUT'
+    }).then(response => {
+        if (!response.ok) throw new Error('Error when resetting an entity!');
+        console.log(`Entity with ID ${habitId} has been reset!`);
     });
 }
