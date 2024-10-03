@@ -1,42 +1,15 @@
-import {updateHabits, updateHabitSeries, withdrawReward} from "../service/habitService.js";
+import {
+    reloadEntities,
+    setupEntityInput,
+    updateBalance,
+    updateEntitySeries,
+    withdrawReward
+} from "../service/generalService.js";
 
-updateHabits();
+reloadEntities(`habits`, `habits-container`);
 
-document.addEventListener('DOMContentLoaded', function () {
-    const taskInput = document.querySelector('#habitInput');
-    taskInput.addEventListener('keypress', function (e) {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            const taskValue = taskInput.value.trim();
-            if (taskValue) {
-                fetch('/habits', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: `habitHeading=${encodeURIComponent(taskValue)}`
-                })
-                    .then(response => {
-                        if (response.ok) {
-                            taskInput.value = '';
-                            updateHabits();
-                            console.log('Привычка отправлена успешно!');
-                        } else {
-                            console.log('Ошибка при отправке привычки!');
-                        }
-                    })
-                    .catch(error => {
-                        console.log('Ошибка сети: ' + error.message);
-                    });
-            }
-        }
-    });
-
-    taskInput.addEventListener('input', function () {
-        if (this.value.includes('\n')) {
-            this.value = this.value.replace(/\n/g, '');
-        }
-    });
+document.addEventListener(`DOMContentLoaded`, function () {
+    setupEntityInput(`habitInput`, `habits`);
 });
 
 document.querySelector('#habits-container').addEventListener('click', function(event) {
@@ -44,48 +17,16 @@ document.querySelector('#habits-container').addEventListener('click', function(e
     const habitId = habitWrapper.querySelector('.habit-id').textContent.trim();
 
     if (event.target.closest('.left-control')) {
-        updateHabitSeries(habitId, `increment`);
+        updateEntitySeries(habitId, `habits`, `increment`);
         withdrawReward(habitId, `habit`, `increment`).then(() => {
-             updateBalance();
-             updateHabits();
+            updateBalance();
+            reloadEntities(`habits`, `habits-container`);
         });
     }else if (event.target.closest('.right-control')) {
-        updateHabitSeries(habitId, `decrement`);
+        updateEntitySeries(habitId, `habits`, `decrement`);
         withdrawReward(habitId, `habit`, `decrement`).then(() => {
             updateBalance();
-            updateHabits();
+            reloadEntities(`habits`, `habits-container`);
         });
     }
 });
-
-function updateBalance() {
-    fetch('/balance', {
-        method: 'GET',
-    })
-        .then(response => response.json())
-        .then(balance => {
-            animateBalanceChange(balance.balance, 1000);
-        })
-        .catch(error => console.error('Ошибка обновления баланса: ', error));
-}
-
-function animateBalanceChange(targetBalance, duration) {
-    const balanceElement = document.querySelector(`#userBalance`);
-    const startTime = performance.now();
-    const initialBalance = Number(balanceElement.textContent);
-
-    function updateBalanceAnimation(currentTime) {
-        const elapsedTime = currentTime - startTime;
-        const progress = Math.min(elapsedTime / duration, 1);
-
-        const currentBalance = initialBalance + (targetBalance - initialBalance) * progress;
-
-        balanceElement.textContent = currentBalance.toFixed(2);
-
-        if (progress < 1) {
-            requestAnimationFrame(updateBalanceAnimation);
-        }
-    }
-
-    requestAnimationFrame(updateBalanceAnimation);
-}
