@@ -4,8 +4,9 @@
 <html>
 <head>
     <title>Register</title>
-    <link rel="stylesheet" href="<c:url value="/static/css/index.css"/>?v=1.1">
-    <link rel="stylesheet" href="<c:url value="/static/css/register.css"/>?v=1.0">
+    <link rel="stylesheet" href="<c:url value="/static/css/variables.css"/>?v=${System.currentTimeMillis()}">
+    <link rel="stylesheet" href="<c:url value="/static/css/index.css"/>?v=${System.currentTimeMillis()}">
+    <link rel="stylesheet" href="<c:url value="/static/css/register.css"/>?v=${System.currentTimeMillis()}">
     <%@include file="bundles.jsp"%>
 </head>
 <body>

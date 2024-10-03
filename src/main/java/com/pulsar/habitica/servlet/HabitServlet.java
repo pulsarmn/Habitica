@@ -47,7 +47,7 @@ public class HabitServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        var habitHeading = request.getParameter("habitHeading");
+        var habitHeading = request.getParameter("entityHeading");
         var user = ServletUtil.getAuthenticatedUser(request);
         var habitDto = TaskDto.builder()
                 .userId(user.getId())
