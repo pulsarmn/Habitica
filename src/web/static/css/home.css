@@ -720,24 +720,6 @@ textarea, input {
     text-decoration: underline;
 }
 
-.save-entity {
-    color: #500fb8;
-    background-color: #f7ca37;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 4px;
-    cursor: pointer;
-    box-shadow: 0px 2px 3px 0px rgba(0, 0, 0, 0.5);
-    font-weight: 600;
-    transition-duration: 0.4s;
-}
-
-.save-entity:hover {
-    color: #ffffff;
-    transition-duration: 0.3s;
-    transform: translateY(-1px);
-}
-
 .modal-body label {
     display: block;
     font-weight: bold;
@@ -776,46 +758,6 @@ textarea, input {
     justify-content: center;
     margin-top: 10px;
     gap: 20px;
-}
-
-.delete-entity {
-    background-color: #dc3545;
-    box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.5);
-    color: #fff;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition-duration: 0.4s;
-}
-
-.delete-entity:hover {
-    background-color: #b92c3a;
-    transform: translateY(-1px);
-    transition-duration: 0.4s;
-}
-
-#entity-title, #entity-notes {
-    border-radius: 2px;
-    background-color: rgba(41, 30, 30, 0.06);
-    width: 100%;
-    resize: vertical;
-    overflow: hidden;
-    color: #4e4a57;
-    border: 1px solid #c3c0c7;
-    font-weight: 600;
-    outline: none;
-    transition-duration: 0.4s;
-}
-
-#entity-title:hover, #entity-notes:hover {
-    border: 1px solid #e0e0e0;
-    background-color: rgba(128, 128, 128, 0.09);
-    transition-duration: 0.4s;
-}
-
-#entity-title:focus-within, #entity-notes:focus-within {
-    background-color: rgb(255, 255, 255);
 }
 
 .disable {
@@ -875,7 +817,7 @@ textarea, input {
     transition-duration: 0.4s;
 }
 
-#entity-title:hover, #entit-notes:hover {
+#entity-title:hover, #entity-notes:hover {
     border: 1px solid #e0e0e0;
     background-color: rgba(128, 128, 128, 0.09);
     transition-duration: 0.4s;
