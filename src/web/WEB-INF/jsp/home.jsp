@@ -3,7 +3,8 @@
 
 <html>
 <head>
-    <title>Задачи | Habitica</title>
+    <%@ include file="bundles.jsp"%>
+    <title><fmt:message key="home.page.title" bundle="${labels}"/></title>
     <link rel="stylesheet" href="<c:url value="/static/css/variables.css"/>?v=${System.currentTimeMillis()}">
     <link rel="stylesheet" href="<c:url value="/static/css/index.css"/>?v=${System.currentTimeMillis()}">
     <link rel="stylesheet" href="<c:url value="/static/css/home.css"/>?v=${System.currentTimeMillis()}">
@@ -19,9 +20,7 @@
             </div>
             <div class="collapse">
                 <ul class="navbar-list">
-                    <li class="navbar-list-item"><a href="/">Задачи</a></li>
-                    <li class="navbar-list-item"><a href="">Скоро</a></li>
-                    <li class="navbar-list-item"><a href="">Скоро</a></li>
+                    <li class="navbar-list-item"><a href="/home"><fmt:message key="home.tasks.tab" bundle="${labels}"/></a></li>
                 </ul>
                 <div class="collapse-right">
                     <div class="navbar-balance">
@@ -87,37 +86,37 @@
                         <div class="tasks-columns">
                             <div class="tasks-column habit">
                                 <div class="column-title">
-                                    <h2>Привычки</h2>
+                                    <h2><fmt:message key="home.habits.label" bundle="${labels}"/></h2>
                                 </div>
                                 <div class="tasks-list">
-                                    <textarea class="quick-add" id="habitInput" rows="1" placeholder="Добавить привычку"></textarea>
+                                    <textarea class="quick-add" id="habitInput" rows="1" placeholder="<fmt:message key="home.habit.input" bundle="${labels}"/>"></textarea>
                                     <div class="sortable-tasks" id="habits-container"></div>
                                 </div>
                             </div>
                             <div class="tasks-column daily">
                                 <div class="column-title">
-                                    <h2>Ежедневные дела</h2>
+                                    <h2><fmt:message key="home.daily-tasks.label" bundle="${labels}"/></h2>
                                 </div>
                                 <div class="tasks-list">
-                                    <textarea class="quick-add" id="dailyTaskInput" placeholder="Добавить ежедневное дело" rows="1"></textarea>
+                                    <textarea class="quick-add" id="dailyTaskInput" placeholder="<fmt:message key="home.daily-task.input" bundle="${labels}"/>" rows="1"></textarea>
                                     <div class="sortable-tasks" id="daily-tasks-container"></div>
                                 </div>
                             </div>
                             <div class="tasks-column todo">
                                 <div class="column-title">
-                                    <h2>Задачи</h2>
+                                    <h2><fmt:message key="home.tasks.label" bundle="${labels}"/></h2>
                                 </div>
                                 <div class="tasks-list">
-                                    <textarea class="quick-add" id="taskInput" placeholder="Добавить задачу" rows="1"></textarea>
+                                    <textarea class="quick-add" id="taskInput" placeholder="<fmt:message key="home.task.input" bundle="${labels}"/>" rows="1"></textarea>
                                     <div class="sortable-tasks" id="tasks-container"></div>
                                 </div>
                             </div>
                             <div class="tasks-column reward">
                                 <div class="column-title">
-                                    <h2>Награды</h2>
+                                    <h2><fmt:message key="home.rewards.label" bundle="${labels}"/></h2>
                                 </div>
                                 <div class="tasks-list">
-                                    <textarea class="quick-add" id="rewardInput" placeholder="Добавить награду" rows="1"></textarea>
+                                    <textarea class="quick-add" id="rewardInput" placeholder="<fmt:message key="home.reward.input" bundle="${labels}"/>" rows="1"></textarea>
                                     <div class="sortable-tasks" id="rewards-container"></div>
                                 </div>
                             </div>
