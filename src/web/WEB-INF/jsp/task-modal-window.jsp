@@ -24,7 +24,7 @@
                 <option value="DIFFICULT"><fmt:message key="home.edit.difficulty.hard" bundle="${labels}"/></option>
             </select>
 
-            <label for="entity-deadline">В<fmt:message key="home.edit.entity.deadline" bundle="${labels}"/></label>
+            <label for="entity-deadline"><fmt:message key="home.edit.entity.deadline" bundle="${labels}"/></label>
             <input type="date" id="entity-deadline"/>
         </div>
         <div class="modal-footer">
