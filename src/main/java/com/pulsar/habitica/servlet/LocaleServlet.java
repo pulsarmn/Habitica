@@ -17,16 +17,6 @@ import java.util.Locale;
 public class LocaleServlet extends HttpServlet {
 
     @Override
-    public void init(ServletConfig config) throws ServletException {
-
-    }
-
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-    }
-
-    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         var selectedLanguage = request.getParameter("lang");
         var userLocale = request.getLocale();
@@ -37,10 +27,5 @@ public class LocaleServlet extends HttpServlet {
         var prevPage = request.getHeader("referer");
         var page = (prevPage != null) ? prevPage : GuestPaths.LOGIN.getPath();
         response.sendRedirect(page);
-    }
-
-    @Override
-    public void destroy() {
-
     }
 }

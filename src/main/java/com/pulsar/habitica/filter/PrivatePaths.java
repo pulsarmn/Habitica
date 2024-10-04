@@ -9,7 +9,8 @@ public enum PrivatePaths {
     DAILY_TASKS("/daily-tasks"),
     REWARDS("/rewards"),
     PURCHASE_REWARD("/purchase-reward"),
-    USER_BALANCE("/balance");
+    USER_BALANCE("/balance"),
+    LOG_OUT("/logout");
 
     private String path;
 
