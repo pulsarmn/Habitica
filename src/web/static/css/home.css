@@ -23,6 +23,10 @@ label {
     box-shadow: 0 1px 2px 0 rgba(26,24,29,.24);
 }
 
+.pointer {
+    cursor: pointer;
+}
+
 .app-logo {
     padding: 0.8rem 1rem 0.8rem 0;
 }
@@ -264,8 +268,9 @@ h3.markdown {
     font-weight: 400;
 }
 
-.dropdown-menu {
+.dropdown-menu, .user-dropdown-menu {
     display: none;
+    transform: translateX(-25px);
 }
 
 .task-wrapper {
@@ -412,10 +417,9 @@ h3.markdown {
     cursor: pointer;
 }
 
-.dropdown-menu {
+.dropdown-menu, .user-dropdown-menu {
     position: absolute;
     top: 10px;
-    transform: translateX(-25px);
     z-index: 1000;
     float: left;
     min-width: 10rem;
@@ -433,6 +437,10 @@ h3.markdown {
     box-shadow: 0 2px 2px 0 rgba(26,24,29,.16), 0 1px 4px 0 rgba(26,24,29,.12);
     left: inherit;
     right: 0!important;
+}
+
+.user-dropdown-menu {
+    transform: translate(-10px, 40px);
 }
 
 .dropdown-icon {
@@ -741,14 +749,14 @@ textarea, input {
     margin-bottom: 15px;
 }
 
-#entity-difficulty {
+#entity-difficulty, #user-language {
     outline: none;
     box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
     font-size: 13px;
     font-weight: 600;
 }
 
-#entity-difficulty>option {
+#entity-difficulty>option, #user-language>option {
     font-size: 13px;
     font-weight: 500;
 }

@@ -1,4 +1,4 @@
-import {hideModal, deleteModal} from "./service/modalService.js";
+import {hideModal, deleteModal, showModal} from "./service/modalService.js";
 import {
     getJsonEntity, handleEntityClick,
     reloadEntities, resetHabit,
@@ -21,6 +21,111 @@ document.addEventListener('click', function(event) {
         });
     }
 });
+
+document.addEventListener('click', function(event) {
+    const userItem = event.target.closest('#userItem');
+    const dropdownMenu = document.querySelector('#userDropdownMenu');
+
+    if (userItem) {
+        document.querySelectorAll('.dropdown-menu').forEach(menu => {
+            menu.classList.remove('show-dropdown');
+        });
+        dropdownMenu.classList.add('show-dropdown');
+    } else {
+        dropdownMenu.classList.remove('show-dropdown');
+    }
+
+    if (dropdownMenu.classList.contains('show-dropdown') && dropdownMenu.contains(event.target)) {
+        dropdownMenu.classList.remove('show-dropdown');
+    }
+});
+
+document.querySelector(`#userItem`).addEventListener(`click`, function(event) {
+    if (event.target.closest(`#logout-item`)) {
+        fetch(`/logout`, {
+            method: `POST`
+        }).then(response => {
+            if (response.ok) {
+                console.log(`Success`);
+                location.reload();
+            }
+        }).catch(error => {
+            console.log(`error`, error);
+        });
+    }else if (event.target.closest(`#language-item`)) {
+        fetch(`/change-language`, {
+            method: `GET`
+        }).then(response => {
+            if (response.ok) {
+                return response.text();
+            }
+        }).then(html => {
+            const modalWindowWrapper = document.querySelector(`#modal-window-wrapper`);
+            modalWindowWrapper.innerHTML = html;
+            const modalWindow = modalWindowWrapper.querySelector(`#choose-language-modal`);
+            fillLangModalWindow(modalWindowWrapper);
+            showModal(modalWindow);
+            handleSaveLang(modalWindowWrapper);
+            document.querySelector('#close-modal-btn').addEventListener('click', function() {
+                hideModal(modalWindow);
+                deleteModal(modalWindowWrapper);
+            });
+        }).catch(error => {
+            console.log(`error`, error);
+        });
+    }else if (event.target.closest(`#profile-item`)) {
+        fetch(`/profile`, {
+            method: `GET`
+        }).then(response => {
+            if (response.ok) {
+                return response.text();
+            }
+        }).then(html => {
+            const modalWindowWrapper = document.querySelector(`#modal-window-wrapper`);
+            modalWindowWrapper.innerHTML = html;
+            const modalWindow = modalWindowWrapper.querySelector(`#edit-entity-modal`);
+            fillProfileWindow(modalWindowWrapper);
+            showModal(modalWindow);
+
+        })
+    }
+});
+
+function fillLangModalWindow(modalWindowWrapper) {
+    const language = modalWindowWrapper.querySelector(`#user-language`);
+    const langData = getJsonLang(modalWindowWrapper);
+
+    language.value = langData.lang;
+}
+
+function getJsonLang(modalWindowWrapper) {
+    const langDataElement = modalWindowWrapper.querySelector(`#langData`);
+    return JSON.parse(langDataElement.textContent);
+}
+
+function handleSaveLang(modalWindowWrapper) {
+    const saveButton = modalWindowWrapper.querySelector(`.save-entity`);
+    saveButton.addEventListener(`click`, function(event) {
+        const language = modalWindowWrapper.querySelector(`#user-language`);
+        const langData = {
+            lang: language.value
+        }
+        fetch(`/change-language`, {
+            method: `PUT`,
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(langData)
+        }).then(response => {
+            if (response.ok) {
+                console.log(`Success`);
+                hideModal(modalWindowWrapper.querySelector(`#choose-language-modal`));
+                deleteModal(modalWindowWrapper);
+                location.reload();
+            }
+        }).catch(error => {
+            console.log(`error`, error);
+        })
+    });
+}
 
 function fillTaskModalWindow(modalWindowWrapper) {
     const taskTitle = modalWindowWrapper.querySelector(`#entity-title`);
