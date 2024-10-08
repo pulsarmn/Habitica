@@ -28,4 +28,4 @@ bin/
 ### Mac OS ###
 .DS_Store
 src/main/java/com/pulsar/habitica/Runner.java
-src/web/static/images/user-avatars
+src/main/webapp/static/images/user-avatars
