@@ -1,6 +1,7 @@
 package com.pulsar.habitica.mapper;
 
 import com.pulsar.habitica.annotation.MapperTest;
+import com.pulsar.habitica.annotation.SingletonTest;
 import com.pulsar.habitica.dto.RewardDto;
 import org.junit.jupiter.api.Test;
 
@@ -26,7 +27,7 @@ public class RewardDtoMapperTest {
         assertThat(reward.getCost()).isEqualTo(new BigDecimal(10));
     }
 
-    @Test
+    @SingletonTest
     void testSingletonInstance() {
         var instance1 = RewardDtoMapper.getInstance();
         var instance2 = RewardDtoMapper.getInstance();

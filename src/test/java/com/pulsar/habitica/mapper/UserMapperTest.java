@@ -1,6 +1,7 @@
 package com.pulsar.habitica.mapper;
 
 import com.pulsar.habitica.annotation.MapperTest;
+import com.pulsar.habitica.annotation.SingletonTest;
 import com.pulsar.habitica.entity.user.User;
 import org.junit.jupiter.api.Test;
 
@@ -29,7 +30,7 @@ public class UserMapperTest {
         assertThat(userDto.getEmail()).isEqualTo(HUMAN_1.getEmail());
     }
 
-    @Test
+    @SingletonTest
     void testSingletonInstance() {
         var instance1 = UserMapper.getInstance();
         var instance2 = UserMapper.getInstance();

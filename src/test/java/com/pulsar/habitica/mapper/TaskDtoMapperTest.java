@@ -1,6 +1,7 @@
 package com.pulsar.habitica.mapper;
 
 import com.pulsar.habitica.annotation.MapperTest;
+import com.pulsar.habitica.annotation.SingletonTest;
 import com.pulsar.habitica.dto.TaskDto;
 import com.pulsar.habitica.entity.task.Complexity;
 import org.junit.jupiter.api.Test;
@@ -26,7 +27,7 @@ public class TaskDtoMapperTest {
         assertThat(task.getStatus()).isEqualTo(false);
     }
 
-    @Test
+    @SingletonTest
     void testSingletonInstance() {
         var instance1 = TaskDtoMapper.getInstance();
         var instance2 = TaskDtoMapper.getInstance();
