@@ -1,12 +1,13 @@
 package com.pulsar.habitica.util;
 
+import com.pulsar.habitica.annotation.UtilTest;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.*;
 
 public class JspHelperTest {
 
-    @Test
+    @UtilTest
     void testGettingPathWithBackSlash() {
         String url = "/login";
         String expected = "/WEB-INF/jsp/login.jsp";
@@ -14,7 +15,7 @@ public class JspHelperTest {
         assertThat(JspHelper.getPath(url)).isEqualTo(expected);
     }
 
-    @Test
+    @UtilTest
     void testGettingPathWithoutBackSlash() {
         String url = "login";
         String expected = "/WEB-INF/jsp/login.jsp";

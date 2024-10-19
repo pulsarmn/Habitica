@@ -1,6 +1,7 @@
 package com.pulsar.habitica.util;
 
 
+import com.pulsar.habitica.annotation.UtilTest;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -11,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class LocalUtilTest {
 
-    @Test
+    @UtilTest
     void successIfStringIsLocale() {
         List<String> locales = List.of("ru_RU", "en_US", "de_DE", "fr_FR");
 
@@ -24,7 +25,7 @@ public class LocalUtilTest {
         );
     }
 
-    @Test
+    @UtilTest
     void failIfStringIsNotLocale() {
         List<String> dummyLocales = List.of("dum_dummy", "US_en", "DUMMY_dum", "");
 
@@ -37,7 +38,7 @@ public class LocalUtilTest {
         );
     }
 
-    @Test
+    @UtilTest
     void testGettingLanguageFromString() {
         Map<String, String> locales = Map.of(
                 "ru_RU", "ru",
@@ -54,7 +55,7 @@ public class LocalUtilTest {
         );
     }
 
-    @Test
+    @UtilTest
     void testGettingCountryFromString() {
         Map<String, String> locales = Map.of(
                 "ru_RU", "RU",

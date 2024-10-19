@@ -1,6 +1,7 @@
 package com.pulsar.habitica.util;
 
 
+import com.pulsar.habitica.annotation.UtilTest;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
@@ -10,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class PropertiesUtilTest {
 
-    @Test
+    @UtilTest
     void successfulGettingTheProperty() {
         Map<String, String> map = Map.of(
                 "db.url", "TEST:DB:URL",
