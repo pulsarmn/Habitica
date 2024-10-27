@@ -39,7 +39,7 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         var loginUserDto = LoginUserDto.builder()
-                .idetifier(request.getParameter("identifier"))
+                .identifier(request.getParameter("identifier"))
                 .password(request.getParameter("password"))
                 .isEmail(request.getParameter("identifier").contains("@"))
                 .build();
