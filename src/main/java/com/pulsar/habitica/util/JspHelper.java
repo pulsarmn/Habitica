@@ -7,6 +7,9 @@ public final class JspHelper {
     private JspHelper() {}
 
     public static String getPath(String jsp) {
-        return JSP_FORMAT.formatted(jsp);
+        if (jsp.startsWith("/")) {
+            return JSP_FORMAT.formatted(jsp);
+        }
+        return JSP_FORMAT.formatted("/" + jsp);
     }
 }

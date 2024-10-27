@@ -70,9 +70,9 @@ public class UserService {
         }
         User user;
         if (loginUserDto.isEmail()) {
-            user = userDao.findByEmail(loginUserDto.getIdetifier()).get();
+            user = userDao.findByEmail(loginUserDto.getIdentifier()).get();
         }else {
-            user = userDao.findByNickname(loginUserDto.getIdetifier()).get();
+            user = userDao.findByNickname(loginUserDto.getIdentifier()).get();
         }
 
         var profileUserDto = getProfileUserDto(user.getId());

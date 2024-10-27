@@ -18,6 +18,7 @@ public class DailyTaskDtoMapper implements Mapper<TaskDto, DailyTask> {
                 .complexity(Complexity.EASY)
                 .deadline(LocalDate.now())
                 .series(0)
+                .status(false)
                 .build();
     }
 
