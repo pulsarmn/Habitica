@@ -4,18 +4,18 @@ import java.util.Objects;
 
 public class LoginUserDto {
 
-    private final String idetifier;
+    private final String identifier;
     private final String password;
     private final boolean isEmail;
 
-    private LoginUserDto(String idetifier, String password, boolean isEmail) {
-        this.idetifier = idetifier;
+    private LoginUserDto(String identifier, String password, boolean isEmail) {
+        this.identifier = identifier;
         this.password = password;
         this.isEmail = isEmail;
     }
 
-    public String getIdetifier() {
-        return this.idetifier;
+    public String getIdentifier() {
+        return this.identifier;
     }
 
     public String getPassword() {
@@ -31,33 +31,33 @@ public class LoginUserDto {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         LoginUserDto that = (LoginUserDto) o;
-        return isEmail == that.isEmail && Objects.equals(idetifier, that.idetifier) && Objects.equals(password, that.password);
+        return isEmail == that.isEmail && Objects.equals(identifier, that.identifier) && Objects.equals(password, that.password);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(idetifier, password, isEmail);
+        return Objects.hash(identifier, password, isEmail);
     }
 
     @Override
     public String toString() {
         return "LoginUserDto{" +
-                "idetifier='" + idetifier + '\'' +
+                "identifier='" + identifier + '\'' +
                 ", password='" + password + '\'' +
                 ", isEmail=" + isEmail +
                 '}';
     }
 
     public static class LoginUserDtoBuilder {
-        private String idetifier;
+        private String identifier;
         private String password;
         private boolean isEmail;
 
         private LoginUserDtoBuilder() {
         }
 
-        public LoginUserDtoBuilder idetifier(String idetifier) {
-            this.idetifier = idetifier;
+        public LoginUserDtoBuilder identifier(String identifier) {
+            this.identifier = identifier;
             return this;
         }
 
@@ -72,11 +72,11 @@ public class LoginUserDto {
         }
 
         public LoginUserDto build() {
-            return new LoginUserDto(this.idetifier, this.password, this.isEmail);
+            return new LoginUserDto(this.identifier, this.password, this.isEmail);
         }
 
         public String toString() {
-            return "LoginUserDto.LoginUserDtoBuilder(idetifier=" + this.idetifier + ", password=" + this.password + ", isEmail=" + this.isEmail + ")";
+            return "LoginUserDto.LoginUserDtoBuilder(identifier=" + this.identifier + ", password=" + this.password + ", isEmail=" + this.isEmail + ")";
         }
     }
 

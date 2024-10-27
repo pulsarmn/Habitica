@@ -31,12 +31,12 @@ public class LoginValidator implements Validator<LoginUserDto> {
     }
 
     private void checkIdentifier(LoginUserDto userDto) {
-        if (userDto.getIdetifier() == null || userDto.getIdetifier().isEmpty()) {
+        if (userDto.getIdentifier() == null || userDto.getIdentifier().isEmpty()) {
             validationResult.getErrors().add(Error.of(IDENTIFIER_REQUIRED, "Input nickname or email!"));
         }else if (userDto.isEmail()) {
-            checkEmail(userDto.getIdetifier());
+            checkEmail(userDto.getIdentifier());
         }else {
-            checkNickname(userDto.getIdetifier());
+            checkNickname(userDto.getIdentifier());
         }
     }
 
@@ -65,9 +65,9 @@ public class LoginValidator implements Validator<LoginUserDto> {
     private User getUserByIdentifier(LoginUserDto userDto) {
         User user;
         if (userDto.isEmail()) {
-            user = userDao.findByEmail(userDto.getIdetifier()).get();
+            user = userDao.findByEmail(userDto.getIdentifier()).get();
         }else {
-            user = userDao.findByNickname(userDto.getIdetifier()).get();
+            user = userDao.findByNickname(userDto.getIdentifier()).get();
         }
         return user;
     }
